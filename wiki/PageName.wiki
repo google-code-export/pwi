@@ -1,0 +1,16 @@
+#summary The Picasa Webalbum Integrator javascript library.
+
+= Introduction =
+
+This javascript library allows you to include your own Picasa Webalbum(s) into your own site. Your visitors will never know the photo's came from google. (unless they see the loading/traffic to and from google :-)
+
+
+= Details =
+
+Add your content here.  Format your content with:
+
+PWIRequirements
+
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
