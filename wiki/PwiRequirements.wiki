@@ -1,10 +1,12 @@
 #summary One-sentence summary of this page.
 
-= Need to know =
+= Need to haves =
 
 This library uses some other library's.
 
-*jQuery (v1.2.3)
-*jQuery blockUI plugin (v1.33)
+*jQuery v1.2.3
+*jQuery blockUI plugin v1.33
 *jQuery history plugin
-*jQuery lightbox plugin (v0.4)
+*jQuery lightbox plugin v0.4
+
+The source tree contains these files (originals from the corresponding makers)
