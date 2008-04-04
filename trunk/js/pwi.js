@@ -12,13 +12,13 @@
  */
  
 //Global user variables to set (CHANGE TO WHAT YOU WANT IT TO BE)
-var pwi_username = "jdiderik";
+var pwi_username = "your_picasa_username";
 var pwi_path = "/pwi/"; //absolute URI of PWI directory for inclusion of images and files
 var pwi_photosize = 512; //return maximum size picture (see for supported format:  http://code.google.com/apis/picasaweb/reference.html#Parameters)
 var pwi_thumbsize = 64; //size thumb /cropped(see for supported format:  http://code.google.com/apis/picasaweb/reference.html#Parameters)
 var pwi_albumcols = 3; // distribute thumbs on main page over x collums
 var pwi_cols = 6; // distribute thumbs on albumphotos page over x collums
-var pwi_maxresults = 6; //maximum of pictures on albumphotos page
+var pwi_maxresults = 24; //maximum of pictures on albumphotos page
 var pwi_maxalbums = 1; //maximum of pictures on albumphotos page
 var pwi_container_div = "#container";
 
