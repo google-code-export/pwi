@@ -1,25 +1,23 @@
 /**
  * Picasa Webalbum Integration Library
  * This library was inspired and based on pwa  by Dieter Raber (http://www.gnu.org/copyleft/lesser.html)
- * @name pwi-0.2.js
+ * @name pwi.js
  * @author Jeroen Diderik - http://www.multiprof.nl
  * @version 0.2
  * @date March 27, 2008
- * @category jQuery plugin
  * @copyright (c) 2008 Jeroen Diderik(www.multiprof.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
- * @example Visit http://www.multiprof.nl/c/ for more informations about this jQuery plugin
+ * @example Visit http://www.multiprof.nl/ for more informations about this library
  */
  
 //Global user variables to set (CHANGE TO WHAT YOU WANT IT TO BE)
 var pwi_username = "your_picasa_username";
-var pwi_path = "/pwi/"; //absolute URI of PWI directory for inclusion of images and files
 var pwi_photosize = 512; //return maximum size picture (see for supported format:  http://code.google.com/apis/picasaweb/reference.html#Parameters)
 var pwi_thumbsize = 64; //size thumb /cropped(see for supported format:  http://code.google.com/apis/picasaweb/reference.html#Parameters)
 var pwi_albumcols = 3; // distribute thumbs on main page over x collums
 var pwi_cols = 6; // distribute thumbs on albumphotos page over x collums
 var pwi_maxresults = 24; //maximum of pictures on albumphotos page
-var pwi_maxalbums = 1; //maximum of pictures on albumphotos page
+var pwi_maxalbums = 6; //maximum of pictures on albumphotos page
 var pwi_container_div = "#container";
 
 
@@ -33,8 +31,8 @@ var pwi_si = 1;
 var pwi_storage_albums;
 var pwi_storage_photos;
 var pwi_storage_photo;
-var pwi_proxy = false;
 var pwi_history = "";
+
 // various functions
 //get querytring (for later use to make deeplinks)
 function readGet() {
@@ -168,7 +166,7 @@ function album(j) { //returns all photos in a specific album
 	pwi_currAlbumTitle = j.feed.title.$t;
 
 	scPhotos.push("<center><table border=0><tr>");
-	scPhotos.push("<tr><td colspan='" + pwi_cols + "'><a class='standard' href='javascript:void(0)' onclick='javascript:location.hash=\"\"'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
+	scPhotos.push("<tr><td colspan='" + pwi_cols + "'><a class='standard' href='#'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
 	scPhotos.push("<blockquote><div style='margin-left:3px'><h4>" + j.feed.title.$t + "</h4></div>");
 	scPhotos.push("<div style='margin-left:3px'><i>" + np + " photo" + item_plural + ", " + album_date + ", " + loc + "</i></div>");
 	scPhotos.push("<div style='margin-left:3px'><b>" + desc + "</b></div>");
@@ -222,7 +220,6 @@ function getAlbums() {
 		var url = 'http://picasaweb.google.com/data/feed/api/user/' + pwi_username + '?category=album&max-results=' + pwi_maxalbums + '&access=public&alt=json';
 		$.getJSON(url, 'callback=?', albums);
 	}
-	 //$.historyLoad("albums");
 }
 
 function getAlbum(albumid, newPage) {
@@ -254,7 +251,7 @@ function fromHistory(hash) {
 function show(loading, data) {
 	if (loading) {
 		$(pwi_container_div).fadeOut('slow');
-		$("#maincontent").block("<img src=\"" + pwi_path + "images/lightbox-ico-loading.gif\"> Loading ...", {
+		$("#maincontent").block("<img src=\"images/lightbox-ico-loading.gif\"> Loading ...", {
 			border: '3px solid #a00'
 		});
 	} else {
@@ -265,14 +262,17 @@ function show(loading, data) {
 }
 
 $(document).ready(function() {
-	 //	pwi_init();
-	$.extend($.blockUI.defaults.overlayCSS, {
-		backgroundColor: '#000'
-	});
-	$.ajaxSetup({
-		cache: true
-	});
-	$.historyInit(fromHistory);
+	if(pwi_username == "your_picasa_username"){
+		alert('Open the pwi.js and change content \nof the variable pwi_username in the top of the file\nto your Picasa Webalbum name');
+	}else{
+		$.extend($.blockUI.defaults.overlayCSS, {
+			backgroundColor: '#000'
+		});
+		$.ajaxSetup({
+			cache: true
+		});
+		$.historyInit(fromHistory);
+	}
 });
 
 
@@ -281,7 +281,10 @@ $(document).ready(function() {
 //$Update: September 23, 2007, Jeroen Diderik, Mootools conversion$
 //$Update: November 19, 2007, Jeroen Diderik, PWI vars update$
 //$Update: March 25, 2008, Jeroen Diderik, rewrite to replace MOOTools with  jQuery$
+//$Update: April 05, 2008, Jeroen Diderik, rewrite for early release$
+
 /*
+TOD0: photo details
 function getPhoto(photoid){
 	pwi_currPhoto = photoid;
 	url = 'http://picasaweb.google.com/data/entry/api/user/'+pwi_username+'/albumid/'+pwi_currAlbum+'/photoid/'+photoid+'?alt=json';
