@@ -166,7 +166,7 @@ function album(j) { //returns all photos in a specific album
 	pwi_currAlbumTitle = j.feed.title.$t;
 
 	scPhotos.push("<center><table border=0><tr>");
-	scPhotos.push("<tr><td colspan='" + pwi_cols + "'><a class='standard' href='#'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
+	scPhotos.push("<tr><td colspan='" + pwi_cols + "'><a class='standard' href='javascript:void(0)' onclick='$.historyLoad(\"\");'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
 	scPhotos.push("<blockquote><div style='margin-left:3px'><h4>" + j.feed.title.$t + "</h4></div>");
 	scPhotos.push("<div style='margin-left:3px'><i>" + np + " photo" + item_plural + ", " + album_date + ", " + loc + "</i></div>");
 	scPhotos.push("<div style='margin-left:3px'><b>" + desc + "</b></div>");
@@ -186,7 +186,7 @@ function album(j) { //returns all photos in a specific album
 
 	var navRow = new StringCat();
 	navRow.push("<tr><td colspan='" + pwi_cols + "'>" + ppage + "Page ");
-	for (var i = 1; i <= pageCount + 1; i++) {
+	for (var i = 1; i < pageCount + 1; i++) {
 		if (i == pwi_page) {
 			navRow.push("<b>[" + (i) + "]</b> ");
 		} else {
