@@ -3,7 +3,7 @@
  * This library was inspired and based on pwa  by Dieter Raber (http://www.gnu.org/copyleft/lesser.html)
  * @name pwi.js
  * @author Jeroen Diderik - http://www.multiprof.nl
- * @version 0.2
+ * @version 0.3
  * @date March 27, 2008
  * @copyright (c) 2008 Jeroen Diderik(www.multiprof.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
@@ -282,6 +282,7 @@ $(document).ready(function() {
 //$Update: November 19, 2007, Jeroen Diderik, PWI vars update$
 //$Update: March 25, 2008, Jeroen Diderik, rewrite to replace MOOTools with  jQuery$
 //$Update: April 05, 2008, Jeroen Diderik, rewrite for early release$
+//$Update: August 09, 2008, Jeroen Diderik, Fix for IE in Album-link and fix for Pagecount$
 
 /*
 TOD0: photo details
