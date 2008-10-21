@@ -1,10 +1,10 @@
 /**
  * Picasa Webalbum Integration Library
- * This library was inspired and based on pwa  by Dieter Raber (http://www.gnu.org/copyleft/lesser.html)
- * @name pwi.js
+ * This library was inspired and based on pwa by Dieter Raber (http://www.gnu.org/copyleft/lesser.html)
+ * @name pwi-0.2.js
  * @author Jeroen Diderik - http://www.multiprof.nl
- * @version 0.3
- * @date March 27, 2008
+ * @version 0.4
+ * @date October 21, 2008
  * @copyright (c) 2008 Jeroen Diderik(www.multiprof.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @example Visit http://www.multiprof.nl/ for more informations about this library
@@ -19,6 +19,14 @@ var pwi_cols = 6; // distribute thumbs on albumphotos page over x collums
 var pwi_maxresults = 24; //maximum of pictures on albumphotos page
 var pwi_maxalbums = 6; //maximum of pictures on albumphotos page
 var pwi_container_div = "#container";
+
+// NEW IN VERSION 0.4 !!!
+var pwi_album_only = ""; //setup without a specific alnum, choose an album and take the number from the url between "#" and the last "/1"
+
+
+//obsolete, untill this will be implemented
+var pwi_show_albumtitles = true;
+var pwi_show_phototitles = true;
 
 
 // ****  DONT CHANGE BELOW UNLESS YOU KNOW WHAT YOU ARE DOING ****
@@ -148,7 +156,12 @@ function albums(j) { //returns the list of all albums for the user
 	}
 	scAlbums.push("</tr></table></center>");
 	pwi_storage_albums = scAlbums.toString();
-	show(false, pwi_storage_albums);
+	
+	if(pwi_album_only.length > 0){
+			getAlbum(pwi_album_only,1);
+	}else{
+		show(false, pwi_storage_albums);
+	}
 }
 
 function album(j) { //returns all photos in a specific album
@@ -165,8 +178,10 @@ function album(j) { //returns all photos in a specific album
 	var len = j.feed.entry.length;
 	pwi_currAlbumTitle = j.feed.title.$t;
 
-	scPhotos.push("<center><table border=0><tr>");
-	scPhotos.push("<tr><td colspan='" + pwi_cols + "'><a class='standard' href='javascript:void(0)' onclick='$.historyLoad(\"\");'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
+	scPhotos.push("<center><table border=0><tr><td colspan='" + pwi_cols + "'>");
+	if(!pwi_album_only.length>0){
+		scPhotos.push("<a class='standard' href='javascript:void(0)' onclick='$.historyLoad(\"\");'><<< Albums</a> &gt; " + j.feed.title.$t + "<br/>");
+	};
 	scPhotos.push("<blockquote><div style='margin-left:3px'><h4>" + j.feed.title.$t + "</h4></div>");
 	scPhotos.push("<div style='margin-left:3px'><i>" + np + " photo" + item_plural + ", " + album_date + ", " + loc + "</i></div>");
 	scPhotos.push("<div style='margin-left:3px'><b>" + desc + "</b></div>");
@@ -263,7 +278,7 @@ function show(loading, data) {
 
 $(document).ready(function() {
 	if(pwi_username == "your_picasa_username"){
-		alert('Open the pwi.js and change content \nof the variable pwi_username in the top of the file\nto your Picasa Webalbum name');
+		alert('Open the pwi-0.2.js and change content \nof the variable pwi_username in the top of the file\nto your Picasa Webalbum name');
 	}else{
 		$.extend($.blockUI.defaults.overlayCSS, {
 			backgroundColor: '#000'
@@ -271,7 +286,7 @@ $(document).ready(function() {
 		$.ajaxSetup({
 			cache: true
 		});
-		$.historyInit(fromHistory);
+			$.historyInit(fromHistory);
 	}
 });
 
@@ -282,7 +297,8 @@ $(document).ready(function() {
 //$Update: November 19, 2007, Jeroen Diderik, PWI vars update$
 //$Update: March 25, 2008, Jeroen Diderik, rewrite to replace MOOTools with  jQuery$
 //$Update: April 05, 2008, Jeroen Diderik, rewrite for early release$
-//$Update: August 09, 2008, Jeroen Diderik, Fix for IE in Album-link and fix for Pagecount$
+//$update: October 21, 2008, Jeroen Diderik, added ALBUM_ONLY option
+
 
 /*
 TOD0: photo details
