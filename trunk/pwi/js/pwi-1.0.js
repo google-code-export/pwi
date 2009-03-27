@@ -13,7 +13,7 @@
 
 //Global user variables to set (CHANGE TO WHAT YOU WANT IT TO BE)
 var pwi_username = "YOUR_PICASA_NAME"; 			//Your username at Picasa WebAlbums
-var pwi_container_div = "container"; 	//Specifiy the id of the div (with a # infront) in which the albums should be loaded inside your html/template/...
+var pwi_container_div = "container"; 	//Specifiy the id of the div in which the albums should be loaded inside your html/template/...
 var pwi_album_only = ""; 				//setup with ONE specific album only, choose an album and take the name from the url between "#" and the last "/1"
 var pwi_photosize = 800; 				//Supported sizes: 200, 288, 320, 400, 512, 576, 640, 720, 800 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
 var pwi_thumbsize = 160; 				//supported sizes: 32, 48, 64, 72, 144, 160 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
