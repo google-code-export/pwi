@@ -14,15 +14,18 @@
 //Global user variables to set (CHANGE TO WHAT YOU WANT IT TO BE)
 var pwi_username = "YOUR_PICASA_NAME"; 			//Your username at Picasa WebAlbums
 var pwi_container_div = "container"; 	//Specifiy the id of the div in which the albums should be loaded inside your html/template/...
-var pwi_album_only = ""; 				//setup with ONE specific album only, choose an album and take the name from the url between "#" and the last "/1"
+var pwi_album_only = "";				//setup with ONE specific album only, choose an album and take the name from the url between "#" and the last "/1"
+var pwi_album_thumbsize = 160;			//supported sizes: 32, 48, 64, 72, 144, 160 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
+var pwi_album_crop = 1;					// 1 = crop to thumbsize, making them square, or 0 = keep original aspect ratio making the thumbsize the max width and height
 var pwi_photosize = 800; 				//Supported sizes: 200, 288, 320, 400, 512, 576, 640, 720, 800 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
-var pwi_thumbsize = 160; 				//supported sizes: 32, 48, 64, 72, 144, 160 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
-var pwi_photo_cropthumb = 1; 			// 1 = crop to thumbsize, making them square, or 0 = keep original aspect ratio making the thumbsize the max width and height
-var pwi_maxresults = 50; 				//pictures per page
+var pwi_thumbsize = 72; 				//supported sizes: 32, 48, 64, 72, 144, 160 (http://code.google.com/apis/picasaweb/reference.html#Parameters)
+var pwi_photo_crop = 0; 				// 1 = crop to thumbsize, making them square, or 0 = keep original aspect ratio making the thumbsize the max width and height
+var pwi_maxresults = 999; 				//pictures per page
 
 //Album and Photo details to show or not
 var pwi_show_albumtitles = true;
 var pwi_show_albumdate = true;
+var pwi_show_albumphotocount = true;
 var pwi_show_albumdescription = true;
 var pwi_show_albumlocation = true;
 var pwi_show_slideshowlink = true;
@@ -156,9 +159,10 @@ function albums(j) { //returns the list of all albums for the user
 	for (var i = 0; i < j.feed.entry.length; i++) {
 		var id_base = j.feed.entry[i].gphoto$name.$t;
 		var album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t);
-		scAlbums.push("<div class='pwi_album' style='height:auto;'><a class='standard' href='javascript:void(0)' onclick='javascript:$.historyLoad(\"" + id_base + "/1\")'>");
-		scAlbums.push("<img src='" + j.feed.entry[i].media$group.media$thumbnail[0].url + "?imgmax=" + pwi_thumbsize + "&crop=" + pwi_photo_cropthumb + "'/></a>");
-		scAlbums.push("<br><a href='javascript:void(0)' onclick='javascript:$.historyLoad(\"" + id_base + "/1\")'>" + (pwi_show_albumdate ? j.feed.entry[i].title.$t: "") + "</a><br/>" + album_date + "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " photos</center>");
+		var thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/");
+		scAlbums.push("<div class='pwi_album' style='height:"+pwi_album_thumbsize+"px;'><a class='standard' href='javascript:void(0)' onclick='javascript:$.historyLoad(\"" + id_base + "/1\")' title='"+j.feed.entry[i].title.$t+"'>");
+		scAlbums.push("<img src='" + thumb + "?imgmax=" + pwi_album_thumbsize + "&crop=" + pwi_album_crop + "'/></a><br>");
+		pwi_show_albumtitles ? scAlbums.push("<a href='javascript:void(0)' onclick='javascript:$.historyLoad(\"" + id_base + "/1\")'>" + j.feed.entry[i].title.$t + "</a><br/>" + (pwi_show_albumdate ? album_date : "") + ( pwi_show_albumphotocount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " "+ pwi_labels["photos"] : "")) : false;
 		scAlbums.push("</div>");
 	}
 	scAlbums.push("<div style='clear: both;height:0px;'> </div>");
@@ -224,7 +228,7 @@ function album(j) { //returns all photos in a specific album
 		var d = dt + " " + c.replace(new RegExp("'", "g"), "&#39;");
 		scPhotos.push("<div class='pwi_photo' style='height:" + pwi_thumbsize + "px;'>");
 		scPhotos.push("<a href='" + img_base + "?imgmax=" + pwi_photosize + "' rel='lightbox-photo' title='" + d + "'>");
-		scPhotos.push("<img src='" + img_base + "?imgmax=" + pwi_thumbsize + "&crop=" + pwi_photo_cropthumb + "'/></a>");
+		scPhotos.push("<img src='" + img_base + "?imgmax=" + pwi_thumbsize + "&crop=" + pwi_photo_crop + "'/></a>");
 		scPhotos.push("</div>");
 	}
 	scPhotos.push(navRow);
