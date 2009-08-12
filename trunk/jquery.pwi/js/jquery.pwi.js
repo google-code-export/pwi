@@ -1,16 +1,16 @@
-(function($){
 /**
  * Picasa Webalbum Integration jQuery plugin
  * This library was inspired aon pwa by Dieter Raber
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.multiprof.nl/
- * @revision 1.0.30
+ * @revision 1.0.31
  * @date June 01, 2009
  * @copyright (c) 2009 Jeroen Diderik(www.multiprof.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
  */
  
+(function($){
  	$.fn.pwi = function(options) {
 		var pg;
 		this.each(function() {
@@ -22,7 +22,7 @@
 	};
 
 	$.pwi = {
-		version: "1.0.30",
+		version: "1.0.31",
 		setDefaults: function(options){
 			$.extend(defaults, options);
 		}
@@ -39,21 +39,22 @@
 		albumTitle: "",
 		albumThumbSize: 160,
 		albumMaxResults: 999,
+		albumStartIndex: 1,
 		albumTypes: "public",
 		page: 1,
 		photoSize: 800,
 		maxResults: 50,
 		thumbSize: 72,
 		thumbCrop: 0,
-		thumbCss: {padding: '3px'},
-		thumbClick: "",
+		thumbCss: {'margin' : '5px'},
+		onclickThumb: "",
 		showAlbumTitles: true,
 		showAlbumdate: true,
 		showAlbumPhotoCount: true,
 		showAlbumDescription: true,
 		showAlbumLocation: true,
 		showSlideshowLink: true,
-		showPhotoCaption: true,
+		showPhotoCaption: false,
 		showPhotoDate: true,
 		labels: {photo:"photo",
 				photos: "photos",
@@ -65,6 +66,7 @@
 				next: "Next",
 				devider: "|"
 		},
+		months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
 		slimbox_config: {
 			loop: false,
 			overlayOpacity: 0.6,
@@ -77,7 +79,7 @@
 			captionAnimationDuration: 400,
 			counterText: "{x}/{y}",
 			closeKeys: [27, 88, 67, 70],
-			nextKeys: [37, 80],
+			prevKeys: [37, 80],
 			nextKeys: [39, 83]
 		},
 		blockUIConfig: {
@@ -92,9 +94,10 @@
 
 	$.pwiGallery = function(el, options){
 		
-		var $self, thisgallery = this, settings
+		var $self, thisgallery = this, settings;
 		settings = $.extend({}, defaults, options);
 		$self = $(el);
+		$self.addClass('pwi_container');
 		
 		if(settings.username == ''){
 			alert('Make sure you specify at least your username.'+'\n'+'See http://pwi.googlecode.com for more info');
@@ -104,11 +107,10 @@
 		switch (settings.mode){
 			case 'latest':
 				getLatest();
-			break;
-
+				break;
 			default:
 				$.historyInit(fromHistory);
-			break;
+				break;
 		};
 		
 		function StringCat() {
@@ -150,25 +152,12 @@
 		};
 
 		function formatDate($dt) {
-			var $months = new Array(12),
-				$today = new Date(Number($dt)),
+			var $today = new Date(Number($dt)),
 				$year = $today.getYear();
-			$months[0] = "January";
-			$months[1] = "February";
-			$months[2] = "March";
-			$months[3] = "April";
-			$months[4] = "May";
-			$months[5] = "June";
-			$months[6] = "July";
-			$months[7] = "August";
-			$months[8] = "September";
-			$months[9] = "October";
-			$months[10] = "November";
-			$months[11] = "December";
 			if ($year < 1000) {
 				$year += 1900;
 			};
-			return ($months[($today.getMonth())] + " " + $today.getDate() + ", " + $year);
+			return (settings.months[($today.getMonth())] + " " + $today.getDate() + ", " + $year);
 		};
 
 		function formatDateTime($dt) {
@@ -186,11 +175,13 @@
 				var $id_base = j.feed.entry[i].gphoto$name.$t,
 					$album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t),
 					$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/");
-				$scAlbums.push("<div class='pwi_album'><a class='standard' href='#' onclick='javascript:$.historyLoad(\"" + settings.username + "/" + $id_base + "/1\");return false;' title='"+j.feed.entry[i].title.$t+"'>");
-				$scAlbums.push("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/><br>");
-				settings.showAlbumTitles ? $scAlbums.push("<a href='#' onclick='javascript:$.historyLoad(\"" + settings.username + "/" + $id_base + "/1\");return false;'>" + j.feed.entry[i].title.$t + "</a><br/>" + (settings.showAlbumdate ? $album_date : "") + ( settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " "+ settings.labels.photos : "")) : false;
-				$scAlbums.push("</div>");
-				settings.albums[i] = $id_base;
+				if($.inArray($id_base, settings.albums) > -1 || settings.albums.length==0){
+						
+					$scAlbums.push("<div class='pwi_album'><a class='standard' href='#' onclick='javascript:$.historyLoad(\"" + settings.username + "/" + $id_base + "/1\");return false;' title='"+j.feed.entry[i].title.$t+"'>");
+					$scAlbums.push("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/><br>");
+					settings.showAlbumTitles ? $scAlbums.push("<a href='#' onclick='javascript:$.historyLoad(\"" + settings.username + "/" + $id_base + "/1\");return false;'>" + j.feed.entry[i].title.$t + "</a><br/>" + (settings.showAlbumdate ? $album_date : "") + ( settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " "+ settings.labels.photos : "")) : false;
+					$scAlbums.push("</div>");
+				}
 			};
 			$scAlbums.push("<div style='clear: both;height:0px;'> </div>");
 			settings.albumstore = $scAlbums.toString();
@@ -207,9 +198,7 @@
 				$len = j.feed.entry.length;
 			settings.albumTitle = j.feed.title.$t == "undefined" ? settings.albumTitle : j.feed.title.$t;
 			$scPhotos.push("<div class='pwi_album_description'>");
-			if (settings.mode != 'album') {
-				$scPhotos.push("<a href='#' onclick='$.historyLoad(\"\");return false;'>" + settings.labels.albums + "</a> &gt; " + settings.albumTitle + "<br/>");
-			};
+			if (settings.mode != 'album') $scPhotos.push("<a href='#' onclick='$.historyLoad(\"\");return false;'>" + settings.labels.albums + "</a> &gt; " + settings.albumTitle + "<br/>");
 			if (settings.showAlbumDescription) {
 				$scPhotos.push("<div class='title'>" + settings.albumTitle + "</div>");
 				$scPhotos.push("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date: "") + (settings.showAlbumLocation && $loc ? ", " + $loc: "") + "</div>");
@@ -242,23 +231,25 @@
 			for (var i = 0; i < $len; i++) {
 				var $img_base = j.feed.entry[i].content.src,
 					$id_base = j.feed.entry[i].gphoto$id.$t,
-					$c = settings.showPhotoCaption ? (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t: "") : "",
+					$c = (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t: ""),
 					$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].published.$t) : "",
 					$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
-				$scPhotos.push("<div class='pwi_photo' style='height:" + settings.thumbSize + "px;'>");
+				$scPhotos.push("<div class='pwi_photo' style='height:" + (settings.thumbSize+1) + "px;'>");
 				$scPhotos.push("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-"+settings.username+"' title='" + $d + "'>");
 				$scPhotos.push("<img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
+				if(settings.showPhotoCaption) $scPhotos.push("<br/>"+$c);
 				$scPhotos.push("</div>");
-			};
+		};
 			$scPhotos.push($navRow);
 			$scPhotos.push("<div style='clear: both;height:0px;'> </div>"); 
 			settings.photostore = $scPhotos.toString();
 			show(false, settings.photostore);
 
-			var $s = $("div.pwi_photo").css(settings.thumbCss);
+			var $s = $(".pwi_photo");
+			$s.css(settings.thumbCss);
 			if(typeof(settings.onclickThumb) != "function" && $.slimbox){
 				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
-			}else{
+			}else if(typeof(settings.onclickThumb) == "function"){
 				$s.find("a[rel='lb-"+settings.username+"']").bind('click',clickThumb);
 			}
 		};
@@ -273,9 +264,10 @@
 					$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].published.$t) : "",
 					$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
 				
-				$scPhotos.push("<div class='pwi_photo' style='height:" + settings.thumbSize + "px;'>");
+				$scPhotos.push("<div class='pwi_photo' >");
 				$scPhotos.push("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-"+settings.username+"' title='" + $d + "'>");
 				$scPhotos.push("<img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
+				$scPhotos.push("<br/>"+$c);
 				$scPhotos.push("</div>");
 			}
 			$scPhotos.push("<div style='clear: both;height:0px;'> </div>");
@@ -285,7 +277,7 @@
 			var $s = $("div.pwi_photo").css(settings.thumbCss);
 			if(typeof(settings.onclickThumb) != "function" && $.slimbox){
 				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
-			}else{
+			}else if(typeof(settings.onclickThumb) == "function"){
 				$s.find("a[rel='lb-"+settings.username+"']").bind('click',clickThumb);
 			}
 		};
@@ -323,12 +315,17 @@
 
 		function fromHistory($hash) {
 			if ($hash) {
-				if ($hash.indexOf("/") > 0) {
+				if ($hash.split("/").length > 2) {
 					settings.username = $hash.split("/")[0];
 					settings.album = $hash.split("/")[1];
 					settings.page = $hash.split("/")[2];
 					getAlbum();
+				}else if ($hash.split("/").length > 1) {
+					settings.album = $hash.split("/")[0];
+					settings.page = $hash.split("/")[1];
+					getAlbum();
 				};
+	;
 			}else if(settings.album != '' && settings.mode == 'album'){
 				getAlbum();
 			}else{
@@ -338,9 +335,10 @@
 
 		function show(loading, data) {
 			if (loading) {
-				$self.block(settings.blockUIConfig);
+				if($.blockUI) $self.block(settings.blockUIConfig);
 			} else {
-				$self.unblock().html(data); //.fadeIn('fast');
+				if($.blockUI) $self.unblock();
+				$self.html(data);
 			};
 		};
 	};
