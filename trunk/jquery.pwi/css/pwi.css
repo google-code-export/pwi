@@ -1,28 +1,24 @@
 .pwi_loader{
-	height: 80px;
-	width: auto;
-	border: 2px solid #7F7F7F;
+	height: 60px;
+	width: 200;
+	border: 1px solid #7F7F7F;
 }
 
 .pwi_container{
-	color: #FFFFFF;
-	background-color: #000000;
+	color: #000000;
+	background-color: #FFFFFF;
 	font-family: Arial;
 	font-size: 8pt;
 	padding: 5px;
 }
 
 .pwi_container a{
-	color: #FFFFFF;
-}
-
-.pwi_albums{
-
+	color: #000000;
 }
 
 .pwi_album_description{
 	text-align: left;
-	color: #FFFFFF;
+	color: #000000;
 	font-family: Arial;
 	font-size: 8pt;
 	background-color: #7F7F7F;
@@ -30,11 +26,13 @@
 
 }
 .pwi_album_description .title{
+	color: #000000;
 	font-size: 12pt;
 	margin-top: 10px;
 
 }
 .pwi_album_description .details{
+	color: #000000;
 	font-size: 8pt;
 	font-style: italic;
 }
@@ -48,21 +46,22 @@
 
 .pwi_album{
 	float: left;
-	padding: 0.5em;
+	margin: 1em;
 	text-align: center;
-	color: #7F7F7F;
+	color: #000000;
 }
 .pwi_album img{
-	border: 1px solid #7F7F7F;
+	border: 0px solid #7F7F7F;
 }
 
 .pwi_photo{
 	float: left;
-	padding: 0.5em;
+	margin: 1em;
 	text-align: center;
+	border: 0px dotted white;
 }
 .pwi_photo img{
-	border: 1px solid #7F7F7F;
+	border: 0px solid #7F7F7F;
 }
 
 .pwi_pager{
