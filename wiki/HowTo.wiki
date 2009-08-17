@@ -10,7 +10,7 @@ Well, first get the correct files on your server:
   * unzip the zipfile in the root of your site (will create a pwi folder)
   * open up the html file you want your gallery in
   * Find a div that has an ID or create one to be the container of your gallery
-  * Add the following code and includes to your header:
+  * Add the following code and [PwiRequirements includes] to your header:
 
 {{{
 
