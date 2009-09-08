@@ -203,7 +203,7 @@
 				$scPhotos.push("<div class='title'>" + settings.albumTitle + "</div>");
 				$scPhotos.push("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date: "") + (settings.showAlbumLocation && $loc ? ", " + $loc: "") + "</div>");
 				$scPhotos.push("<div class='description'>" + $ad + "</div>");
-				if (settings.showSlideshowLink) $scPhotos.push("<a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "/photo#s" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a>");
+				if (settings.showSlideshowLink) $scPhotos.push("<a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + ""  + ((settings.authKey!="") ? "?authkey="+settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a>");
 			};
 			$scPhotos.push("</div>");
 			if ($np > settings.maxResults) {
@@ -212,10 +212,10 @@
 					$npage = settings.labels.devider + " " + settings.labels.next,
 					$navRow = new StringCat();
 				if (settings.page > 1) {
-					$ppage = "<a href='#' onclick='$.historyLoad(\"" + settings.username + "/" + settings.album + "/" + (parseInt(settings.page) - 1) + "\");return false;'>" + settings.labels.prev + "</a> | "
+					$ppage = "<a href='#' onclick='$.historyLoad(\"" + settings.username + "/" + settings.album + "/" + (parseInt(settings.page) - 1) + "\");return false;' id='pwiPrevPage'>" + settings.labels.prev + "</a> | "
 				};
 				if (settings.page < $pageCount) {
-					$npage = "| <a href='#' onclick='$.historyLoad(\"" + settings.username + "/" + settings.album + "/" + (parseInt(settings.page) + 1) + "\");return false;'>" + settings.labels.next + "</a>"
+					$npage = "| <a href='#' onclick='$.historyLoad(\"" + settings.username + "/" + settings.album + "/" + (parseInt(settings.page) + 1) + "\");return false;' id='pwiNextPage'>" + settings.labels.next + "</a>"
 				};
 				$navRow.push("<div class='pwi_pager'>" + $ppage + settings.labels.page + " ");
 				for (var i = 1; i < $pageCount + 1; i++) {
