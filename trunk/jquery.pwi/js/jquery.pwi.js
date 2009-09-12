@@ -126,7 +126,7 @@
 					} else {
 						tmp = $("<div class='pwi_pager_page'>" + i + "</div>").bind('click.pwi', i, function (e) {
 							e.stopPropagation();
-							settings.page = e.i;
+							settings.page = e.data;
 							getAlbum();
 							return false
 						});
