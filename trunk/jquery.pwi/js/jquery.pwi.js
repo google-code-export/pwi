@@ -3,8 +3,8 @@
  * This library was inspired aon pwa by Dieter Raber
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.multiprof.nl/
- * @revision 1.0.48
- * @date September 08, 2009
+ * @revision 1.1.00
+ * @date September 12, 2009
  * @copyright (c) 2009 Jeroen Diderik(www.multiprof.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
@@ -22,11 +22,13 @@
 	};
 
 	$.pwi = {
-		version: "1.0.31",
+		version: "1.1.00",
 		setDefaults: function(options){
 			$.extend(defaults, options);
 		}
 	};
+	
+	//var onclickfn = function(){};
 
 	// set default options
 	var defaults = {
@@ -48,6 +50,7 @@
 		thumbCrop: 0,
 		thumbCss: {'margin' : '5px'},
 		onclickThumb: "",
+		popupExt: "",
 		showAlbumTitles: true,
 		showAlbumdate: true,
 		showAlbumPhotoCount: true,
@@ -96,6 +99,7 @@
 		
 		var $self, thisgallery = this, settings;
 		settings = $.extend({}, defaults, options);
+	
 		$self = $(el);
 		$self.addClass('pwi_container');
 		
@@ -109,7 +113,12 @@
 				getLatest();
 				break;
 			default:
-				$.historyInit(fromHistory);
+				if(typeof($.historyInit) === 'function'){
+					$.historyInit(fromHistory);
+				}else{
+					alert('The History plugin wasn\'t found, PWI depends on it, make sure you include it in your page.');
+					return;
+				};
 				break;
 		};
 		
@@ -239,18 +248,20 @@
 				$scPhotos.push("<img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
 				if(settings.showPhotoCaption) $scPhotos.push("<br/>"+$c);
 				$scPhotos.push("</div>");
-		};
+			}
+			
 			$scPhotos.push($navRow);
 			$scPhotos.push("<div style='clear: both;height:0px;'> </div>"); 
 			settings.photostore = $scPhotos.toString();
 			show(false, settings.photostore);
 
-			var $s = $(".pwi_photo");
-			$s.css(settings.thumbCss);
-			if(typeof(settings.onclickThumb) != "function" && $.slimbox){
-				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
-			}else if(typeof(settings.onclickThumb) == "function"){
+			var $s = $(".pwi_photo").css(settings.thumbCss);
+			if(typeof(settings.popupExt) === "function"){
+				settings.popupExt($s.find("a[rel='lb-"+settings.username+"']"));
+			}else if(typeof(settings.onclickThumb) === "function"){
 				$s.find("a[rel='lb-"+settings.username+"']").bind('click',clickThumb);
+			}else if(typeof(settings.onclickThumb) != "function" && $.slimbox){
+				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
 			}
 		};
 		
@@ -275,10 +286,12 @@
 			show(false, $scPhotos.toString());
 
 			var $s = $("div.pwi_photo").css(settings.thumbCss);
-			if(typeof(settings.onclickThumb) != "function" && $.slimbox){
-				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
-			}else if(typeof(settings.onclickThumb) == "function"){
+			if(typeof(settings.popupExt) === "function"){
+				settings.popupExt($s.find("a[rel='lb-"+settings.username+"']"));
+			}else if(typeof(settings.onclickThumb) === "function"){
 				$s.find("a[rel='lb-"+settings.username+"']").bind('click',clickThumb);
+			}else if(typeof(settings.onclickThumb) != "function" && $.slimbox){
+				$s.find("a[rel='lb-"+settings.username+"']").slimbox(settings.slimbox_config);
 			}
 		};
 		
@@ -325,7 +338,6 @@
 					settings.page = $hash.split("/")[1];
 					getAlbum();
 				};
-	;
 			}else if(settings.album != '' && settings.mode == 'album'){
 				getAlbum();
 			}else{
