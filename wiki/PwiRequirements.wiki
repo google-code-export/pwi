@@ -6,7 +6,6 @@
 This library uses some other library's.
 
   * jQuery v1.3.2 (mandatory.. duh, we are a jQuery plugin)
-  * jQuery history plugin (mandatory, source: http://www.mikage.to/jquery/jquery_history.html)
 
   * jQuery blockUI plugin (optional, source: http://malsup.com/jquery/block/)
   * jQuery slimbox2 plugin (optional, source: http://www.digitalia.be/software/slimbox2)
