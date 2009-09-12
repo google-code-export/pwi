@@ -10,4 +10,159 @@
  * Modified by Lincoln Cooper to add Safari support and only call the callback once during initialization
  * for msie when no initial hash supplied.
  */
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('2.P({8:n,5:n,K:l(a){2.5=a;3 b=9.7;2.8=b;4(2.h.u){4(2.8==\'\'){2.8=\'#\'}$("Z").X(\'<D W="m" T="S: O;"></D>\');3 c=$("#m")[0];3 d=c.r.k;d.C();d.F();d.9.7=b}f 4($.h.q){2.6=[];2.6.g=E.g;2.p=[];2.j=o}2.5(b.t(/^#/,\'\'));V(2.B,U)},A:l(a){2.6.z(a);2.p.g=0;y.j=o},B:l(){4(2.h.u){3 a=$("#m")[0];3 b=a.R||a.r.k;3 c=b.9.7;4(c!=2.8){9.7=c;2.8=c;2.5(c.t(/^#/,\'\'))}}f 4($.h.q){4(!2.s){3 d=E.g-2.6.g;4(d){2.j=x;4(d<0){w(3 i=0;i<N.M(d);i++)2.p.L(2.6.Q())}f{w(3 i=0;i<d;i++)2.6.z(2.p.J())}3 e=2.6[2.6.g-1];4(e!=n){2.8=9.7;2.5(e)}}f 4(2.6[2.6.g-1]==n&&!2.j){4(k.v.I(\'#\')>=0){2.5(k.v.H(\'#\')[1])}f{3 c=9.7;2.5(\'\')}2.j=o}}}f{3 c=9.7;4(c!=2.8){2.8=c;2.5(c.t(/^#/,\'\'))}}},G:l(a){3 b;4(2.h.q){b=a}f{b=\'#\'+a;9.7=b}2.8=b;4(2.h.u){3 c=$("#m")[0];3 d=c.r.k;d.C();d.F();d.9.7=b;2.5(a)}f 4(2.h.q){2.s=o;y.A(a);3 e=l(){2.s=x};Y.10(e,11);2.5(a);9.7=b}f{2.5(a)}}});',62,64,'||jQuery|var|if|historyCallback|historyBackStack|hash|historyCurrentHash|location||||||else|length|browser||isFirst|document|function|jQuery_history|undefined|true|historyForwardStack|safari|contentWindow|dontCheck|replace|msie|URL|for|false|this|push|historyAddHistory|historyCheck|open|iframe|history|close|historyLoad|split|indexOf|shift|historyInit|unshift|abs|Math|none|extend|pop|contentDocument|display|style|100|setInterval|id|prepend|window|body|setTimeout|200'.split('|'),0,{}))
+
+
+jQuery.extend({
+	historyCurrentHash: undefined,
+	historyCallback: undefined,
+	historyIframeSrc: undefined,
+	
+	historyInit: function(callback, src){
+		jQuery.historyCallback = callback;
+		if (src) jQuery.historyIframeSrc = src;
+		var current_hash = location.hash.replace(/\?.*$/, '');
+		
+		jQuery.historyCurrentHash = current_hash;
+		// if ((jQuery.browser.msie) && (jQuery.browser.version < 8)) {
+		if (jQuery.browser.msie) {
+			// To stop the callback firing twice during initilization if no hash present
+			if (jQuery.historyCurrentHash == '') {
+			jQuery.historyCurrentHash = '#';
+		}
+		
+			// add hidden iframe for IE
+			jQuery("body").prepend('<iframe id="jQuery_history" style="display: none;"'+
+				(jQuery.historyIframeSrc ? ' src="'+jQuery.historyIframeSrc+'"' : '')
+				+'></iframe>'
+			);
+			var ihistory = jQuery("#jQuery_history")[0];
+			var iframe = ihistory.contentWindow.document;
+			iframe.open();
+			iframe.close();
+			iframe.location.hash = current_hash;
+		}
+		else if (jQuery.browser.safari) {
+			// etablish back/forward stacks
+			jQuery.historyBackStack = [];
+			jQuery.historyBackStack.length = history.length;
+			jQuery.historyForwardStack = [];
+			jQuery.lastHistoryLength = history.length;
+			
+			jQuery.isFirst = true;
+		}
+		if(current_hash)
+			jQuery.historyCallback(current_hash.replace(/^#/, ''));
+		setInterval(jQuery.historyCheck, 100);
+	},
+	
+	historyAddHistory: function(hash) {
+		// This makes the looping function do something
+		jQuery.historyBackStack.push(hash);
+		
+		jQuery.historyForwardStack.length = 0; // clear forwardStack (true click occured)
+		this.isFirst = true;
+	},
+	
+	historyCheck: function(){
+		// if ((jQuery.browser.msie) && (jQuery.browser.version < 8)) {
+		if (jQuery.browser.msie) {
+			// On IE, check for location.hash of iframe
+			var ihistory = jQuery("#jQuery_history")[0];
+			var iframe = ihistory.contentDocument || ihistory.contentWindow.document;
+			var current_hash = iframe.location.hash.replace(/\?.*$/, '');
+			if(current_hash != jQuery.historyCurrentHash) {
+			
+				location.hash = current_hash;
+				jQuery.historyCurrentHash = current_hash;
+				jQuery.historyCallback(current_hash.replace(/^#/, ''));
+				
+			}
+		} else if (jQuery.browser.safari) {
+			if(jQuery.lastHistoryLength == history.length && jQuery.historyBackStack.length > jQuery.lastHistoryLength) {
+				jQuery.historyBackStack.shift();
+			}
+			if (!jQuery.dontCheck) {
+				var historyDelta = history.length - jQuery.historyBackStack.length;
+				jQuery.lastHistoryLength = history.length;
+				
+				if (historyDelta) { // back or forward button has been pushed
+					jQuery.isFirst = false;
+					if (historyDelta < 0) { // back button has been pushed
+						// move items to forward stack
+						for (var i = 0; i < Math.abs(historyDelta); i++) jQuery.historyForwardStack.unshift(jQuery.historyBackStack.pop());
+					} else { // forward button has been pushed
+						// move items to back stack
+						for (var i = 0; i < historyDelta; i++) jQuery.historyBackStack.push(jQuery.historyForwardStack.shift());
+					}
+					var cachedHash = jQuery.historyBackStack[jQuery.historyBackStack.length - 1];
+					if (cachedHash != undefined) {
+						jQuery.historyCurrentHash = location.hash.replace(/\?.*$/, '');
+						jQuery.historyCallback(cachedHash);
+					}
+				} else if (jQuery.historyBackStack[jQuery.historyBackStack.length - 1] == undefined && !jQuery.isFirst) {
+					// back button has been pushed to beginning and URL already pointed to hash (e.g. a bookmark)
+					// document.URL doesn't change in Safari
+					if (location.hash) {
+						var current_hash = location.hash;
+						jQuery.historyCallback(location.hash.replace(/^#/, ''));
+					} else {
+						var current_hash = '';
+						jQuery.historyCallback('');
+					}
+					jQuery.isFirst = true;
+				}
+			}
+		} else {
+			// otherwise, check for location.hash
+			var current_hash = location.hash.replace(/\?.*$/, '');
+			if(current_hash != jQuery.historyCurrentHash) {
+				jQuery.historyCurrentHash = current_hash;
+				jQuery.historyCallback(current_hash.replace(/^#/, ''));
+			}
+		}
+	},
+	historyLoad: function(hash){
+		var newhash;
+		hash = decodeURIComponent(hash.replace(/\?.*$/, ''));
+		
+		if (jQuery.browser.safari) {
+			newhash = hash;
+		}
+		else {
+			newhash = '#' + hash;
+			location.hash = newhash;
+		}
+		jQuery.historyCurrentHash = newhash;
+		
+		// if ((jQuery.browser.msie) && (jQuery.browser.version < 8)) {
+		if (jQuery.browser.msie) {
+			var ihistory = jQuery("#jQuery_history")[0];
+			var iframe = ihistory.contentWindow.document;
+			iframe.open();
+			iframe.close();
+			iframe.location.hash = newhash;
+			jQuery.lastHistoryLength = history.length;
+			jQuery.historyCallback(hash);
+		}
+		else if (jQuery.browser.safari) {
+			jQuery.dontCheck = true;
+			// Manually keep track of the history values for Safari
+			this.historyAddHistory(hash);
+			
+			// Wait a while before allowing checking so that Safari has time to update the "history" object
+			// correctly (otherwise the check loop would detect a false change in hash).
+			var fn = function() {jQuery.dontCheck = false;};
+			window.setTimeout(fn, 200);
+			jQuery.historyCallback(hash);
+			// N.B. "location.hash=" must be the last line of code for Safari as execution stops afterwards.
+			//      By explicitly using the "location.hash" command (instead of using a variable set to "location.hash") the
+			//      URL in the browser and the "history" object are both updated correctly.
+			location.hash = newhash;
+		}
+		else {
+		  jQuery.historyCallback(hash);
+		}
+	}
+});
+
+
