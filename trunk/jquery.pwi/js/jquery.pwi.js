@@ -82,30 +82,32 @@
 			show(false, $scAlbums);
 		}
 		function album(j) {
-			var $scPhotos, $np = j.feed.openSearch$totalResults.$t,
+			var $scPhotos, $scPhotosDesc, $np = j.feed.openSearch$totalResults.$t,
 			$loc = j.feed.gphoto$location.$t == "undefined" ? "" : j.feed.gphoto$location.$t,
 			$ad = j.feed.subtitle.$t == "undefined" ? "" : j.feed.subtitle.$t,
 			$album_date = formatDate(j.feed.gphoto$timestamp.$t),
 			$item_plural = ($np == "1") ? false : true,
 			$len = j.feed.entry.length;
 			settings.albumTitle = j.feed.title.$t == "undefined" ? settings.albumTitle : j.feed.title.$t;
-			$scPhotos = $("<div class='pwi_album_description'/>");
+			$scPhotos = $("<div/>");
+			$scPhotosDesc = $("<div class='pwi_album_description'/>");
 			if (settings.mode != 'album') {
 				var tmp = $("<div class='pwi_album_backlink'>" + settings.labels.albums + "</div>").bind('click.pwi', function (e) {
 					e.stopPropagation();
 					getAlbums();
 					return false;
 				});
-				$scPhotos.append(tmp);
+				$scPhotosDesc.append(tmp);
 			}
 			if (settings.showAlbumDescription) {
-				$scPhotos.append("<div class='title'>" + settings.albumTitle + "</div>");
-				$scPhotos.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
-				$scPhotos.append("<div class='description'>" + $ad + "</div>");
+				$scPhotosDesc.append("<div class='title'>" + settings.albumTitle + "</div>");
+				$scPhotosDesc.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
+				$scPhotosDesc.append("<div class='description'>" + $ad + "</div>");
 				if (settings.showSlideshowLink) {
-					$scPhotos.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey != "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
+					$scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey != "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
 				}
 			};
+			$scPhotos.append($scPhotosDesc);
 			if ($np > settings.maxResults) {
 				$pageCount = ($np / settings.maxResults);
 				var $ppage = $("<div class='pwi_prevpage'/>").text(settings.labels.prev),
