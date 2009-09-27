@@ -13,8 +13,7 @@
 	var elem, opts = {};
 	$.fn.pwi = function (opts) {
 		var $self, settings = {};
-		opts = $.extend({},
-		$.fn.pwi.defaults, opts);
+		opts = $.extend({},	$.fn.pwi.defaults, opts);
 		elem = this;
 		function _initialize() {
 			settings = opts;
@@ -24,9 +23,9 @@
 			$self.addClass('pwi_container');
 			_start();
 			return false;
-		};
+		}
 		function _start() {
-			if (settings.username == '') {
+			if (settings.username === '') {
 				alert('Make sure you specify at least your username.' + '\n' + 'See http://pwi.googlecode.com for more info');
 				return;
 			}
@@ -40,45 +39,51 @@
 			default:
 				getAlbums();
 				break;
-			};
+			}
 		}
 		function formatDate($dt) {
 			var $today = new Date(Number($dt)),
-			$year = $today.getYear();
+			$year = $today.getUTCFullYear();
 			if ($year < 1000) {
 				$year += 1900;
-			};
-			return (settings.months[($today.getMonth())] + " " + $today.getDate() + ", " + $year);
-		};
+			}
+			return (settings.months[($today.getUTCMonth())] + " " + $today.getUTCDate() + ", " + $year);
+		}
 		function formatDateTime($dt) {
-			var $today = new Date(Number($dt)),
-			$year = $today.getYear();
+			var $today = new Date(Number($dt));
+			$year = $today.getUTCFullYear();
 			if ($year < 1000) {
-				$year += 1900
-			};
-			return ($today.getDate() + "-" + ($today.getMonth() + 1) + "-" + $year + " " + $today.getHours() + ":" + ($today.getMinutes() < 10 ? "0" + $today.getMinutes() : $today.getMinutes()));
-		};
+				$year += 1900;
+			}
+			return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+		}
 		function albums(j) {
 			var $scAlbums = $("<div/>");
 			for (var i = 0; i < j.feed.entry.length; i++) {
 				var $id_base = j.feed.entry[i].gphoto$name.$t,
 				$album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t),
-				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/"),
-				$scAlbum;
-				if ($.inArray($id_base, settings.albums) > -1 || settings.albums.length == 0) {
-					$scAlbum = $("<div class='pwi_album'/>").bind('click.pwi', $id_base, function (e) {
+				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/");
+				if ($.inArray($id_base, settings.albums) > -1 || settings.albums.length === 0) {
+					$scAlbum = $("<div class='pwi_album'/>");
+					$scAlbum.bind('click.pwi',  $id_base, function(e){
 						e.stopPropagation();
 						settings.page = 1;
 						settings.album = e.data;
-						getAlbum();
-						return false;
+						if(typeof(settings.onclickAlbumThumb) === "function"){
+							settings.onclickAlbumThumb(e, settings);
+							return false;
+						}else{
+							getAlbum();
+							return false;
+						}
 					});
 					$scAlbum.append("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/>");
 					settings.showAlbumTitles ? $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? $album_date : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : "")) : false;
 					$scAlbums.append($scAlbum);
 				}
-			};
+			}
 			$scAlbums.append("<div style='clear: both;height:0px;'/>");
+			settings.albumstore = j;
 			show(false, $scAlbums);
 		}
 		function album(j) {
@@ -88,7 +93,7 @@
 			$album_date = formatDate(j.feed.gphoto$timestamp.$t),
 			$item_plural = ($np == "1") ? false : true,
 			$len = j.feed.entry.length;
-			settings.albumTitle = j.feed.title.$t == "undefined" ? settings.albumTitle : j.feed.title.$t;
+			settings.albumTitle = j.feed.title.$t === "undefined" ? settings.albumTitle : j.feed.title.$t;
 			$scPhotos = $("<div/>");
 			$scPhotosDesc = $("<div class='pwi_album_description'/>");
 			if (settings.mode != 'album') {
@@ -106,7 +111,7 @@
 				if (settings.showSlideshowLink) {
 					$scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey != "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
 				}
-			};
+			}
 			$scPhotos.append($scPhotosDesc);
 			if ($np > settings.maxResults) {
 				$pageCount = ($np / settings.maxResults);
@@ -120,7 +125,7 @@
 						getAlbum();
 						return false;
 					});
-				};
+				}
 				$navRow.append($ppage);
 				for (var i = 1; i < $pageCount + 1; i++) {
 					if (i == settings.page) {
@@ -132,9 +137,9 @@
 							getAlbum();
 							return false
 						});
-					};
+					}
 					$navRow.append(tmp);
-				};
+				}
 				if (settings.page < $pageCount) {
 					$npage.addClass('link').bind('click.pwi', function (e) {
 						e.stopPropagation();
@@ -142,24 +147,26 @@
 						getAlbum();
 						return false
 					});
-				};
+				}
 				$navRow.append($npage);
 				$scPhotos.append($navRow);
-			};
+			}
 			for (var i = 0; i < $len; i++) {
 				var $img_base = j.feed.entry[i].content.src,
 				$id_base = j.feed.entry[i].gphoto$id.$t,
 				$c = (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t : ""),
-				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].published.$t) : "",
+				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].gphoto$timestamp.$t) : "",
 				$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
 				$scPhoto = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
 				$scPhoto.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
-				if (settings.showPhotoCaption) $scPhoto.append("<br/>" + $c);
+				if(settings.showPhotoDownload){$c += "";}
+				if (settings.showPhotoCaption){ $scPhoto.append("<br/>" + $c);}
 				$scPhotos.append($scPhoto);
 			}
 			$scPhotos.append($navRow);
 			$scPhotos.append("<div style='clear: both;height:0px;'/>");
-			settings.photostore = $scPhotos;
+			//settings.photostore = $scPhotos;
+			settings.photostore[settings.album] = j;
 			var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
 			if (typeof(settings.popupExt) === "function") {
 				settings.popupExt($s.find("a[rel='lb-" + settings.username + "']"));
@@ -168,8 +175,8 @@
 			} else if (typeof(settings.onclickThumb) != "function" && $.slimbox) {
 				$s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config);
 			}
-			show(false, settings.photostore);
-		};
+			show(false, $scPhotos);
+		}
 		function latest(j) {
 			var $scPhotos = $("<div/>"),
 			$len = j.feed.entry.length ? j.feed.entry.length : 0;
@@ -177,7 +184,7 @@
 				var $img_base = j.feed.entry[i].content.src,
 				$id_base = j.feed.entry[i].gphoto$id.$t,
 				$c = settings.showPhotoCaption ? (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t : "") : "",
-				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].published.$t) : "",
+				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].gphoto$timestamp.$t) : "",
 				$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
 				$scPhoto = $("<div class='pwi_photo' >");
 				$scPhoto.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
@@ -194,43 +201,51 @@
 				$s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config);
 			}
 			show(false, $scPhotos);
-		};
+		}
+		function clickAlbumThumb(ref){
+			settings.onclickAlbumThumb(ref);
+			return false;
+		}
 		function clickThumb() {
 			settings.onclickThumb.call(this);
 			return false;
-		};
+		}
 		function getAlbums() {
-			if (settings.albumstore != "") {
-				show(false, settings.albumstore);
+			if (settings.albumstore.feed) {
+				albums(settings.albumstore);
 			} else {
 				show(true, '');
 				var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&max-results=' + settings.albumMaxResults + '&access=' + settings.albumTypes + '&alt=json';
 				$.getJSON($url, 'callback=?', albums);
-			};
+			}
 			return $self;
-		};
+		}
 		function getAlbum() {
-			var $si = ((settings.page - 1) * settings.maxResults) + 1,
-			$url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&max-results=' + settings.maxResults + '&start-index=' + $si + '&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
-			show(true, '');
-			$.getJSON($url, 'callback=?', album);
+			if (settings.photostore[settings.album]) {
+				album(settings.photostore[settings.album]);
+			} else {
+				var $si = ((settings.page - 1) * settings.maxResults) + 1,
+				$url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&max-results=' + settings.maxResults + '&start-index=' + $si + '&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+				show(true, '');
+				$.getJSON($url, 'callback=?', album);
+			}
 			return $self;
-		};
+		}
 		function getLatest() {
-			show(true, '');
+			show(true, ''); 
 			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
 			$.getJSON($url, 'callback=?', latest);
 			return $self;
-		};
+		}
 		function show(loading, data) {
 			if (loading) {
 				if ($.blockUI) $self.block(settings.blockUIConfig);
 			} else { if ($.blockUI) $self.unblock();
 				$self.html(data);
-			};
-		};
+			}
+		}
 		_initialize();
-	};
+	}
 	$.fn.pwi.defaults = {
 		mode: 'albums',
 		username: '',
@@ -252,6 +267,7 @@
 			'margin': '5px'
 		},
 		onclickThumb: "",
+		onclickAlbumThumb: "",
 		popupExt: "",
 		showAlbumTitles: true,
 		showAlbumdate: true,
@@ -260,6 +276,7 @@
 		showAlbumLocation: true,
 		showSlideshowLink: true,
 		showPhotoCaption: false,
+		showPhotoDownload: true,
 		showPhotoDate: true,
 		labels: {
 			photo: "photo",
@@ -292,8 +309,8 @@
 			message: "<div class='lbLoading pwi_loader'>loading...</div>",
 			css: "pwi_loader"
 		},
-		albumstore: "",
-		photostore: "",
+		albumstore: {},
+		photostore: {},
 		token: ""
-	};
+	}
 })(jQuery);
