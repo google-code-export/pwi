@@ -58,8 +58,8 @@
 			return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
 		}
 		function albums(j) {
-			var $scAlbums = $("<div/>");
-			for (var i = 0; i < j.feed.entry.length; i++) {
+			var $scAlbums = $("<div/>"), i=0;
+			while(i < settings.albumMaxResults && i< j.feed.entry.length){
 				var $id_base = j.feed.entry[i].gphoto$name.$t,
 				$album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t),
 				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/");
@@ -80,6 +80,7 @@
 					$scAlbum.append("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/>");
 					settings.showAlbumTitles ? $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? $album_date : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : "")) : false;
 					$scAlbums.append($scAlbum);
+					i++;
 				}
 			}
 			$scAlbums.append("<div style='clear: both;height:0px;'/>");
@@ -87,12 +88,13 @@
 			show(false, $scAlbums);
 		}
 		function album(j) {
-			var $scPhotos, $scPhotosDesc, $np = j.feed.openSearch$totalResults.$t,
+			var $scPhotos, $scPhotosDesc,
+			$np = j.feed.openSearch$totalResults.$t,
 			$loc = j.feed.gphoto$location.$t == "undefined" ? "" : j.feed.gphoto$location.$t,
 			$ad = j.feed.subtitle.$t == "undefined" ? "" : j.feed.subtitle.$t,
 			$album_date = formatDate(j.feed.gphoto$timestamp.$t),
-			$item_plural = ($np == "1") ? false : true,
-			$len = j.feed.entry.length;
+			$item_plural = ($np == "1") ? false : true;
+			
 			settings.albumTitle = j.feed.title.$t === "undefined" ? settings.albumTitle : j.feed.title.$t;
 			$scPhotos = $("<div/>");
 			$scPhotosDesc = $("<div class='pwi_album_description'/>");
@@ -127,11 +129,11 @@
 					});
 				}
 				$navRow.append($ppage);
-				for (var i = 1; i < $pageCount + 1; i++) {
-					if (i == settings.page) {
-						tmp = "<div class='pwi_pager_current'>" + i + "</div> ";
+				for (var p = 1; p < $pageCount + 1; p++) {
+					if (p == settings.page) {
+						tmp = "<div class='pwi_pager_current'>" + p + "</div> ";
 					} else {
-						tmp = $("<div class='pwi_pager_page'>" + i + "</div>").bind('click.pwi', i, function (e) {
+						tmp = $("<div class='pwi_pager_page'>" + p + "</div>").bind('click.pwi', p, function (e) {
 							e.stopPropagation();
 							settings.page = e.data;
 							getAlbum();
@@ -151,7 +153,8 @@
 				$navRow.append($npage);
 				$scPhotos.append($navRow);
 			}
-			for (var i = 0; i < $len; i++) {
+			var i = ((settings.page-1)*settings.maxResults);
+			while(i < (settings.maxResults*settings.page) && i < $np) {
 				var $img_base = j.feed.entry[i].content.src,
 				$id_base = j.feed.entry[i].gphoto$id.$t,
 				$c = (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t : ""),
@@ -162,6 +165,7 @@
 				if(settings.showPhotoDownload){$c += "";}
 				if (settings.showPhotoCaption){ $scPhoto.append("<br/>" + $c);}
 				$scPhotos.append($scPhoto);
+				i++;
 			}
 			$scPhotos.append($navRow);
 			$scPhotos.append("<div style='clear: both;height:0px;'/>");
@@ -177,6 +181,7 @@
 			}
 			show(false, $scPhotos);
 		}
+		
 		function latest(j) {
 			var $scPhotos = $("<div/>"),
 			$len = j.feed.entry.length ? j.feed.entry.length : 0;
@@ -215,7 +220,7 @@
 				albums(settings.albumstore);
 			} else {
 				show(true, '');
-				var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&max-results=' + settings.albumMaxResults + '&access=' + settings.albumTypes + '&alt=json';
+				var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json';
 				$.getJSON($url, 'callback=?', albums);
 			}
 			return $self;
@@ -225,7 +230,7 @@
 				album(settings.photostore[settings.album]);
 			} else {
 				var $si = ((settings.page - 1) * settings.maxResults) + 1,
-				$url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&max-results=' + settings.maxResults + '&start-index=' + $si + '&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+				$url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
 				show(true, '');
 				$.getJSON($url, 'callback=?', album);
 			}
@@ -233,7 +238,7 @@
 		}
 		function getLatest() {
 			show(true, ''); 
-			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
 			$.getJSON($url, 'callback=?', latest);
 			return $self;
 		}
