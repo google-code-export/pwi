@@ -36,6 +36,9 @@
 			case 'album':
 				getAlbum();
 				break;
+			case 'keyword':
+				getAlbum();
+				break;
 			default:
 				getAlbums();
 				break;
@@ -55,8 +58,35 @@
 			if ($year < 1000) {
 				$year += 1900;
 			}
-			return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+			if($today == "Invalid Date"){
+				return $dt;
+			}else{
+				return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+			}
 		}
+		
+		function photo(photo){
+				var $html, $dt, $d, $img_base = photo.content.src,
+				$id_base = photo.gphoto$id.$t,
+				$c = (photo.summary ? photo.summary.$t : "");
+				if(settings.showPhotoDate){
+					if( photo.exif$tags.exif$time ){
+						$dt = formatDateTime(photo.exif$tags.exif$time.$t);
+					}else if( photo.gphoto$timestamp ){
+						$dt = formatDateTime(photo.gphoto$timestamp.$t);
+					}else{
+						$dt = formatDateTime(photo.published.$t);
+					}
+				}
+				$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
+				$html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
+				$html.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
+				if(settings.showPhotoDownload){$c += "download";}
+				if (settings.showPhotoCaption){ $html.append("<br/>" + $c);}
+				return $html;
+				
+		}
+		
 		function albums(j) {
 			var $scAlbums = $("<div/>"), i=0;
 			while(i < settings.albumMaxResults && i< j.feed.entry.length){
@@ -80,22 +110,23 @@
 					$scAlbum.append("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/>");
 					settings.showAlbumTitles ? $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? $album_date : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : "")) : false;
 					$scAlbums.append($scAlbum);
-					i++;
 				}
+				i++;
 			}
 			$scAlbums.append("<div style='clear: both;height:0px;'/>");
 			settings.albumstore = j;
 			show(false, $scAlbums);
 		}
+		
 		function album(j) {
 			var $scPhotos, $scPhotosDesc,
 			$np = j.feed.openSearch$totalResults.$t,
-			$loc = j.feed.gphoto$location.$t == "undefined" ? "" : j.feed.gphoto$location.$t,
-			$ad = j.feed.subtitle.$t == "undefined" ? "" : j.feed.subtitle.$t,
-			$album_date = formatDate(j.feed.gphoto$timestamp.$t),
+			$loc = j.feed.gphoto$location === undefined ? "" : j.feed.gphoto$location.$t,
+			$ad = j.feed.subtitle === undefined ? "" : j.feed.subtitle.$t,
+			$album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
 			$item_plural = ($np == "1") ? false : true;
 			
-			settings.albumTitle = j.feed.title.$t === "undefined" ? settings.albumTitle : j.feed.title.$t;
+			settings.albumTitle = j.feed.title === "undefined" ? settings.albumTitle : j.feed.title.$t;
 			$scPhotos = $("<div/>");
 			$scPhotosDesc = $("<div class='pwi_album_description'/>");
 			if (settings.mode != 'album') {
@@ -115,6 +146,7 @@
 				}
 			}
 			$scPhotos.append($scPhotosDesc);
+			
 			if ($np > settings.maxResults) {
 				$pageCount = ($np / settings.maxResults);
 				var $ppage = $("<div class='pwi_prevpage'/>").text(settings.labels.prev),
@@ -155,15 +187,7 @@
 			}
 			var i = ((settings.page-1)*settings.maxResults);
 			while(i < (settings.maxResults*settings.page) && i < $np) {
-				var $img_base = j.feed.entry[i].content.src,
-				$id_base = j.feed.entry[i].gphoto$id.$t,
-				$c = (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t : ""),
-				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].gphoto$timestamp.$t) : "",
-				$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
-				$scPhoto = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
-				$scPhoto.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
-				if(settings.showPhotoDownload){$c += "";}
-				if (settings.showPhotoCaption){ $scPhoto.append("<br/>" + $c);}
+				var $scPhoto = photo(j.feed.entry[i]);
 				$scPhotos.append($scPhoto);
 				i++;
 			}
@@ -184,17 +208,12 @@
 		
 		function latest(j) {
 			var $scPhotos = $("<div/>"),
-			$len = j.feed.entry.length ? j.feed.entry.length : 0;
-			for (var i = 0; i < $len; i++) {
-				var $img_base = j.feed.entry[i].content.src,
-				$id_base = j.feed.entry[i].gphoto$id.$t,
-				$c = settings.showPhotoCaption ? (j.feed.entry[i].summary.$t ? j.feed.entry[i].summary.$t : "") : "",
-				$dt = settings.showPhotoDate ? (j.feed.entry[i].exif$tags.exif$time ? formatDateTime(j.feed.entry[i].exif$tags.exif$time.$t) : j.feed.entry[i].gphoto$timestamp.$t) : "",
-				$d = $dt + " " + $c.replace(new RegExp("'", "g"), "&#39;");
-				$scPhoto = $("<div class='pwi_photo' >");
-				$scPhoto.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
-				$scPhoto.append("<br/>" + $c);
+			$len = j.feed ? j.feed.entry.length : 0,
+			i = 0;
+			while (i < settings.maxResults && i < $len) {
+				var $scPhoto = photo(j.feed.entry[i]);
 				$scPhotos.append($scPhoto);
+				i++;
 			}
 			$scPhotos.append("<div style='clear: both;height:0px;'> </div>");
 			var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
@@ -207,6 +226,7 @@
 			}
 			show(false, $scPhotos);
 		}
+		
 		function clickAlbumThumb(ref){
 			settings.onclickAlbumThumb(ref);
 			return false;
@@ -229,8 +249,12 @@
 			if (settings.photostore[settings.album]) {
 				album(settings.photostore[settings.album]);
 			} else {
-				var $si = ((settings.page - 1) * settings.maxResults) + 1,
-				$url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+				var $si = ((settings.page - 1) * settings.maxResults) + 1;
+				if(settings.mode === 'keyword'){
+					var $url = 'http://picasaweb.google.com/data/feed/api/user/' +settings.username + '?alt=json&kind=photo&tag=' + settings.keyword +'&max-results=' + settings.maxResults + '&start-index=' + $si +((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+				}else{
+					var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+				}
 				show(true, '');
 				$.getJSON($url, 'callback=?', album);
 			}
@@ -238,14 +262,17 @@
 		}
 		function getLatest() {
 			show(true, ''); 
-			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&max-results='+settings.maxResults+'&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
 			$.getJSON($url, 'callback=?', latest);
 			return $self;
 		}
 		function show(loading, data) {
 			if (loading) {
-				if ($.blockUI) $self.block(settings.blockUIConfig);
-			} else { if ($.blockUI) $self.unblock();
+				document.body.style.cursor = "wait";
+				//if ($.blockUI){ $self.block(settings.blockUIConfig);}
+			} else {
+				document.body.style.cursor = "default";
+				//if ($.blockUI){ $self.unblock(); }
 				$self.html(data);
 			}
 		}
