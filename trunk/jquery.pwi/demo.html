@@ -40,7 +40,8 @@
       <a href="demo4.html">demo 4</a> - Unlisted album!<br />
       <a href="demo5.html">demo 5</a> - Selective albums<br/>
       <a href="demo6.html">demo 6</a> - Simple with FancyBox<br />
-      <a href="demo7.html">demo 7</a> - Multiple galleries AND FancyBox
+      <a href="demo7.html">demo 7</a> - Multiple galleries AND FancyBox<br />
+      <a href="demo8.html">demo 8</a> - Override onclickAlbumThumb
     </p>
     <hr size=1 />
 	Things you can overrule, specifified values are the defaults, only username is mandatory:<br/>
@@ -63,6 +64,7 @@
 		thumbCrop: 0,		//-- crop the thumb of the photo's (default: 0, 1 = yes / 0 = no) cropping makes the thumbs square and gives consistent layout
 		thumbCss: {'margin' : '5px'}, //-- override and add custom styles for the thumbs (see http://docs.jquery.com/CSS/css#properties for specification)
 		onclickThumb: "",	//-- override click on photo thumb. specify a function to replace slimbox,see demo 3 for an example (uses .bind for each photo)
+		onclickAlbumThumb: "",	//-- override click on album thumb. specify a function to replace default action,see demo 8 for an example (uses .bind for each album), returns 2 params: event and settings
 		popupExt: "",		//-- assign different popup, default is slimbox2, tested with fancybox, see demo 6 for an example
 		showAlbumTitles: true,	//-- Display title underneath album thumbs
 		showAlbumdate: true,	//-- Display date underneath album thumbs
