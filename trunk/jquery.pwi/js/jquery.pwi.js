@@ -126,7 +126,7 @@
 			$album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
 			$item_plural = ($np == "1") ? false : true;
 			
-			settings.albumTitle = j.feed.title === "undefined" ? settings.albumTitle : j.feed.title.$t;
+			settings.albumTitle = (j.feed.title === "undefined" || settings.albumTitle.length > 0) ? settings.albumTitle : j.feed.title.$t;
 			$scPhotos = $("<div/>");
 			$scPhotosDesc = $("<div class='pwi_album_description'/>");
 			if (settings.mode != 'album') {
@@ -142,7 +142,11 @@
 				$scPhotosDesc.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
 				$scPhotosDesc.append("<div class='description'>" + $ad + "</div>");
 				if (settings.showSlideshowLink) {
-					$scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey != "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
+					if(settings.mode === 'keyword'){
+						//alert("currently not supported");
+					}else{
+						$scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey != "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
+					}
 				}
 			}
 			$scPhotos.append($scPhotosDesc);
