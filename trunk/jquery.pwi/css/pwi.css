@@ -71,6 +71,10 @@
 	border: 0px solid #7F7F7F;
 }
 
+.pwi_photo a{
+	text-decoration: none;	
+}
+
 .pwi_pager{
 	clear: both;
 }
