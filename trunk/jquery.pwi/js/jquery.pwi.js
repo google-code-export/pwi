@@ -9,6 +9,7 @@
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
  */
+		
 (function ($) {
 	var elem, opts = {};
 	$.fn.pwi = function (opts) {
@@ -254,12 +255,14 @@
 			settings.onclickThumb.call(this);
 			return false;
 		}
+
 		function getAlbums() {
 			if (settings.albumstore.feed) {
 				albums(settings.albumstore);
 			} else {
 				show(true, '');
 				var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json';
+				gdata = { io: { handleScriptLoaded: function(data){ albums(data); } } }; 
 				$.getJSON($url, 'callback=?', albums);
 			}
 			return $self;
@@ -275,13 +278,15 @@
 					var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
 				}
 				show(true, '');
-				$.getJSON($url, 'callback=?', album);
+					gdata = { io: { handleScriptLoaded: function(data){ album(data); } } }; 
+					$.getJSON($url, 'callback=?', album);
 			}
 			return $self;
 		}
 		function getLatest() {
 			show(true, ''); 
 			var $url = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album != "" ? '/album/' + settings.album : '') + '?kind=photo&max-results='+settings.maxResults+'&alt=json&q=' + ((settings.authKey != "") ? "&authkey=" + settings.authKey : "");
+			gdata = { io: { handleScriptLoaded: function(data){ latest(data); } } }; 
 			$.getJSON($url, 'callback=?', latest);
 			return $self;
 		}
