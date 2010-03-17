@@ -3,8 +3,8 @@
  * This library was inspired aon pwa by Dieter Raber
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
- * @revision 1.2.0
- * @date January 25, 2010
+ * @revision 1.2.1
+ * @date March 17, 2010
  * @copyright (c) 2009 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
