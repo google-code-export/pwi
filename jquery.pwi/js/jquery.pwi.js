@@ -213,7 +213,7 @@
                 $scPhotosDesc.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
                 $scPhotosDesc.append("<div class='description'>" + $ad + "</div>");
                 if (settings.showSlideshowLink) {
-                    if (settings.mode === 'keyword') {
+                    if (settings.mode === 'keyword' || settings.keyword !== "") {
                         //alert("currently not supported");
                     } else {
                         $scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
@@ -362,6 +362,7 @@
         album: "", //-- For loading a single album
         authKey: "", //-- for loading a single album that is private (use in 'album' mode only)
         albums: [], //-- use to load specific albums only: ["MyAlbum", "TheSecondAlbumName", "OtherAlbum"]
+        keyword: "", 
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
         albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
