@@ -11,16 +11,20 @@
 		<script src="js/jquery.pwi.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
-		    $(document).ready(function() {
+		    $(document).ready(function () {
 
 		        $("#container").pwi({
 		            username: 'jdiderik',
 		            maxResults: 3,
-					thumbSize: 160,
+		            thumbSize: 160,
 		            mode: 'latest',
 		            album: '',
-		            thumbCss: { margin: '10px', 'border':'2px dotted blue' },
-		            onclickThumb: function() { alert('Your custom function here,\n you clicked on photo "'+this.title+'"') }
+		            thumbCss: { margin: '10px', 'border': '2px dotted blue' },
+		            onclickThumb: function (event) {
+		                var e = this;
+		                console.log(event);
+		                //alert('Your custom function here,\n you clicked on photo "' + obj.href + '"');
+		            }
 		        });
 		    });
 	</script>
