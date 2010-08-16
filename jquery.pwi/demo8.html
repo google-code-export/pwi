@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>	
+		<title>PWI Demo 8 - Picassa Webalbum Integrator (PWI)</title>
+
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+		<link   href="css/pwi.css" rel="stylesheet" type="text/css"/>
+		<script src="js/jquery.pwi.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+		    $(document).ready(function () {
+
+		        $("#container1").pwi({
+		            username: 'jdiderik',
+		            maxResults: 5,
+		            onclickAlbumThumb: function (e) {
+		                alert('We got the event object and the albumstream returned.\n\n');
+		                // console.log(e); //use with Firefox and Firebug to see what is returned
+		            }
+		        });
+
+		    });
+
+		</script>
+	</head>
+	<body>
+	<h3><a href="index.html">PWI</a> Demo 8, Override the onclickAlbumThumb</h3>
+	album:<br/>
+    <div id="container1"> </div>
+	</body>
+</html>
