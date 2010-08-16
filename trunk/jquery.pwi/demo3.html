@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>	
+		<title>PWI Demo 3 - Picassa Webalbum Integrator (PWI)</title>
+
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+		<link   href="css/pwi.css" rel="stylesheet" type="text/css"/>
+		<script src="js/jquery.pwi.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+		    $(document).ready(function () {
+
+		        $("#container").pwi({
+		            username: 'jdiderik',
+		            maxResults: 3,
+		            thumbSize: 160,
+                    thumbCrop: 1,
+		            mode: 'latest',
+		            album: '',
+		            thumbCss: { margin: '10px', 'border': '2px dotted blue' },
+		            onclickThumb: function (event) {
+		                var e = this;
+		                alert('Your custom function here');
+		                //console.log(e);
+		            }
+		        });
+		    });
+	</script>
+	</head>
+	<body>
+	<h3><a href="index.html">PWI</a> Demo 3, Latest (3 photos), custom thumb CSS  (EXcluding slimbox2 and BlockUI)</h3>
+	<div id="container"> </div>
+	</body>
+</html>
