@@ -50,7 +50,7 @@
             if ($year < 1000) {
                 $year += 1900;
             }
-            return (settings.months[($today.getUTCMonth())] + " " + $today.getUTCDate() + ", " + $year);
+            return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
         }
         function nl2br(s) {
             return s.replace(/\n/g, '<br />\n');
@@ -64,12 +64,19 @@
             if ($today == "Invalid Date") {
                 return $dt;
             } else {
-                return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+                if (($today.getUTCHours() == 0) && ($today.getUTCMinutes() == 0) && ($today.getUTCSeconds() == 0)) {
+                    return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
+                } else {
+                    return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+                }
             }
         }
 
-        function photo(j) {
-            var $html, $d = "", $c = "", $img_base = j.content.src,
+        function photo(j, hidden) {
+            var $html, $d = "", $c = "",
+                $thumb_url = j.media$group.media$thumbnail[0].url,
+                $img_url = j.media$group.media$thumbnail[1].url,
+                $download_url = j.media$group.media$content[0].url,
 				$id_base = j.gphoto$id.$t;
             $c = nl2br(j.summary ? j.summary.$t : "");
             if (settings.showPhotoDate) {
@@ -82,32 +89,47 @@
                 }
                 $d += " ";
             }
-            $d += $c.replace(new RegExp("'", "g"), "&#39;");
-            $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
-            $html.append("<a href='" + $img_base + "?imgmax=" + settings.photoSize + "' rel='lb-" + settings.username + "' title='" + $d + "'><img src='" + $img_base + "?imgmax=" + settings.thumbSize + "&crop=" + settings.thumbCrop + "'/></a>");
-            //if(settings.showPhotoDownload){$c += "download";}
-            if (settings.showPhotoCaption) {
-                if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
-                if ($c > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
-                $html.find("a").append("<br/>" + $c);
+            if (hidden)
+            {
+                $html = $("<div class='pwi_photo' style='display: none'/>");
+                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'></a>");
+                return $html;
             }
-            if (typeof (settings.onclickThumb) === "function") { var obj = j; $html.bind('click.pwi', obj, clickThumb); }
+            else
+            {
+                $d += $c.replace(new RegExp("'", "g"), "&#39;");
+                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 10 : 1)) + "px;cursor: pointer;'/>");
+                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
+                if (settings.showPhotoCaption) {
+                    if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
+                    if(settings.showPhotoDownload) {
+                        $c += '<a href="' + $download_url + '">Download foto</a>';
+                    }
+                    if ($c > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
+                    $html.append("<br/>" + $c);
+                }
+                if (typeof (settings.onclickThumb) === "function") { var obj = j; $html.bind('click.pwi', obj, clickThumb); }
 
-            return $html;
-
+                return $html;
+            }
         }
 
         function albums(j) {
             var $scAlbums = $("<div/>"), i = 0;
-            var $na = 0, $navrow = "";
+            var $na = 0, $navrow = "", $albumCount = 0;
             i = settings.albumsPerPage * (settings.albumPage - 1);
             $na = j.feed.entry.length;
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
                 var $id_base = j.feed.entry[i].gphoto$name.$t,
 				$album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t),
-				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url.replace(new RegExp("/s160-c/", "g"), "/");
+				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url;
                 if ($.inArray($id_base, settings.albums) > -1 || settings.albums.length === 0) {
-                    $scAlbum = $("<div class='pwi_album'/>");
+                    $albumCount++;
+                    if (settings.showAlbumThumbs) {
+                        $scAlbum = $("<div class='pwi_album' style='height:180px;width:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
+                    } else {
+                        $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
+                    }
                     var jfeed = j.feed.entry[i];
                     $scAlbum.bind('click.pwi', jfeed, function (e) {
                         e.stopPropagation();
@@ -122,7 +144,7 @@
                         }
                     });
                     if (settings.showAlbumThumbs) {
-                        $scAlbum.append("<img src='" + $thumb + "?imgmax=" + settings.albumThumbSize + "&crop=" + settings.albumCrop + "'/>");
+                        $scAlbum.append("<img src='" + $thumb + "'/>");
                     }
                     if (settings.showAlbumTitles) {
                         $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? $album_date : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : ""));
@@ -133,6 +155,12 @@
             }
             $scAlbums.append("<div style='clear: both;height:0px;'/>");
 
+            if ($albumCount == 0) {
+                $scAlbums = $("<div class='pwi_album_description'/>");
+                $scAlbums.append("<div class='title'>" + settings.labels.noalbums + "</div>");
+                show(false, $scAlbums);
+                return 
+            }
 
             // less albums-per-page then max so paging
 
@@ -222,6 +250,27 @@
                 $scPhotos.append($scPhotosDesc);
             }
 
+            if ((settings.showSlideshow) && (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)  == null) && (typeof (settings.popupExt) === "function")) {
+                var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
+                var $slideShow = $("<div class='pwi_photo'/>");
+                for (var i = 0; i < j.feed.link.length; i++) {
+                    var $slideShowLink;
+                    if ($isIE6) {
+                        if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='lb-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            break;
+                        }
+                    } else {
+                        if (j.feed.link[i].type == "application/x-shockwave-flash") {
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='lb-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            break;
+                        }
+                    }
+                }
+                $scPhotos.append($slideShow);
+                $scPhotos.append("<div style='clear: both;height:0px;'/>");
+            }
+
             if ($np > settings.maxResults) {
                 $pageCount = ($np / settings.maxResults);
                 var $ppage = $("<div class='pwi_prevpage'/>").text(settings.labels.prev),
@@ -265,12 +314,12 @@
                 $scPhotos.append($navRow);
             }
 
-            var i = ((settings.page - 1) * settings.maxResults);
-
-            while (i < (settings.maxResults * settings.page) && i < $np) {
-                var $scPhoto = photo(j.feed.entry[i]);
+            var startShow = ((settings.page - 1) * settings.maxResults);
+            var endShow = settings.maxResults * settings.page;
+            for (var i = 0; i < $np; i++)
+            {
+                var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)));
                 $scPhotos.append($scPhoto);
-                i++;
             }
 
             if ($navRow.length > 0 && (settings.showPager === 'both' || settings.showPager === 'bottom')) {
@@ -282,9 +331,25 @@
             if (typeof (settings.popupExt) === "function") {
                 settings.popupExt($s.find("a[rel='lb-" + settings.username + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
-                $s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config);
+                $s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config,
+                    function(el) {
+                        if (el.downloadlink) {
+                            var downloadLink = '<a href="' + el.downloadlink + '">Download</a>';
+                            return [el.href, el.title + "&nbsp;&nbsp;" + downloadLink];
+                        } else {
+                            return [el.href, el.title];
+                        }
+                    });
             }
             show(false, $scPhotos);
+
+            var links = document.getElementsByTagName('a');
+            for (var i = 0; i < links.length; i++) {
+                if (links[i].className == 'downloadlink') {
+                    links[i].downloadlink = links[i].title.substr(links[i].title.indexOf("  ")+2);
+                    links[i].title = links[i].title.substr(0, links[i].title.indexOf("  "));
+                }
+            }
         }
 
         function latest(j) {
@@ -292,7 +357,7 @@
 			$len = j.feed ? j.feed.entry.length : 0,
 			i = 0;
             while (i < settings.maxResults && i < $len) {
-                var $scPhoto = photo(j.feed.entry[i]);
+                var $scPhoto = photo(j.feed.entry[i], false);
                 $scPhotos.append($scPhoto);
                 i++;
             }
@@ -321,7 +386,7 @@
                 albums(settings.albumstore);
             } else {
                 show(true, '');
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json';
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "");
                 $.getJSON($u, 'callback=?', albums);
             }
             return $self;
@@ -331,7 +396,7 @@
                 album(settings.photostore[settings.album]);
             } else {
                 var $si = ((settings.page - 1) * settings.maxResults) + 1;
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "");
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "") + "," + settings.photoSize;
                 show(true, '');
                 $.getJSON($u, 'callback=?', album);
             }
@@ -344,10 +409,13 @@
             return $self;
         }
         function show(loading, data) {
+            var ele = document.getElementById("loadinggif");
             if (loading) {
+                if (ele) {ele.style.display = "block";}
                 document.body.style.cursor = "wait";
                 //if ($.blockUI){ $self.block(settings.blockUIConfig);}
             } else {
+                if (ele) {ele.style.display = "none";}
                 document.body.style.cursor = "default";
                 //if ($.blockUI){ $self.unblock(); }
                 $self.html(data);
@@ -365,7 +433,7 @@
         keyword: "", 
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
-        albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        albumThumbSize: 144, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
@@ -374,8 +442,8 @@
         photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
-        thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
-        thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
+        thumbSize: 144,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        thumbCrop: 1, //-- force crop on photo thumbnails (see thumbSize for supported sized)
         thumbCss: {
             'margin': '5px'
         },
@@ -388,7 +456,8 @@
         showAlbumPhotoCount: true,
         showAlbumDescription: true,
         showAlbumLocation: true,
-        showSlideshowLink: true,
+        showSlideshow: true, //-- Set to true to show slideshow in popup
+        showSlideshowLink: false,
         showPhotoCaption: false,
         showPhotoCaptionDate: false,
         showCaptionLength: 9999,
@@ -399,6 +468,7 @@
             photos: "photos",
             albums: "Back to albums",
             slideshow: "Display slideshow",
+            noalbums: "No albums available",
             loading: "PWI fetching data...",
             page: "Page",
             prev: "Previous",
@@ -430,3 +500,15 @@
         token: ""
     };
 })(jQuery);
+
+// This function is called by FancyBox to format the title of a picture
+function formatTitle(title, currentArray, currentIndex, currentOpts) {
+    var newTitle = title;
+    if (currentOpts.orig.context.downloadlink) {
+        var downloadLink = '<a style="color: #FFF;" href="' + currentOpts.orig.context.downloadlink + '">Download</a>';
+        return '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + newTitle + '&nbsp;&nbsp;' + downloadLink + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+    } else {
+        return '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + newTitle + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+    }
+}
+

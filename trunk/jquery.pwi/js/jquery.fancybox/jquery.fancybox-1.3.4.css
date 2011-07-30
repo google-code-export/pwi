@@ -314,7 +314,7 @@
 	line-height: 29px;
 	font-weight: bold;
 	padding: 0 0 3px 0;
-	background: url('fancybox-x.png') 0px -40px;
+	background: url('fancybox-x.png') 0px -40px repeat-x;
 }
 
 #fancybox-title-float-right {
