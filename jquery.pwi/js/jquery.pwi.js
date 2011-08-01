@@ -341,6 +341,9 @@
                         }
                     });
             }
+
+            $scPhotos.append("<div style='clear: both;height:0px;'/>");
+
             show(false, $scPhotos);
 
             var links = document.getElementsByTagName('a');
