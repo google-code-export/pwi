@@ -98,7 +98,7 @@
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
-                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 10 : 1)) + "px;cursor: pointer;'/>");
+                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;cursor: pointer;'/>");
                 $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
@@ -117,13 +117,17 @@
         function albums(j) {
             var $scAlbums = $("<div/>"), i = 0;
             var $na = 0, $navrow = "", $albumCount = 0;
+            var $startDate = new Date(settings.albumStartDateTime);
+            var $endDate = new Date(settings.albumEndDateTime);
             i = settings.albumsPerPage * (settings.albumPage - 1);
             $na = j.feed.entry.length;
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
                 var $id_base = j.feed.entry[i].gphoto$name.$t,
-				$album_date = formatDate(j.feed.entry[i].gphoto$timestamp.$t),
+                $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
 				$thumb = j.feed.entry[i].media$group.media$thumbnail[0].url;
-                if ($.inArray($id_base, settings.albums) > -1 || settings.albums.length === 0) {
+                if (($.inArray($id_base, settings.albums) > -1 || settings.albums.length === 0) &&
+                    ((settings.albumStartDateTime == "" || $albumDate >= $startDate) &&
+                     (settings.albumEndDateTime == "" || $albumDate <= $endDate))) {
                     $albumCount++;
                     if (settings.showAlbumThumbs) {
                         $scAlbum = $("<div class='pwi_album' style='height:180px;width:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
@@ -147,7 +151,7 @@
                         $scAlbum.append("<img src='" + $thumb + "'/>");
                     }
                     if (settings.showAlbumTitles) {
-                        $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? $album_date : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : ""));
+                        $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : ""));
                     }
                     $scAlbums.append($scAlbum);
                 }
@@ -434,6 +438,8 @@
         authKey: "", //-- for loading a single album that is private (use in 'album' mode only)
         albums: [], //-- use to load specific albums only: ["MyAlbum", "TheSecondAlbumName", "OtherAlbum"]
         keyword: "", 
+        albumStartDateTime: "", //-- Albums on or after this date will be shown. Format: YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD for date only
+        albumEndDateTime: "", //-- Albums before or on this date will be shown
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
         albumThumbSize: 144, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
