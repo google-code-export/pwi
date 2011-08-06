@@ -3,9 +3,9 @@
  * This library was inspired aon pwa by Dieter Raber
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
- * @revision 1.3.0
- * @date august 16, 2010
- * @copyright (c) 2010 Jeroen Diderik(www.jdee.nl)
+ * @revision 1.4.0
+ * @date august 05, 2011
+ * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
  */
@@ -117,8 +117,24 @@
         function albums(j) {
             var $scAlbums = $("<div/>"), i = 0;
             var $na = 0, $navrow = "", $albumCount = 0;
-            var $startDate = new Date(settings.albumStartDateTime);
-            var $endDate = new Date(settings.albumEndDateTime);
+            var $startDate, $endDate;
+            if (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) == null) {
+                $startDate = new Date(settings.albumStartDateTime);
+                if (isNaN($startDate)) {
+                    var tmpDate = settings.albumStartDateTime.replace(/-/g, "/");
+                    $startDate = new Date(tmpDate);
+                }
+                $endDate = new Date(settings.albumEndDateTime);
+                if (isNaN($endDate)) {
+                    var tmpDate = settings.albumEndDateTime.replace(/-/g, "/");
+                    $endDate = new Date(tmpDate);
+                }
+            } else {
+                var tmpDate = settings.albumStartDateTime.replace(/-/g, "/");
+                $startDate = new Date(tmpDate);
+                tmpDate = settings.albumEndDateTime.replace(/-/g, "/");
+                $endDate = new Date(tmpDate);
+            }
             i = settings.albumsPerPage * (settings.albumPage - 1);
             $na = j.feed.entry.length;
 
@@ -283,21 +299,13 @@
                 $scPhotos.append($scPhotosDesc);
             }
 
-            if ((settings.showSlideshow) && (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)  == null) && (typeof (settings.popupExt) === "function")) {
-                var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
+            // SlimBox only supports images, so it cannot show the iframe containing the slideshow
+            if (typeof (settings.popupExt) === "function") {
                 var $slideShow = $("<div class='pwi_photo'/>");
                 for (var i = 0; i < j.feed.link.length; i++) {
-                    var $slideShowLink;
-                    if ($isIE6) {
-                        if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='lb-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
-                            break;
-                        }
-                    } else {
-                        if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='lb-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
-                            break;
-                        }
+                    if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
+                        $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                        break;
                     }
                 }
                 $scPhotos.append($slideShow);
@@ -363,6 +371,7 @@
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if (typeof (settings.popupExt) === "function") {
                 settings.popupExt($s.find("a[rel='lb-" + settings.username + "']"));
+                settings.popupExt($s.find("a[rel='sl-" + settings.username + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
                 $s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config,
                     function(el) {
