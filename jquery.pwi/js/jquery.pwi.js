@@ -267,12 +267,23 @@
 
         function album(j) {
             var $scPhotos, $scPhotosDesc, tmp = "",
-            $np = j.feed.openSearch$totalResults.$t,
-            $at = "", $navRow = "",
-            $loc = j.feed.gphoto$location === undefined ? "" : j.feed.gphoto$location.$t,
-            $ad = j.feed.subtitle === undefined ? "" : j.feed.subtitle.$t,
-            $album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
-            $item_plural = ($np == "1") ? false : true;
+                $np = j.feed.openSearch$totalResults.$t,
+                $at = "", $navRow = "",
+                $loc = j.feed.gphoto$location === undefined ? "" : j.feed.gphoto$location.$t,
+                $ad,
+                $album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
+                $item_plural = ($np == "1") ? false : true;
+
+            if (j.feed.subtitle === undefined) {
+                $ad = "";
+            } else {
+                var $matched = j.feed.subtitle.$t.match(/\[keywords\s*:\s*.*\s*\](.*)/);
+                if ($matched) {
+                    $ad = $matched[1];
+                } else {
+                    $ad = j.feed.subtitle.$t;
+                }
+            }
 
             $at = (j.feed.title === "undefined" || settings.albumTitle.length > 0) ? settings.albumTitle : j.feed.title.$t;
             $scPhotos = $("<div/>");
