@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>	
-		<title>PWI Demo 5 - Picassa Webalbum Integrator (PWI)</title>
+		<title>PWI Demo - Picassa Webalbum Integrator (PWI)</title>
 
 
 
@@ -40,6 +40,7 @@
       <a href="demo9.html">demo 9</a> - Photo's by Keyword/tag<br/>
       <a href="demo10.html">demo 10</a> - Photo's by Keyword/tag from single album<br/>
       <a href="demo11.html">demo 11</a> - Simple album list without thumbs<br/>
+      <a href="demo12.html">demo 12</a> - Show albums groups per year<br/>
       
     </p>
     <hr size=1 />
@@ -50,9 +51,13 @@
         album: "", //-- For loading a single album
         authKey: "", //-- for loading a single album that is private (use in 'album' mode only)
         albums: [], //-- use to load specific albums only: ["MyAlbum", "TheSecondAlbumName", "OtherAlbum"]
+        keyword: "", 
+        albumKeywords: [], //-- Only show albums containing one of these keywords in the description. Use [keywords: "kw1", "kw2"] within the album description
+        albumStartDateTime: "", //-- Albums on or after this date will be shown. Format: YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD for date only
+        albumEndDateTime: "", //-- Albums before or on this date will be shown
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
-        albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        albumThumbSize: 144, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
@@ -61,8 +66,8 @@
         photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
-        thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
-        thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
+        thumbSize: 144,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        thumbCrop: 1, //-- force crop on photo thumbnails (see thumbSize for supported sized)
         thumbCss: {
             'margin': '5px'
         },
@@ -75,7 +80,8 @@
         showAlbumPhotoCount: true,
         showAlbumDescription: true,
         showAlbumLocation: true,
-        showSlideshowLink: true,
+        showSlideshow: true, //-- Set to true to show slideshow in popup
+        showSlideshowLink: false,
         showPhotoCaption: false,
         showPhotoCaptionDate: false,
         showCaptionLength: 9999,
@@ -86,6 +92,7 @@
             photos: "photos",
             albums: "Back to albums",
             slideshow: "Display slideshow",
+            noalbums: "No albums available",
             loading: "PWI fetching data...",
             page: "Page",
             prev: "Previous",
