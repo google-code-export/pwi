@@ -38,4 +38,4 @@ Well, first get the correct files on your server:
 
 }}}
 
-See the [Configuration Configuring PWI] page for more configuration options, and the [FancyBox Using Fancybox] page on how to install and use the Fancybox plugin.
+See the [Configuration Configuring PWI] page for more configuration options, and the [Fancybox Using Fancybox] page on how to install and use the Fancybox plugin.
