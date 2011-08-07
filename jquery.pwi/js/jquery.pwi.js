@@ -311,12 +311,22 @@
             }
 
             // SlimBox only supports images, so it cannot show the iframe containing the slideshow
-            if (typeof (settings.popupExt) === "function") {
+            if ((settings.showSlideshow) && (typeof (settings.popupExt) === "function")) {
+                var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
                 var $slideShow = $("<div class='pwi_photo'/>");
-                for (var i = 0; i < j.feed.link.length; i++) {
-                    if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                        $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
-                        break;
+                if (($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
+                    for (var i = 0; i < j.feed.link.length; i++) {
+                        if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            break;
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < j.feed.link.length; i++) {
+                        if (j.feed.link[i].type == "application/x-shockwave-flash") {
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            break;
+                        }
                     }
                 }
                 $scPhotos.append($slideShow);
