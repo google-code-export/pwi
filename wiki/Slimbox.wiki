@@ -5,7 +5,7 @@
 One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2).
 (see http://fancybox.net/). PWI includes an unmodified version of the Slimbox2 scripts.
 
-To use the Slimbox script the Slimbox JavaScript library needs to loaded.  Use the following code in the header of your
+To use the Slimbox script the Slimbox !JavaScript library needs to loaded.  Use the following code in the header of your
 page to load the Slimbox library:
 
 {{{
