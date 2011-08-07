@@ -1,14 +1,10 @@
-#summary PWI: Using FancyBox
+#summary PWI: Using Fancybox
 
 = Introduction =
 
-One of the ways to show the photo's is by using FancyBox
-(see http://fancybox.net/). PWI includes an unmodified version of the FancyBox
-scripts.
+One of the ways to show the photo's is by using Fancybox (see http://fancybox.net/). PWI includes an unmodified version of the Fancybox scripts.
 
-To use the FancyBox script the FancyBox JavaScript library needs to loaded
-instead of the Slimbox library. Use the following code in the header of your
-page to load the FancyBox library:
+To use the Fancyboxscript the Fancybox !JavaScript library needs to loaded instead of the Slimbox library. Use the following code in the header of your page to load the Fancyboxlibrary:
 
 {{{
 
@@ -40,5 +36,5 @@ If you do not want the Download link in the popup shange the popupExt line to:
 
 }}}
 
-You can also provide other options to FancyBox by adding these to the popupExt line, together with the width, heigth and autoScale parameter.
-See http://fancybox.net for more information on FancyBox and on the other configuration options.
+You can also provide other options to Fancybox by adding these to the popupExt line, together with the width, heigth and autoScale parameter.
+See http://fancybox.net for more information on Fancybox and on the other configuration options.
