@@ -2,11 +2,11 @@
 
 = Introduction =
 
-One of the ways to show the photo's is by using SlimBox2 (http://www.digitalia.be/software/slimbox2).
+One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2).
 (see http://fancybox.net/). PWI includes an unmodified version of the Slimbox2 scripts.
 
-To use the FancyBox script the FancyBox JavaScript library needs to loaded.  Use the following code in the header of your
-page to load the SlimBox library:
+To use the Slimbox script the Slimbox JavaScript library needs to loaded.  Use the following code in the header of your
+page to load the Slimbox library:
 
 {{{
 
@@ -28,7 +28,7 @@ page to load the SlimBox library:
 
 }}}
 
-= SlimBox settings =
+= Slimbox settings =
 
 The following are the default settings for Slimbox:
 
@@ -67,4 +67,4 @@ you can do that using this code to replace the code in the first example:
 
 }}}
 
-See http://www.digitalia.be/software/slimbox2 for more information on SlimBox2 and on the configuration options.
+See http://www.digitalia.be/software/slimbox2 for more information on Slimbox and on the configuration options.
