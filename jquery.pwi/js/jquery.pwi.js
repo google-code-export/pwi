@@ -174,7 +174,7 @@
                     if ($keywordMatch == true) {
                         $albumCount++;
                         if (settings.showAlbumThumbs) {
-                            $scAlbum = $("<div class='pwi_album' style='height:180px;width:" + (settings.thumbSize + 1) + "px;cursor: pointer;'/>");
+                            $scAlbum = $("<div class='pwi_album' style='height:180px;width:" + (settings.albumThumbSize + 1) + "px;cursor: pointer;'/>");
                         } else {
                             $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
                         }
@@ -452,7 +452,7 @@
                 albums(settings.albumstore);
             } else {
                 show(true, '');
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "");
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' + settings.albumThumbSize + ((settings.albumCrop == 1) ? "c" : "");
                 $.getJSON($u, 'callback=?', albums);
             }
             return $self;
@@ -502,7 +502,7 @@
         albumEndDateTime: "", //-- Albums before or on this date will be shown
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
-        albumThumbSize: 144, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
@@ -511,8 +511,8 @@
         photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
-        thumbSize: 144,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
-        thumbCrop: 1, //-- force crop on photo thumbnails (see thumbSize for supported sized)
+        thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
         thumbCss: {
             'margin': '5px'
         },
