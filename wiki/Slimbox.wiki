@@ -2,11 +2,10 @@
 
 = Introduction =
 
-One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2).
-(see http://fancybox.net/). PWI includes an unmodified version of the Slimbox2 scripts.
+One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2). PWI includes an unmodified version of the Slimbox2 scripts.
 
 To use the Slimbox script the Slimbox !JavaScript library needs to loaded.  Use the following code in the header of your
-page to load the Slimbox library:
+page to load PWI with Slimbox support:
 
 {{{
 
@@ -30,29 +29,29 @@ page to load the Slimbox library:
 
 = Slimbox settings =
 
-The following are the default settings for Slimbox:
+Configuring Slimbox can be done using the slimbox_config setting, as indicated on the [Configuration Configuring PWI] page. The slimbox_config setting can contain the following settings:
 
-{{{
-        slimbox_config: {
-            loop: false,
-            overlayOpacity: 0.6,
-            overlayFadeDuration: 400,
-            resizeDuration: 400,
-            resizeEasing: "swing",
-            initialWidth: 250,
-            initlaHeight: 250,
-            imageFadeDuration: 400,
-            captionAnimationDuration: 400,
-            counterText: "{x}/{y}",
-            closeKeys: [27, 88, 67, 70],
-            prevKeys: [37, 80],
-            nextKeys: [39, 83]
-        }, //-- overrule defaults is needed
+|| *Name* || *Default* ||
+|| loop || false ||
+|| overlayOpacity || 0.6 ||
+|| overlayFadeDuration || 400 ||
+|| resizeDuration || 400 ||
+|| resizeEasing || "swing" ||
+|| initialWidth || 250 ||
+|| initlaHeight || 250 ||
+|| imageFadeDuration || 400 ||
+|| captionAnimationDuration || 400 ||
+|| counterText || "{x}/{y}" ||
+|| closeKeys || {{{[}}}27, 88, 67, 70{{{]}}} ||
+|| prevKeys || {{{[}}}37, 80{{{]}}} ||
+|| nextKeys || {{{[}}}39, 83{{{]}}} ||
 
-}}}
 
-You can change any of theses settings by adding the new settings after the username setting. So, if you want to change the countertext
-you can do that using this code to replace the code in the first example:
+See the [http://www.digitalia.be/software/slimbox2 Slimbox website] for the exact meaning of these options.
+
+= Example =
+
+You can change any of theses settings by adding the new settings after the username setting. So, if you want to change the countertext you can do that using this code to replace the code in the first example:
 
 {{{
 
