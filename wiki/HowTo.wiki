@@ -1,5 +1,5 @@
 #summary So, how does this work?
-#labels Phase-Deploy,Featured
+#labels Phase-Deploy
 
 = Introduction =
 
