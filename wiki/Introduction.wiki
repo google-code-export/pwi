@@ -1,4 +1,5 @@
 #summary The Picasa Webalbum Integrator javascript library.
+#labels Featured
 
 = Introduction =
 
