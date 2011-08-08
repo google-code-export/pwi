@@ -1,6 +1,6 @@
 #summary PWI: Using SlimBox2
 
-= Using SlimBox2 =
+= Using !SlimBox2 =
 
 One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2). PWI includes an unmodified version of the Slimbox2 scripts.
 
