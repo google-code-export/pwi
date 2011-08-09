@@ -4,11 +4,11 @@
 
 One of the ways to show the photo's is by using Fancybox (see http://fancybox.net/). PWI includes an unmodified version of the Fancybox scripts.
 
-To use the Fancyboxscript the Fancybox !JavaScript library needs to loaded instead of the Slimbox library. Use the following code in the header of your page to load the Fancyboxlibrary:
+To use the Fancyboxscript the Fancybox !JavaScript library needs to loaded instead of the Slimbox library. Use the following code in the header of your page to load the Fancybox library:
 
 {{{
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> //-->This can be your local jquery lib, but why not have it hosted by google
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> //-->This can be your local jquery lib, but why not have it hosted by Google
 
 <link href="css/pwi.css" rel="stylesheet" type="text/css"/> //--contains the css used by PWI, change the settings in this file to create your own skin
 <script src="js/jquery.pwi.js" type="text/javascript"></script> //-- The actual script :-)
@@ -29,12 +29,12 @@ To use the Fancyboxscript the Fancybox !JavaScript library needs to loaded inste
 
 The width and heigth entries in the popupExt line are needed to make sure the slideshow is shown correctly on all platforms.
 
-If you do not want the Download link in the popup shange the popupExt line to:
+If you do not want the Download link in the popup change the popupExt line to:
 {{{
 
             popupExt: function(photos){photos.fancybox({'width': '95%', 'height': '95%', 'autoScale': false }) }
 
 }}}
 
-You can also provide other options to Fancybox by adding these to the popupExt line, together with the width, heigth and autoScale parameter.
+You can also provide other options to Fancybox by adding these to the popupExt line, together with the width, height and autoScale parameter.
 See http://fancybox.net for more information on Fancybox and on the other configuration options.
