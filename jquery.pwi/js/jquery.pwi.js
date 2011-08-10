@@ -98,7 +98,7 @@
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
-                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAllign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
+                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
                 $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
@@ -174,7 +174,7 @@
                     if ($keywordMatch == true) {
                         $albumCount++;
                         if (settings.showAlbumThumbs) {
-                            $scAlbum = $("<div class='pwi_album' style='height:180px;" + (settings.albumThumbAllign == 1 ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
+                            $scAlbum = $("<div class='pwi_album' style='height:180px;" + (settings.albumThumbAlign == 1 ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
                         } else {
                             $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
                         }
@@ -503,7 +503,7 @@
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
         albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
-        albumThumbCenter: 1, //-- Allign thumbs vertically between rows
+        albumThumbAlign: 1, //-- Allign thumbs vertically between rows
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
@@ -514,7 +514,7 @@
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
         thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
         thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
-        thumbAllign: 1, //-- Allign thumbs vertically between rows
+        thumbAlign: 1, //-- Allign thumbs vertically between rows
         thumbCss: {
             'margin': '5px'
         },
