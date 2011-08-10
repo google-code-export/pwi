@@ -89,17 +89,18 @@
                 }
                 $d += " ";
             }
+            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
-                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'></a>");
+                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d +  "  " + $download_url + "'></a>");
                 return $html;
             }
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
                 $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
-                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + settings.username + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
+                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                     if(settings.showPhotoDownload) {
@@ -390,11 +391,12 @@
 
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (typeof (settings.popupExt) === "function") {
-                settings.popupExt($s.find("a[rel='lb-" + settings.username + "']"));
-                settings.popupExt($s.find("a[rel='sl-" + settings.username + "']"));
+                settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
+                settings.popupExt($s.find("a[rel='sl-" + $tmpUsername + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
-                $s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config,
+                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         if (el.downloadlink) {
                             var downloadLink = '<a href="' + el.downloadlink + '">Download</a>';
@@ -429,10 +431,11 @@
             }
             $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (typeof (settings.popupExt) === "function") {
-                settings.popupExt($s.find("a[rel='lb-" + settings.username + "']"));
+                settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
-                $s.find("a[rel='lb-" + settings.username + "']").slimbox(settings.slimbox_config);
+                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config);
             }
             show(false, $scPhotos);
         }
