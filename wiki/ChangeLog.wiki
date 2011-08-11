@@ -1,0 +1,49 @@
+#summary PWI Change Log.
+
+===Updates v1.4.1===
+
+  * FIXES
+    * Reset some defaults back to the 1.3 values
+    * Fixed an issue where the albums overview would use the album thumbs settings
+
+===Updates v1.4===
+
+  * NEW:
+    * Added Download link to picture.
+    * Implemented slideshow in Fancybox
+    * Added more filtering options for albums view (date + keyword)
+    * Upgrade to jQuery 1.6.2 and Fancybox 1.3.4 
+
+  * FIXES:
+    * Photo navigation not limited to thumbs shown, but all photos from the album can be seen
+    * Optimized Picasa/Google API requests
+    * some minor issues
+
+===Updates v1.3===
+
+  * NEW:
+    * Album paginating
+    * onClickThumb and onClickAlbum return full data stream for you to use (advanced)
+    * Short captions on thumbs, long in Photo popup
+    * Show album titles only (in demo 11)
+    * use keywords in any mode
+
+  * FIXES:
+    * cropping issues resolved
+    * JSLINT validation
+    * Line breaks in photodescription
+    * some minor issues
+
+
+===New features (v1.2):===
+
+  * optional dependencies of jQuery BlockUI and slimbox2 plugin
+  * 4 different modes:
+    * album  (single album view)
+    * albums (all or specific albums)
+    * keyword (photo's from all albums with specific keyword) (*new in v1.2*)
+    * latest (showing the last photo's uploaded)
+  * multiple modes on 1 page
+  * add custom popup plugins like fancybox
+  * compatible with jQuery 1.4
+  * and much more... will follow soon.
