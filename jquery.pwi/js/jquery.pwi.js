@@ -104,9 +104,9 @@
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                     if(settings.showPhotoDownload) {
-                        $c += '<a href="' + $download_url + '">Download foto</a>';
+                        $c += '<a href="' + $download_url + '">" + settings.labels.downloadphotos + "</a>';
                     }
-                    if ($c > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
+                    if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
                     $html.append("<br/>" + $c);
                 }
                 if (typeof (settings.onclickThumb) === "function") { var obj = j; $html.bind('click.pwi', obj, clickThumb); }
@@ -540,6 +540,7 @@
         labels: {
             photo: "photo",
             photos: "photos",
+            downloadphotos: "Download photos",
             albums: "Back to albums",
             slideshow: "Display slideshow",
             noalbums: "No albums available",
