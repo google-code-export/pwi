@@ -4,4 +4,4 @@
   * [Fancybox Using FancyBox]
   * [Slimbox Using SlimBox]
   * [Filtering Filtering Albums and Photos]
-
+  * [ChangeLog PWI Change Log]
