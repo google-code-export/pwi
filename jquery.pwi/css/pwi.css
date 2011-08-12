@@ -79,6 +79,7 @@
 	clear: both;
 }
 .pwi_prevpage, .pwi_nextpage, .pwi_pager_page, .pwi_pager_current{
+	text-decoration: underline;
 	float: left;
 	margin: 5px;
 
