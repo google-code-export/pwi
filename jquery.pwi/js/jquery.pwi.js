@@ -29,6 +29,31 @@
                 alert('Make sure you specify at least your username.' + '\n' + 'See http://pwi.googlecode.com for more info');
                 return;
             }
+            if (settings.useQueryParameters) {
+                var $url=document.URL.split("?", 2);
+                if ($url.length == 2) {
+                    var $queryParams = $url[1].split("&");
+                    var $queryActive = false;
+                    var $page = 1;
+                    for ($queryParam in $queryParams) {
+                        var $split = $queryParams[$queryParam].split("=", 2);
+                        if ($split.length == 2) {
+                            if ($split[0] == 'pwi_album_selected') {
+                                settings.mode = 'album';
+                                settings.album = $split[1];
+                                $queryActive = true;
+                            }
+                            if ($split[0] == 'pwi_albumpage') {
+                                $page = $split[1];
+                            }
+                        }
+                    }
+                    if ($queryActive) {
+                        settings.page = $page;
+                    }
+                }
+            }
+
             switch (settings.mode) {
                 case 'latest':
                     getLatest();
@@ -537,6 +562,7 @@
         showCaptionLength: 9999,
         showPhotoDownload: false,
         showPhotoDate: true,
+        useQueryParameters: false,
         labels: {
             photo: "photo",
             photos: "photos",
