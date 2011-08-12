@@ -82,7 +82,9 @@
 	text-decoration: underline;
 	float: left;
 	margin: 5px;
-
+}
+.pwi_prevpage, .pwi_nextpage, .pwi_pager_page{
+	cursor: pointer;
 }
 .link{
 	text-decoration: underline;
