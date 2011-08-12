@@ -50,6 +50,7 @@
                     }
                     if ($queryActive) {
                         settings.page = $page;
+                        settings.showPermaLink = false;
                     }
                 }
             }
@@ -414,6 +415,30 @@
                 $scPhotos.append($navRow.clone(true));
             }
 
+            if (settings.showPermaLink) {
+                $scPhotos.append("<div style='clear: both;height:0px;'/>");
+                var $permaLinkEnable = $("<div id='permalinkenable' class='pwi_nextpage'/>").text(settings.labels.showPermaLink).bind('click.pwi', p, function (e) {
+                            e.stopPropagation();
+                            var ele = document.getElementById("permalinkbox");
+                            if (ele) {ele.style.display = "block";}
+                            ele = document.getElementById("permalinkenable");
+                            if (ele) {ele.style.display = "none";}
+                            return false;
+                        });
+;
+                var $url=document.URL.split("?", 2);
+                var $permalinkUrl = $url[0] + "?pwi_album_selected=" + j.feed.gphoto$name.$t + "&pwi_albumpage=" + settings.page;
+
+                $scPhotos.append($permaLinkEnable);
+                var $permaShowBox = $("<div style='display:none;' id='permalinkbox' />");
+                var $permaShowBoxForm = $("<form />");
+                var $permalinkInputBox = $("<input type='text' size='40' name='PermaLink' readonly />").val($permalinkUrl);
+                $permaShowBoxForm.append($permalinkInputBox);
+                $permaShowBox.append($permaShowBoxForm);
+                $scPhotos.append($permaShowBox);
+            }
+
+
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             var $tmpUsername = settings.username.replace(/\./g, "_");
@@ -503,13 +528,18 @@
             return $self;
         }
         function show(loading, data) {
-            var ele = document.getElementById("loadinggif");
             if (loading) {
-                if (ele) {ele.style.display = "block";}
+                if (settings.loadingImage.length > 0) {
+                    var ele = document.getElementById(settings.loadingImage);
+                    if (ele) {ele.style.display = "block";}
+                }
                 document.body.style.cursor = "wait";
                 //if ($.blockUI){ $self.block(settings.blockUIConfig);}
             } else {
-                if (ele) {ele.style.display = "none";}
+                if (settings.loadingImage.length > 0) {
+                    var ele = document.getElementById(settings.loadingImage);
+                    if (ele) {ele.style.display = "none";}
+                }
                 document.body.style.cursor = "default";
                 //if ($.blockUI){ $self.unblock(); }
                 $self.html(data);
@@ -542,7 +572,7 @@
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
         thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
         thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
-        thumbAlign: 1, //-- Allign thumbs vertically between rows
+        thumbAlign: 0, //-- Allign thumbs vertically between rows
         thumbCss: {
             'margin': '5px'
         },
@@ -562,7 +592,9 @@
         showCaptionLength: 9999,
         showPhotoDownload: false,
         showPhotoDate: true,
+        showPermaLink: false,
         useQueryParameters: false,
+        loadingImage: "",
         labels: {
             photo: "photo",
             photos: "photos",
@@ -574,6 +606,7 @@
             page: "Page",
             prev: "Previous",
             next: "Next",
+            showPermaLink: "Show PermaLink",
             devider: "|"
         }, //-- translate if needed
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],

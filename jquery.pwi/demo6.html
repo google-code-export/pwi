@@ -17,8 +17,9 @@
 	    	$(document).ready(function() {
 
 				var settings = {
-					username: 'jdiderik'
-					,popupExt: function(photos){
+					username: 'jdiderik',
+					loadingImage: 'loadinggif',
+					popupExt: function(photos){
                         photos.fancybox({
                                 'titleFormat': formatTitle,
 								'hideOnContentClick': false
@@ -32,7 +33,8 @@
 		</script>
 	</head>
 	<body>
-	<h3><a href="index.html">PWI</a> Demo 6, Simple, all defaults (including FancyBox and BlockUI), includes download button and slideshow</h3>
+	<h3><a href="index.html">PWI</a> Demo 6, Simple (including FancyBox and BlockUI), includes download button, slideshow and loading image</h3>
+        <div id="loadinggif"><img src="loading.gif"></div>
 	<div id="container"> </div>
 	</body>
 </html>
