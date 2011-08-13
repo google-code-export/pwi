@@ -46,6 +46,9 @@
                             if ($split[0] == 'pwi_albumpage') {
                                 $page = $split[1];
                             }
+                            if ($split[0] == 'pwi_showpermalink') {
+                                settings.showPermaLink = true;
+                            }
                         }
                     }
                     if ($queryActive) {
@@ -119,14 +122,24 @@
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
-                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d +  "  " + $download_url + "'></a>");
+                $html.append("<a href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d + "'></a>");
+                if(settings.showPhotoDownloadPopup) {
+                    var $downloadDiv = $("<div style='display: none'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" + $download_url + "'/>");
+                    $html.append($downloadDiv);
+                }
                 return $html;
             }
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
                 $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
-                $html.append("<a class='downloadlink' href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d +  "  " + $download_url + "'><img src='" + $thumb_url + "'/></a>");
+                $html.append("<a href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d + "'><img src='" + $thumb_url + "'/></a>");
+                if(settings.showPhotoDownloadPopup) {
+                    var $downloadDiv = $("<div style='display: none'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" + $download_url + "'/>");
+                    $html.append($downloadDiv);
+                }
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                     if(settings.showPhotoDownload) {
@@ -449,26 +462,22 @@
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
                 $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
-                        if (el.downloadlink) {
-                            var downloadLink = '<a href="' + el.downloadlink + '">Download</a>';
-                            return [el.href, el.title + "&nbsp;&nbsp;" + downloadLink];
-                        } else {
-                            return [el.href, el.title];
+                        var $newTitle = el.title;
+                        if (el.parentNode.childElementCount > 1) {
+                            var $links = el.parentNode.getElementsByClassName('downloadlink');
+                            if ($links.length > 0) {
+                                var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
+                                $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
+                            }
                         }
-                    });
+                        return [el.href, $newTitle];
+                    }
+                );
             }
 
             $scPhotos.append("<div style='clear: both;height:0px;'/>");
 
             show(false, $scPhotos);
-
-            var links = document.getElementsByTagName('a');
-            for (var i = 0; i < links.length; i++) {
-                if (links[i].className == 'downloadlink') {
-                    links[i].downloadlink = links[i].title.substr(links[i].title.indexOf("  ")+2);
-                    links[i].title = links[i].title.substr(0, links[i].title.indexOf("  "));
-                }
-            }
         }
 
         function latest(j) {
@@ -486,7 +495,19 @@
             if (typeof (settings.popupExt) === "function") {
                 settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
-                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config);
+                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
+                    function(el) {
+                        var $newTitle = el.title;
+                        if (el.parentNode.childElementCount > 1) {
+                            var $links = el.parentNode.getElementsByClassName('downloadlink');
+                            if ($links.length > 0) {
+                                var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
+                                $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
+                            }
+                        }
+                        return [el.href, $newTitle];
+                    }
+                );
             }
             show(false, $scPhotos);
         }
@@ -524,7 +545,7 @@
         }
         function getLatest() {
             show(true, '');
-            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "");
+            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
             $.getJSON($u, 'callback=?', latest);
             return $self;
         }
@@ -592,9 +613,10 @@
         showPhotoCaptionDate: false,
         showCaptionLength: 9999,
         showPhotoDownload: false,
+        showPhotoDownloadPopup: false,
         showPhotoDate: true,
         showPermaLink: false,
-        useQueryParameters: false,
+        useQueryParameters: true,
         loadingImage: "",
         labels: {
             photo: "photo",
@@ -638,12 +660,14 @@
 
 // This function is called by FancyBox to format the title of a picture
 function formatTitle(title, currentArray, currentIndex, currentOpts) {
-    var newTitle = title;
-    if (currentOpts.orig.context.downloadlink) {
-        var downloadLink = '<a style="color: #FFF;" href="' + currentOpts.orig.context.downloadlink + '">Download</a>';
-        return '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + newTitle + '&nbsp;&nbsp;' + downloadLink + '</td><td id="fancybox-title-float-right"></td></tr></table>';
-    } else {
-        return '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + newTitle + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+    var newTitle = '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + title + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+    if (currentOpts.orig.context.parentNode.childElementCount > 1) {
+        var $links = currentOpts.orig.context.parentNode.getElementsByClassName('downloadlink');
+        if ($links.length > 0) {
+            var downloadLink = '<a style="color: #FFF;" href="' + $links[0].href + '">Download</a>';
+            newTitle = '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + title + '&nbsp;&nbsp;' + downloadLink + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+        }
     }
+    return newTitle;
 }
 
