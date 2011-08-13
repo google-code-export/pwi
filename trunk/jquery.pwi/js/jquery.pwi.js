@@ -222,7 +222,8 @@
                             $scAlbum.append("<img src='" + $thumb + "'/>");
                         }
                         if (settings.showAlbumTitles) {
-                            $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + settings.labels.photos : ""));
+                            $item_plural = (j.feed.entry[i].gphoto$numphotos.$t == "1") ? false : true;
+                            $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
                         }
                         $scAlbums.append($scAlbum);
                     }
