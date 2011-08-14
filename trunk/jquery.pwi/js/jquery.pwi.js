@@ -101,12 +101,8 @@
             }
         }
 
-        function photo(j, hidden) {
-            var $html, $d = "", $c = "",
-                $thumb_url = j.media$group.media$thumbnail[0].url,
-                $img_url = j.media$group.media$thumbnail[1].url,
-                $download_url = j.media$group.media$content[0].url,
-                $id_base = j.gphoto$id.$t;
+        function photo(j, hidden, username) {
+            var $html, $d = "", $c = "";
             $c = nl2br(j.summary ? j.summary.$t : "");
             if (settings.showPhotoDate) {
                 if (j.exif$tags.exif$time) {
@@ -118,14 +114,13 @@
                 }
                 $d += " ";
             }
-            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
-                $html.append("<a href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d + "'></a>");
+                $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" + $download_url + "'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
                     $html.append($downloadDiv);
                 }
                 return $html;
@@ -134,16 +129,16 @@
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
                 $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
-                $html.append("<a href='" + $img_url + "' rel='lb-" + $tmpUsername + "' title='" + $d + "'><img src='" + $thumb_url + "'/></a>");
+                $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" + $download_url + "'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
                     $html.append($downloadDiv);
                 }
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                     if(settings.showPhotoDownload) {
-                        $c += '<a href="' + $download_url + '">" + settings.labels.downloadphotos + "</a>';
+                        $c += '<a href="' + j.media$group.media$content[0].url + '">" + settings.labels.downloadphotos + "</a>';
                     }
                     if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
                     $html.append("<br/>" + $c);
@@ -236,7 +231,7 @@
                         }
                         if (settings.showAlbumTitles) {
                             $item_plural = (j.feed.entry[i].gphoto$numphotos.$t == "1") ? false : true;
-                            $scAlbum.append("<br/>" + j.feed.entry[i].title.$t + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
+                            $scAlbum.append("<br/>" + ( (j.feed.entry[i].title.$t.length > settings.showAlbumTitlesLength) ? j.feed.entry[i].title.$t.substring(0, settings.showCaptionLength) : j.feed.entry[i].title.$t) + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
                         }
                         $scAlbums.append($scAlbum);
                     }
@@ -419,9 +414,10 @@
 
             var startShow = ((settings.page - 1) * settings.maxResults);
             var endShow = settings.maxResults * settings.page;
+            var $tmpUsername = settings.username.replace(/\./g, "_");
             for (var i = 0; i < $np; i++)
             {
-                var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)));
+                var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)), $tmpUsername);
                 $scPhotos.append($scPhoto);
             }
 
@@ -455,7 +451,6 @@
 
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
-            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (typeof (settings.popupExt) === "function") {
                 settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
                 settings.popupExt($s.find("a[rel='sl-" + $tmpUsername + "']"));
@@ -484,14 +479,14 @@
             var $scPhotos = $("<div/>"),
             $len = j.feed ? j.feed.entry.length : 0,
             i = 0;
+            var $tmpUsername = settings.username.replace(/\./g, "_");
             while (i < settings.maxResults && i < $len) {
-                var $scPhoto = photo(j.feed.entry[i], false);
+                var $scPhoto = photo(j.feed.entry[i], false, $tmpUsername);
                 $scPhotos.append($scPhoto);
                 i++;
             }
             $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
-            var $tmpUsername = settings.username.replace(/\./g, "_");
             if (typeof (settings.popupExt) === "function") {
                 settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
             } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
@@ -602,6 +597,7 @@
         onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
         popupExt: "", //-- extend the photos by connecting them to for example Fancybox (see demos for example)
         showAlbumTitles: true,  //--following settings should be self-explanatory
+        showAlbumTitlesLength: 9999,
         showAlbumThumbs: true,
         showAlbumdate: true,
         showAlbumPhotoCount: true,
