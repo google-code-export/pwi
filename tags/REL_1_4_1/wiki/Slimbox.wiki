@@ -1,0 +1,70 @@
+#summary PWI: Using SlimBox2
+
+= Introduction =
+
+One of the ways to show the photo's is by using Slimbox (http://www.digitalia.be/software/slimbox2).
+(see http://fancybox.net/). PWI includes an unmodified version of the Slimbox2 scripts.
+
+To use the Slimbox script the Slimbox !JavaScript library needs to loaded.  Use the following code in the header of your
+page to load the Slimbox library:
+
+{{{
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> //-->This can be your local jquery lib, but why not have it hosted by google
+
+<link href="css/pwi.css" rel="stylesheet" type="text/css"/> //--contains the css used by PWI, change the settings in this file to create your own skin
+<script src="js/jquery.pwi.js" type="text/javascript"></script> //-- The actual script :-)
+
+<script src="js/jquery.blockUI.js" type="text/javascript"></script> //--optional, shows the loading-box during ajax calls, little overhead
+<script src="js/jquery.slimbox2.js" type="text/javascript"></script> //-- makes a nice popup when clicking on a photo, otherwise your users are redirected to google-picasa-web
+
+<script type="text/javascript">
+    $(document).ready(function() {  //-- default jQuery call, do stuff when page is loaded
+        $("#container").pwi({  //--specify your DIV's ID here
+            username: 'tester'  //--REPLACE WITH YOUR PICASA NAME!!!!
+        });
+    });
+</script>
+
+}}}
+
+= Slimbox settings =
+
+The following are the default settings for Slimbox:
+
+{{{
+        slimbox_config: {
+            loop: false,
+            overlayOpacity: 0.6,
+            overlayFadeDuration: 400,
+            resizeDuration: 400,
+            resizeEasing: "swing",
+            initialWidth: 250,
+            initlaHeight: 250,
+            imageFadeDuration: 400,
+            captionAnimationDuration: 400,
+            counterText: "{x}/{y}",
+            closeKeys: [27, 88, 67, 70],
+            prevKeys: [37, 80],
+            nextKeys: [39, 83]
+        }, //-- overrule defaults is needed
+
+}}}
+
+You can change any of theses settings by adding the new settings after the username setting. So, if you want to change the countertext
+you can do that using this code to replace the code in the first example:
+
+{{{
+
+    $(document).ready(function() {  //-- default jQuery call, do stuff when page is loaded
+        $("#container").pwi({  //--specify your DIV's ID here
+            username: 'tester',  //--REPLACE WITH YOUR PICASA NAME!!!!
+            slimbox_config: {
+                counterText: "Picture {x} of {y}"
+            }
+        });
+    });
+
+}}}
+
+See http://www.digitalia.be/software/slimbox2 for more information on Slimbox and on the configuration options.
