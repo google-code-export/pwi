@@ -1,0 +1,8 @@
+#summary FancyBox Demo
+
+= Introduction =
+
+Add your content here.
+
+
+= Demo1: Default usage =
