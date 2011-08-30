@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
-  <ModulePrefs title="Demo6" />
-  <Content type="html" href="http://www.kunstuk.com/pwi/demo6.html" />
+  <ModulePrefs title="FancyBox Demo 1" />
+  <Content type="html" href="https://pwi.googlecode.com/svn/trunk/jquery.pwi/PwiGadget/FancyBox/FancyBoxDemo1.html" />
 </Module>
