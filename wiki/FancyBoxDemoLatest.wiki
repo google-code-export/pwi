@@ -6,3 +6,5 @@ Add your content here.
 
 
 = Demo1: Default usage =
+
+<wiki:gadget url="https://pwi.googlecode.com/svn/trunk/jquery.pwi/PwiGadget/FancyBox/FancyBoxDemo1.xml" width="640" height="480" />
