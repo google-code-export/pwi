@@ -2,7 +2,10 @@
 
 = Introduction =
 
-Add your content here.
+On this page a number of demo's will be shown using FancyBox.
+
+The following demo's are shown:
+- Default usage
 
 
 = Demo1: Default usage =
