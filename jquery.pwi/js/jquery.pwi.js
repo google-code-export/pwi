@@ -138,7 +138,7 @@
                 if (settings.showPhotoCaption) {
                     if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                     if(settings.showPhotoDownload) {
-                        $c += '<a href="' + j.media$group.media$content[0].url + '">" + settings.labels.downloadphotos + "</a>';
+                        $c += '<a href="' + j.media$group.media$content[0].url + '">' + settings.labels.downloadphotos + '</a>';
                     }
                     if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
                     $html.append("<br/>" + $c);
