@@ -12,6 +12,8 @@ The following demo's are shown:
 
 = Demo1: Default usage =
 
+This demo shows the use of FancyBox without any configuration.
+
 The following settings are used for this demo:
 {{{
     var settings = {
