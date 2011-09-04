@@ -7,7 +7,7 @@ On this page a number of demo's will be shown using the FancyBox jQuery plugin.
 A number of demo's will be shown to show a number of possibilities of the pwi application.
 
 The following demo's are shown:
-  * [FancyBoxDemoLatest#Demo1:_Default_usage Default usage]
+ * [FancyBoxDemoLatest#Demo1:_Default_usage Default usage]
 
 
 = Demo1: Default usage =
@@ -18,14 +18,9 @@ The following settings are used for this demo:
 {{{
     var settings = {
         username: '<USERNAME>',
-        loadingImage: 'loadinggif',
-        showPhotoDownloadPopup: true,
         popupExt: function(photos){
-            photos.fancybox({
-                    'titleFormat': formatTitle,
-                    'hideOnContentClick': false
-                })
+            photos.fancybox()
             }
     }
 }}}
-<wiki:gadget url="https://pwi.googlecode.com/svn/trunk/jquery.pwi/PwiGadget/FancyBox/FancyBoxDemo1.xml" width="640" height="480" />
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo1.xml" width="640" height="480" />
