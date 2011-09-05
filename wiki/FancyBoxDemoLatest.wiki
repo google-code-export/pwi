@@ -9,7 +9,6 @@ A number of demo's will be shown to show a number of possibilities of the pwi ap
 The following demo's are shown:
  * [FancyBoxDemoLatest#Demo_1:_Default_usage Default usage]
  * [FancyBoxDemoLatest#Demo_2:_Some_extra_layout_options Some extra layout options]
-Demo 2: Some extra layout options
  * [FancyBoxDemoLatest#Demo_3:_Grouped_by_year Grouped by year]
 
 
