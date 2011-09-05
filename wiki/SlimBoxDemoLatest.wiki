@@ -8,8 +8,6 @@ A number of demo's will be shown to show a number of possibilities of the pwi ap
 
 The following demo's are shown:
  * [SlimBoxDemoLatest#Demo_1:_Default_usage Default usage]
- * [SlimBoxDemoLatest#Demo_2:_Some_extra_layout_options Some extra layout options]
- * [SlimBoxDemoLatest#Demo_3:_Grouped_by_year Grouped by year]
 
 
 = Demo 1: Default usage =
@@ -24,4 +22,3 @@ The following settings are used for this demo:
     $("#container").pwi(settings);
 }}}
 <wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/SlimBox/SlimBoxDemo1.xml" width="640" height="480" />
-
