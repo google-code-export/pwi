@@ -5,5 +5,7 @@
     * [FancyBoxDemoLatest Demo using latest code]
     * [FancyBoxDemoCurrent Demo using release 1.5]
   * [Slimbox Using SlimBox]
+    * [SlimBoxDemoLatest Demo using latest code]
+    * [SlimBoxDemoCurrent Demo using release 1.5]
   * [Filtering Filtering Albums and Photos]
   * [ChangeLog PWI Change Log]
