@@ -3,7 +3,7 @@
   * [Configuration Configuring PWI]
   * [Fancybox Using FancyBox]
     * [FancyBoxDemoLatest Demo using latest code]
-    * [FancyBoxDemoCurrent Demo using latest release]
+    * [FancyBoxDemoCurrent Demo using release 1.5]
   * [Slimbox Using SlimBox]
   * [Filtering Filtering Albums and Photos]
   * [ChangeLog PWI Change Log]
