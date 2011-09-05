@@ -2,7 +2,7 @@
 
 = Introduction =
 
-On this page a number of demo's will be shown using the FancyBox jQuery plugin.
+On this page a number of demo's will be shown using the !FancyBox jQuery plugin.
 
 A number of demo's will be shown to show a number of possibilities of the pwi application.
 
@@ -14,7 +14,7 @@ The following demo's are shown:
 
 = Demo 1: Default usage =
 
-This demo shows the use of FancyBox without any configuration.
+This demo shows the use of !FancyBox without any configuration.
 
 The following settings are used for this demo:
 {{{
@@ -30,7 +30,7 @@ The following settings are used for this demo:
 
 = Demo 2: Some extra layout options =
 
-This demo shows the use of FancyBox with a number of extra layout options:
+This demo shows the use of !FancyBox with a number of extra layout options:
   * Smaller uncropped album thumbnails
   * Cropped picture thumbnails
   * Download link in photo description in Fancybox popup
