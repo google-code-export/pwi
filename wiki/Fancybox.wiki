@@ -27,7 +27,7 @@ To use the Fancyboxscript the Fancybox !JavaScript library needs to loaded inste
 
 }}}
 
-The width and heigth entries in the popupExt line are needed to make sure the slideshow is shown correctly on all platforms.
+The width and height entries in the popupExt line are needed to make sure the slideshow is shown correctly on all platforms.
 
 If you do not want the Download link in the popup change the popupExt line to:
 {{{
@@ -38,3 +38,9 @@ If you do not want the Download link in the popup change the popupExt line to:
 
 You can also provide other options to Fancybox by adding these to the popupExt line, together with the width, height and autoScale parameter.
 See http://fancybox.net for more information on Fancybox and on the other configuration options.
+
+= Demos =
+
+A number of demos are available in the distribution, but there are also some demos available in this Wiki:
+  * Go to [FancyBoxDemoLatest here] for a demo using the latest and greatest version of PWI
+  * Go to [FancyBoxDemoCurrent here] for a demo using the latest released version of PWI
