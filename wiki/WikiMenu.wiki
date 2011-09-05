@@ -2,6 +2,8 @@
   * [PwiRequirements Requirements for running PWI]
   * [Configuration Configuring PWI]
   * [Fancybox Using FancyBox]
+    * [FancyBoxDemoLatest Demo using latest code]
+    * [FancyBoxDemoCurrent Demo using latest release]
   * [Slimbox Using SlimBox]
   * [Filtering Filtering Albums and Photos]
   * [ChangeLog PWI Change Log]
