@@ -67,3 +67,9 @@ You can change any of theses settings by adding the new settings after the usern
 }}}
 
 See http://www.digitalia.be/software/slimbox2 for more information on Slimbox and on the configuration options.
+
+= Demos =
+
+A number of demos are available in the distribution, but there are also some demos available in this Wiki:
+  * Go to [SlimBoxDemoLatest here] for a demo using the latest and greatest version of PWI
+  * Go to [SlimBoxDemoCurrent here] for a demo using the latest released version of PWI
