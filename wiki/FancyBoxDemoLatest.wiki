@@ -7,10 +7,13 @@ On this page a number of demo's will be shown using the FancyBox jQuery plugin.
 A number of demo's will be shown to show a number of possibilities of the pwi application.
 
 The following demo's are shown:
- * [FancyBoxDemoLatest#Demo1:_Default_usage Default usage]
+ * [FancyBoxDemoLatest#Demo_1:_Default_usage Default usage]
+ * [FancyBoxDemoLatest#Demo_2:_Some_extra_layout_options Some extra layout options]
+Demo 2: Some extra layout options
+ * [FancyBoxDemoLatest#Demo_3:_Grouped_by_year Grouped by year]
 
 
-= Demo1: Default usage =
+= Demo 1: Default usage =
 
 This demo shows the use of FancyBox without any configuration.
 
@@ -22,5 +25,63 @@ The following settings are used for this demo:
             photos.fancybox()
             }
     }
+    $("#container").pwi(settings);
 }}}
 <wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo1.xml" width="640" height="480" />
+
+= Demo 2: Some extra layout options =
+
+This demo shows the use of FancyBox with a number of extra layout options:
+  * Smaller uncropped album thumbnails
+  * Cropped picture thumbnails
+  * Download link in photo description in Fancybox popup
+  * Show waiting-image when loading
+
+The following settings are used for this demo:
+{{{
+    var settings = {
+        username: '<USERNAME>',
+        loadingImage: 'loadinggif',
+        showPhotoDownloadPopup: true,
+        albumCrop: 0,
+        albumThumbSize: 72,
+        thumbCrop: 1,
+        thumbAlign: 1,
+        popupExt: function(photos){
+            photos.fancybox({ 'titleFormat': formatTitle })
+            }
+    }
+    $("#container").pwi(settings);
+}}}
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo2.xml" width="640" height="480" />
+
+= Demo 3: Grouped by year =
+
+This demo shows the grouping per year. Each div in the HTML code shows only one year. For each div the start and end date are specified in the var section. For each div a special var section is needed.
+
+The following settings are used for this demo:
+{{{
+    var settings2007 = {
+        username: '<USERNAME>',
+        albumStartDateTime: "2007-01-01", 
+        albumEndDateTime: "2007-12-31",
+        popupExt: function(photos){ photos.fancybox({ }) }
+    }
+    var settings2008 = {
+        username: '<USERNAME>',
+        albumStartDateTime: "2008-01-01", 
+        albumEndDateTime: "2008-12-31",
+        popupExt: function(photos){ photos.fancybox({ }) }
+    }
+    var settings2009 = {
+        username: '<USERNAME>',
+        albumStartDateTime: "2009-01-01", 
+        albumEndDateTime: "2009-12-31",
+        popupExt: function(photos){ photos.fancybox({ }) }
+    }
+    
+    $("#container2007").pwi(settings2007);
+    $("#container2008").pwi(settings2008);
+    $("#container2009").pwi(settings2009);
+}}}
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo3.xml" width="640" height="480" />
