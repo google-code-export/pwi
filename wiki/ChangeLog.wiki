@@ -3,12 +3,12 @@
 ===Updates v1.5 (coming soon)===
 
   * NEW:
-    * Added Permalink feature suing Query parameters
+    * Added Permalink feature using Query parameters
     * Improved download link function, including extra option to control this
     * Optionally albums with type Blogger, Scrapbook and/or ProfilePhotos albums
 
   * FIXES:
-    * Fixed allignment on albums overview page
+    * Fixed alignment on albums overview page
     * Issue 82: fixed issue with dots in Picasa account name
     * Fixed showPhotoDownload handling
 
