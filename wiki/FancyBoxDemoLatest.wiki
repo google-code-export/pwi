@@ -35,6 +35,7 @@ This demo shows the use of !FancyBox with a number of extra layout options:
   * Cropped picture thumbnails
   * Download link in photo description in Fancybox popup
   * Show waiting-image when loading
+  * Remove albums with type ScrapBook and ProfilePhoto
 
 The following settings are used for this demo:
 {{{
@@ -46,6 +47,7 @@ The following settings are used for this demo:
         albumThumbSize: 72,
         thumbCrop: 1,
         thumbAlign: 1,
+        removeAlbumTypes: ["ScrapBook", "ProfilePhotos"],
         popupExt: function(photos){
             photos.fancybox({ 'titleFormat': formatTitle })
             }
