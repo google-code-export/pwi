@@ -3,8 +3,9 @@
  * This library was inspired aon pwa by Dieter Raber
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
- * @revision 1.4.1
- * @date august 07, 2011
+ * @author Johan Borkhuis - http://www.borkhuis.com/
+ * @revision 1.5.0
+ * @date September 06, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
@@ -174,10 +175,12 @@
             $na = j.feed.entry.length;
 
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
-                var $id_base = j.feed.entry[i].gphoto$name.$t,
-                    $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
+                var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
                     $thumb = j.feed.entry[i].media$group.media$thumbnail[0].url;
-                if (($.inArray($id_base, settings.albums) > -1 || settings.albums.length === 0) &&
+                if ((($.inArray(j.feed.entry[i].gphoto$name.$t, settings.albums) > -1) || 
+                     (settings.albums.length === 0)) &&
+                    ((j.feed.entry[i].gphoto$albumType === undefined) ||
+                     ($.inArray(j.feed.entry[i].gphoto$albumType.$t, settings.removeAlbumTypes) == -1)) &&
                     ((settings.albumStartDateTime == "" || $albumDate >= $startDate) &&
                      (settings.albumEndDateTime == "" || $albumDate <= $endDate))) {
 
@@ -551,14 +554,14 @@
                     if (ele) {ele.style.display = "block";}
                 }
                 document.body.style.cursor = "wait";
-                //if ($.blockUI){ $self.block(settings.blockUIConfig);}
+                if ($.blockUI){ $self.block(settings.blockUIConfig);}
             } else {
                 if (settings.loadingImage.length > 0) {
                     var ele = document.getElementById(settings.loadingImage);
                     if (ele) {ele.style.display = "none";}
                 }
                 document.body.style.cursor = "default";
-                //if ($.blockUI){ $self.unblock(); }
+                if ($.blockUI){ $self.unblock(); }
                 $self.html(data);
             }
         }
@@ -596,6 +599,7 @@
         onclickThumb: "", //-- overload the function when clicked on a photo thumbnail
         onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
         popupExt: "", //-- extend the photos by connecting them to for example Fancybox (see demos for example)
+        removeAlbumTypes: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
         showAlbumTitles: true,  //--following settings should be self-explanatory
         showAlbumTitlesLength: 9999,
         showAlbumThumbs: true,
