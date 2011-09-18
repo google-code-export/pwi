@@ -5,7 +5,7 @@
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
  * @revision 1.5.0
- * @date September 06, 2011
+ * @date September 18, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
@@ -515,11 +515,13 @@
             event.preventDefault();
             settings.onclickAlbumThumb(event);
         }
+
         function clickThumb(event) {
             event.stopPropagation();
             event.preventDefault();
             settings.onclickThumb(event);
         }
+
         function getAlbums() {
             if (settings.albumstore.feed) {
                 albums(settings.albumstore);
@@ -530,23 +532,25 @@
             }
             return $self;
         }
+
         function getAlbum() {
             if (settings.photostore[settings.album]) {
                 album(settings.photostore[settings.album]);
             } else {
-                var $si = ((settings.page - 1) * settings.maxResults) + 1;
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '/album/' + settings.album + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
                 show(true, '');
                 $.getJSON($u, 'callback=?', album);
             }
             return $self;
         }
+
         function getLatest() {
             show(true, '');
             var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
             $.getJSON($u, 'callback=?', latest);
             return $self;
         }
+
         function show(loading, data) {
             if (loading) {
                 if (settings.loadingImage.length > 0) {
