@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>	
+		<title>PWI Demo - Picassa Webalbum Integrator (PWI)</title>
+
+
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+		<link   href="css/pwi.css" rel="stylesheet" type="text/css"/>
+		<script src="js/jquery.pwi.js" type="text/javascript"></script>
+	</head>
+	<body>
+	<h3><a href="http://pwi.googlecode.com">PWI</a> Demo</h3>
+    Sample code:<br/><br/>
+    <pre>
+
+		    $(document).ready(function() {
+		        $("#container").pwi({
+		            username: 'jquery.pwi',
+		            mode: 'albums',
+		            albums: ["Album1","Album2"],
+		            thumbCss: { margin: '5px' },
+		            onclickThumb: ""
+		        });
+
+		    });
+    </pre>
+    <p>Demo's:<br />
+    </p>
+    <p><a href="demo1.html">demo 1</a> - Simple and all default<br />
+      <a href="demo2.html">demo 2</a> - Single album<br />
+      <a href="demo3.html">demo 3</a> - Latest additions!<br />
+      <a href="demo4.html">demo 4</a> - Unlisted album!<br />
+      <a href="demo5.html">demo 5</a> - Selective albums<br/>
+      <a href="demo6.html">demo 6</a> - Simple with FancyBox<br />
+      <a href="demo7.html">demo 7</a> - Multiple galleries AND FancyBox<br />
+      <a href="demo8.html">demo 8</a> - Override onclickAlbumThumb<br/>
+      <a href="demo9.html">demo 9</a> - Photo's by Keyword/tag<br/>
+      <a href="demo10.html">demo 10</a> - Photo's by Keyword/tag from single album<br/>
+      <a href="demo11.html">demo 11</a> - Simple album list without thumbs<br/>
+      <a href="demo12.html">demo 12</a> - Show albums groups per year<br/>
+      <a href="demo13.html">demo 13</a> - No query: Identical to demo1<br/>
+      <a href="demo13.html?pwi_album_selected=DanceParade2008&pwi_albumpage=4">demo 13 using permalink</a> -Query: Show specific album and page using a perma-link<br/>
+      
+    </p>
+    <hr size=1 />
+	Things you can overrule, specifified values are the defaults, only username is mandatory:<br/>
+    <pre>
+        username: '', //-- Must be explicitly set!!!
+        mode: 'albums', //-- can be: album, albums, latest (keyword = obsolete but backwards compatible, now just fill in a keyword in the settings to enable keyword-photos)
+        album: "", //-- For loading a single album
+        authKey: "", //-- for loading a single album that is private (use in 'album' mode only)
+        albums: [], //-- use to load specific albums only: ["MyAlbum", "TheSecondAlbumName", "OtherAlbum"]
+        keyword: "", 
+        albumKeywords: [], //-- Only show albums containing one of these keywords in the description. Use [keywords: "kw1", "kw2"] within the album description
+        albumStartDateTime: "", //-- Albums on or after this date will be shown. Format: YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD for date only
+        albumEndDateTime: "", //-- Albums before or on this date will be shown
+        albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
+        albumTitle: "", //-- overrule album title in 'album' mode
+        albumThumbSize: 144, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        albumMaxResults: 999, //-- load only the first X albums
+        albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
+        albumPage: 1, //-- force load on specific album
+        albumTypes: "public", //-- load public albums, not used for now
+        page: 1, //-- initial page for an photo page
+        photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other
+        maxResults: 50, //-- photos per page
+        showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
+        thumbSize: 144,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        thumbCrop: 1, //-- force crop on photo thumbnails (see thumbSize for supported sized)
+        thumbCss: {
+            'margin': '5px'
+        },
+        onclickThumb: "", //-- overload the function when clicked on a photo thumbnail
+        onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
+        popupExt: "", //-- extend the photos by connecting them to for example Fancybox (see demos for example)
+        showAlbumTitles: true,  //--following settings should be self-explanatory
+        showAlbumThumbs: true,
+        showAlbumdate: true,
+        showAlbumPhotoCount: true,
+        showAlbumDescription: true,
+        showAlbumLocation: true,
+        showSlideshow: true, //-- Set to true to show slideshow in popup
+        showSlideshowLink: false,
+        showPhotoCaption: false,
+        showPhotoCaptionDate: false,
+        showCaptionLength: 9999,
+        showPhotoDownload: false,
+        showPhotoDate: true,
+        labels: {
+            photo: "photo",
+            photos: "photos",
+            albums: "Back to albums",
+            slideshow: "Display slideshow",
+            noalbums: "No albums available",
+            loading: "PWI fetching data...",
+            page: "Page",
+            prev: "Previous",
+            next: "Next",
+            devider: "|"
+        }, //-- translate if needed
+        months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        slimbox_config: {
+            loop: false,
+            overlayOpacity: 0.6,
+            overlayFadeDuration: 400,
+            resizeDuration: 400,
+            resizeEasing: "swing",
+            initialWidth: 250,
+            initlaHeight: 250,
+            imageFadeDuration: 400,
+            captionAnimationDuration: 400,
+            counterText: "{x}/{y}",
+            closeKeys: [27, 88, 67, 70],
+            prevKeys: [37, 80],
+            nextKeys: [39, 83]
+        }, //-- overrule defaults is needed
+        blockUIConfig: {
+            message: "<div class='lbLoading pwi_loader'>loading...</div>",
+            css: "pwi_loader"
+        }
+        </pre>
+    <div id="container"> </div>
+	</body>
+</html>
