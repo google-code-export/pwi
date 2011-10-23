@@ -129,20 +129,29 @@
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
-                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + (settings.showPhotoCaption ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
+                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + ((settings.showPhotoCaption || settings.showPhotoLocation) ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
                 $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
                     $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
                     $html.append($downloadDiv);
                 }
-                if (settings.showPhotoCaption) {
-                    if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
-                    if(settings.showPhotoDownload) {
-                        $c += '<a href="' + j.media$group.media$content[0].url + '">' + settings.labels.downloadphotos + '</a>';
+                if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
+                    $html.append("<br/>");
+                    if((settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
+                        if((j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
+                            var $locationLink = $("<a class='iframe' href='http://maps.google.com/?output=embed&hl=en&t=h&z=17&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='sl-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
+                            $html.append($locationLink);
+                        }
                     }
-                    if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
-                    $html.append("<br/>" + $c);
+                    if (settings.showPhotoCaption) {
+                        if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
+                        if(settings.showPhotoDownload) {
+                            $c += '<a href="' + j.media$group.media$content[0].url + '">' + settings.labels.downloadphotos + '</a>';
+                        }
+                        if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
+                        $html.append($c);
+                    }
                 }
                 if (typeof (settings.onclickThumb) === "function") { var obj = j; $html.bind('click.pwi', obj, clickThumb); }
 
@@ -584,17 +593,17 @@
         albumEndDateTime: "", //-- Albums before or on this date will be shown
         albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
-        albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
         albumThumbAlign: 1, //-- Allign thumbs vertically between rows
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
         albumTypes: "public", //-- load public albums, not used for now
         page: 1, //-- initial page for an photo page
-        photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other
+        photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other. Allowed sizes: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
-        thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 160 and uncropped only: 72, 144, 200, 288, 320, 400, 512, 576, 640, 720, 800) 
+        thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
         thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
         thumbAlign: 0, //-- Allign thumbs vertically between rows
         thumbCss: {
@@ -620,6 +629,8 @@
         showPhotoDownloadPopup: false,
         showPhotoDate: true,
         showPermaLink: false,
+        showPhotoLocation: false,
+        mapIconLocation: "",
         useQueryParameters: true,
         loadingImage: "",
         labels: {
