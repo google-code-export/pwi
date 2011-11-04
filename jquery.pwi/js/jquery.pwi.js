@@ -182,6 +182,9 @@
             }
             i = settings.albumsPerPage * (settings.albumPage - 1);
             $na = j.feed.entry.length;
+            if ($na > settings.albumMaxResults) {
+                $na = settings.albumMaxResults;
+            }
 
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
                 var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
