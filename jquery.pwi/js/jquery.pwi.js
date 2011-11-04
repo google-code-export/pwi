@@ -14,7 +14,7 @@
     var elem, opts = {};
     $.fn.pwi = function (opts) {
         var $self, settings = {};
-        opts = $.extend({}, $.fn.pwi.defaults, opts);
+        opts = $.extend(true,{}, $.fn.pwi.defaults, opts);
         elem = this;
         function _initialize() {
             settings = opts;
