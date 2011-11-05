@@ -303,10 +303,10 @@
                 $navRow.append("<div style='clear: both;height:0px;'/>");
 
                 if ($navRow.length > 0 && (settings.showPager === 'both' || settings.showPager === 'top')) {
-                    $scAlbums.append($navRow);
+                    $scAlbums.prepend($navRow.clone(true));
                 }
                 if ($navRow.length > 0 && (settings.showPager === 'both' || settings.showPager === 'bottom')) {
-                    $scAlbums.prepend($navRow.clone(true));
+                    $scAlbums.append($navRow);
                 }
             }
 
