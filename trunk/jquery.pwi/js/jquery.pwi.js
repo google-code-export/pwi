@@ -429,7 +429,7 @@
 
             var startShow = ((settings.page - 1) * settings.maxResults);
             var endShow = settings.maxResults * settings.page;
-            var $tmpUsername = settings.username.replace(/\./g, "_");
+            var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
             for (var i = 0; i < $np; i++)
             {
                 var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)), $tmpUsername);
@@ -494,7 +494,7 @@
             var $scPhotos = $("<div/>"),
             $len = j.feed ? j.feed.entry.length : 0,
             i = 0;
-            var $tmpUsername = settings.username.replace(/\./g, "_");
+            var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
             while (i < settings.maxResults && i < $len) {
                 var $scPhoto = photo(j.feed.entry[i], false, $tmpUsername);
                 $scPhotos.append($scPhoto);
