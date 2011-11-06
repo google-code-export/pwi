@@ -1,6 +1,17 @@
 #summary PWI Change Log.
 #labels Featured
 
+===Updates since v1.5===
+
+  * NEW:
+    * Issue 43 (feature request): Added option to show map of a picture
+    * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
+  * FIXES:
+    * Issue 83 (bug): Issue with user@company.com
+    * Issue 86 (bug): Documentation update
+    * Issue 89 (bug): Translating labels could break PWI
+    * Issue 90 (bug): Albums pagination
+
 ===Updates v1.5===
 
   * NEW:

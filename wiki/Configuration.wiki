@@ -6,34 +6,38 @@ The following is an overview of all the options you can set.
 
 || *Name* || *Default* || *Description* ||
 || username || "" || REQUIRED TO SET, NOT OPTIONAL, THE REST IS!!! ||
-|| mode || 'albums' ||  can be: album, albums, latest (default: "albums") ||
-|| album || "" ||  specify an album id if mode is 'album', default: "" ||
-|| authKey || "" ||  specify the authKey if you choose mode 'album' and specified an unlisted album from picasa, default: "" ||
-|| albums || [] ||  specify a lits of album id's if mode is 'albums', leave as [] to show all albums (ex. ['album1','album2'], default: [])  ||
-|| albumCrop || 1 ||  crop the thumbs of the albums (1 = yes / 0 = no, default: 1) ||
-|| albumTitle || "" ||  displays alternative album title if no title is specified in Picasa, default: "" ||
-|| albumThumbSize || 160 ||  specify thumbnail size of albums (default: 160, supported: 32, 48, 64, 72, 144, 160) ||
-|| albumMaxResults || 999 ||  display maximum number of albums (default: 999) ||
+|| mode || 'albums' ||  can be: album, albums, latest ||
+|| album || "" ||  specify an album id if mode is 'album' ||
+|| authKey || "" ||  specify the authKey if you choose mode 'album' and specified an unlisted album from picasa ||
+|| albums || [] ||  specify a lits of album id's if mode is 'albums', leave as [] to show all albums (ex. ['album1','album2'])  ||
+|| albumCrop || 1 ||  crop the thumbs of the albums (1 = yes / 0 = no) ||
+|| albumTitle || "" ||  displays alternative album title if no title is specified in Picasa ||
+|| albumThumbSize || 72 ||  specify thumbnail size of albums (supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)) ||
+|| albumThumbAlign || 1 || Allign thumbs vertically between rows ||
+|| albumMaxResults || 999 ||  display maximum number of albums ||
 || albumsPerPage || 999 ||  show X albums per page (activates paging on albums when this amount is less then the available albums) ||
 || albumPage || 1 ||  force load on specific album ||
-|| albumStartIndex || 1 ||  Start album index, if albumMaxResults is set to less then the available albums. (default: 1) ||
-|| albumTypes || "public" ||  default: "public", currently not supported: "private", "all", "visible" ||
-|| keyword || "" || Filter photos based on keywords. See [Filtering Filtering albums and Photos for more information] ||
-|| albumKeyword || "" || Filter albums based on keywords. See [Filtering Filtering albums and Photos for more information] ||
+|| albumStartIndex || 1 ||  Start album index, if albumMaxResults is set to less then the available albums. ||
+|| albumTypes || "public" ||  currently not supported: "private", "all", "visible" ||
+|| keyword || "" || Filter photos based on keywords. See [Filtering Filtering albums and Photos] for more information ||
+|| albumKeywords || "" || Filter albums based on keywords. See [Filtering Filtering albums and Photos for more information] ||
 || albumStartDateTime || "" || Albums on or after this date will be shown. See [Filtering Filtering albums and Photos for more information] ||
 || albumEndDateTime || "" || Albums before or on this date will be shown.See [Filtering Filtering albums and Photos for more information] ||
 || page || 1 ||  Set to page if mode is 'album' and you want to start at a certain page of the album when the page is loaded. ||
-|| photoSize || 800 ||  Photo size to link to in the album (default: 800, supported: 200, 288, 320, 400, 512, 576, 640, 720, 800) ||
-|| maxResults || 50 ||  Maximum amount of photo's per album page (default: 50) ||
-|| thumbSize || 72 ||  specify thumbnail size of photo's (default: 72, supported (un)cropped: 32, 48, 64, 72, 144, 160 and uncropped only: 200, 288, 320, 400, 512, 576, 640, 720, 800)  ||
-|| thumbCrop || 0 ||  crop the thumb of the photo's (default: 0, 1 = yes / 0 = no) cropping makes the thumbs square and gives consistent layout ||
+|| photoSize || 800 ||  Photo size to link to in the album (supported: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600) ||
+|| maxResults || 50 ||  Maximum amount of photo's per album page ||
+|| thumbSize || 72 ||  specify thumbnail size of photo's (supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)  ||
+|| thumbCrop || 0 ||  crop the thumb of the photo's (1 = yes / 0 = no) cropping makes the thumbs square and gives consistent layout ||
+|| thumbAlign || 0 || Allign thumbs vertically between rows ||
 || thumbCss || {'margin':'5px'} || override and add custom styles for the thumbs (see http://docs.jquery.com/CSS/css#properties for specification) ||
 || onclickThumb || "" ||  override click on single photo thumb. specify a function to replace slimbox,see demo 3 for an example ||
 || onclickAlbumThumb || "" ||  overload the function when clicked on a album thumbnail ||
 || showSlideshow || true ||  Set to true to show slideshow in popup ||
 || popupExt || "" || extend the photos by connecting them to for example Fancybox (see demos for example) ||
+|| removeAlbumTypes || "" || Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync ||
 || showAlbumTitles || true ||  Display title underneath album thumbs ||
-|| showAlbumThumbs || true, || Show albums as thumbs on albums overview page ||
+|| showAlbumTitlesLength || 9999 || Maximum length of an album title to show ||
+|| showAlbumThumbs || true || Show albums as thumbs on albums overview page ||
 || showAlbumdate || true ||  Display date underneath album thumbs ||
 || showAlbumPhotoCount || true ||  Display amount of photo's in album underneath album thumb ||
 || showAlbumDescription || true ||  Display album description on photo page ||
@@ -42,9 +46,15 @@ The following is an overview of all the options you can set.
 || showPhotoCaption || false ||  Show caption underneath photo thumb (not recommended to prevent layout issues) ||
 || showPhotoCaptionDate || false || Show photo date in caption ||
 || showCaptionLength || 9999 || Maximum length of a photo caption to show ||
-|| showPhotoDownload || false || Show download link next to photo description on the photo popup in Slimbox and Fancybox ||
+|| showPhotoDownload || false || Show download link next to each photo on album page ||
+|| showPhotoDownloadPopup || false || Show download link next to photo description on the photo popup in Slimbox and Fancybox ||
 || showPhotoDate || true ||  Show photo date in caption ||
+|| showPermaLink || false || Show a perma-link box at the bottom of an album page, containing a link to the current page ||
 || showPager || 'bottom' || 'top', 'bottom', 'both' (for both albums and album paging) ||
+|| showPhotoLocation || false || Process geo-information of a picture, showing on Google maps when data is available ||
+|| mapIconLocation || "" || Icon that will be shown when location information is available for a picture ||
+|| useQueryParameters || true || Allow use of query parameters in the URL (parameters after a question-mark), to pass parameters to PWI. Needed for perma-link feature. [#Query_parameters See below] ||
+|| loadingImage || "" || This image will be shown when data is being requested from Picasa ||
 || labels || || [#Labels See below] ||
 || months || || [#Months See below] ||
 || slimbox_config || || See Slimbox page for configuration options ||
@@ -64,7 +74,7 @@ To translate the labels fill in the labels with texts in your language, or just 
 || page || Page ||
 || prev || Previous ||
 || next || Next ||
-|| devider || | ||
+|| divider || | ||
 
 See [#Example Example] below on how to add these to your configuration.
 
@@ -76,6 +86,21 @@ Next to labels also the name of the months can be translated. By adding the foll
         months: ["January","February","March","April","May","June",
                  "July","August","September","October","November","December"]
 }}}
+
+== Query parameters ==
+
+Query parameters are used to pass information to a web page using the URL. This is the information usually after a question mark. PWI supports the following query parameters:
+
+|| *Parameter* || *Description* ||
+|| pwi_album_selected || Album to be selected. Changes mode to album. ||
+|| pwi_albumpage || Page within an album to show. Should be less than the number of pages in an album. Note that when the setting maxResults is changed this value should also be changed. ||
+|| pwi_showpermalink || Overrules the showPermaLink setting, showing the perma-link box at the bottom of the page. Can be used to request a perma-link of a page without modifying the settings ||
+
+An example of a URL containg these query parameters:
+
+http://www.kunstuk.com/pwi/demo6.html?pwi_album_selected=DanceParade2008&pwi_albumpage=5
+
+Note that the permalink feature will be switched off when a specific page is selected using this feature.
 
 == Example ==
 
