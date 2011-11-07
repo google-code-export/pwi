@@ -35,7 +35,8 @@ This demo shows the use of !FancyBox with a number of extra layout options:
   * Cropped picture thumbnails
   * Download link in photo description in Fancybox popup
   * Show waiting-image when loading
-  * Remove albums with type ScrapBook and ProfilePhoto
+  * Remove albums with type !ScrapBook and !ProfilePhoto
+  * Show map when location is available (see Marathon Rotterdam map)
 
 The following settings are used for this demo:
 {{{
@@ -43,6 +44,9 @@ The following settings are used for this demo:
         username: '<USERNAME>',
         loadingImage: 'loadinggif',
         showPhotoDownloadPopup: true,
+        showPhotoCaption: true,
+        showPhotoLocation: true,
+        mapIconLocation: "http://pwi.googlecode.com/svn/trunk/jquery.pwi/icon-earth.png",
         albumCrop: 0,
         albumThumbSize: 72,
         thumbCrop: 1,
