@@ -15,6 +15,26 @@
     $.fn.pwi = function (opts) {
         var $self, settings = {};
         opts = $.extend(true,{}, $.fn.pwi.defaults, opts);
+        if (opts.popupPlugin == "") {
+            // Detect the popup plugin type
+            if ($.fn.fancybox) {
+                opts.popupPlugin = "fancybox";
+                opts.popupExt = function(rel, photos){
+                    if (rel === "lb") {     // Settings for normal photos
+                        photos.fancybox(opts.fancybox_config.config_photos);
+                    }
+                    if (rel === "sl") {     // Settings for slideshows
+                        photos.fancybox(opts.fancybox_config.config_slideshow);
+                    }
+                    if (rel === "map") {    // Settings for maps
+                        photos.fancybox(opts.fancybox_config.config_maps);
+                    }
+                };
+            }
+            else if($.fn.slimbox) {
+                opts.popupPlugin = "slimbox";
+            }
+        }
         elem = this;
         function _initialize() {
             settings = opts;
@@ -140,7 +160,7 @@
                     $html.append("<br/>");
                     if((settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
                         if((j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
-                            var $locationLink = $("<a class='iframe' href='http://maps.google.com/?output=embed&hl=en&t=h&z=17&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='sl-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
+                            var $locationLink = $("<a class='iframe' href='http://maps.google.com/?output=embed&t=h&z=15&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='map-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
                             $html.append($locationLink);
                         }
                     }
@@ -362,7 +382,7 @@
             }
 
             // SlimBox only supports images, so it cannot show the iframe containing the slideshow
-            if ((settings.showSlideshow) && (typeof (settings.popupExt) === "function")) {
+            if ((settings.showSlideshow) && (settings.popupPlugin === "fancybox")) {
                 var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
                 var $slideShow = $("<div class='pwi_photo'/>");
                 if (($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
@@ -466,10 +486,11 @@
 
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
-            if (typeof (settings.popupExt) === "function") {
-                settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
-                settings.popupExt($s.find("a[rel='sl-" + $tmpUsername + "']"));
-            } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
+            if (settings.popupPlugin === "fancybox") {
+                settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
+                settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
+                settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
+            } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
@@ -502,9 +523,10 @@
             }
             $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
-            if (typeof (settings.popupExt) === "function") {
-                settings.popupExt($s.find("a[rel='lb-" + $tmpUsername + "']"));
-            } else if (typeof (settings.onclickThumb) != "function" && $.slimbox) {
+            if (settings.popupPlugin === "fancybox") {
+                settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
+                settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
+            } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
@@ -614,7 +636,7 @@
         },
         onclickThumb: "", //-- overload the function when clicked on a photo thumbnail
         onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
-        popupExt: "", //-- extend the photos by connecting them to for example Fancybox (see demos for example)
+
         removeAlbumTypes: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
         showAlbumTitles: true,  //--following settings should be self-explanatory
         showAlbumTitlesLength: 9999,
@@ -651,6 +673,23 @@
             devider: "|"
         }, //-- translate if needed
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        fancybox_config: {
+            config_photos: {
+                'titleFormat': formatTitle,
+                'hideOnContentClick': false
+            },
+            config_slideshow: {
+                'showNavArrows': false,
+                'titleShow': false,
+                'hideOnContentClick': false
+            },
+            config_maps: {
+                'showNavArrows': false,
+                'titleShow': false,
+                'hideOnContentClick': false
+            }
+
+        },
         slimbox_config: {
             loop: false,
             overlayOpacity: 0.6,
@@ -672,6 +711,8 @@
         }, //-- overrule defaults if needed
         albumstore: {}, //-- don't touch
         photostore: {}, //-- don't touch
+        popupPlugin: "", // If empty the name will be determined automatically
+        popupExt: "", //--  don't touch. Configure using other options
         token: ""
     };
 })(jQuery);

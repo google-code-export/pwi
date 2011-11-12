@@ -28,14 +28,7 @@
                             showAlbumDescription: false,
                             mode: 'album',
                             showSlideshow: false,
-                            album: e.data.gphoto$name.$t,  // The ident of the selected album
-					        popupExt: function(photos){
-                                photos.fancybox({
-                                        'titleFormat': formatTitle,
-								        'hideOnContentClick': false
-							})
-						}
-                            
+                            album: e.data.gphoto$name.$t  // The ident of the selected album
 				        });
 		            }
 		        });
