@@ -23,10 +23,13 @@
                     if (rel === "lb") {     // Settings for normal photos
                         photos.fancybox(opts.fancybox_config.config_photos);
                     }
-                    if (rel === "sl") {     // Settings for slideshows
+                    else if (rel === "yt") {     // Settings for normal photos
+                        photos.fancybox(opts.fancybox_config.config_youtube);
+                    }
+                    else if (rel === "sl") {     // Settings for slideshows
                         photos.fancybox(opts.fancybox_config.config_slideshow);
                     }
-                    if (rel === "map") {    // Settings for maps
+                    else if (rel === "map") {    // Settings for maps
                         photos.fancybox(opts.fancybox_config.config_maps);
                     }
                 };
@@ -123,8 +126,16 @@
         }
 
         function photo(j, hidden, username) {
-            var $html, $d = "", $c = "";
-            $c = nl2br(j.summary ? j.summary.$t : "");
+            var $html, $d = "", $c = "", $youtubeId = "";
+            if (j.summary) {
+                var $matched = j.summary.$t.match(/\[youtube\s*:\s*(.*)\s*\](.*)/);
+                if ($matched) { // Found youtube video entry
+                    $youtubeId = $matched[1];
+                    $c = nl2br($matched[2]);
+                } else {
+                    $c = nl2br(j.summary.$t);
+                }
+            }
             if (settings.showPhotoDate) {
                 if (j.exif$tags.exif$time) {
                     $d = formatDateTime(j.exif$tags.exif$time.$t);
@@ -138,7 +149,12 @@
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
-                $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
+                if ($youtubeId == "") {
+                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
+                }
+                else {
+                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
+                }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
                     $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
@@ -150,7 +166,12 @@
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
                 $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + ((settings.showPhotoCaption || settings.showPhotoLocation) ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
-                $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                if ($youtubeId == "") {
+                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                }
+                else {
+                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
                     $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
@@ -488,6 +509,7 @@
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if (settings.popupPlugin === "fancybox") {
                 settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
+                settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
                 settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
                 settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
             } else if (settings.popupPlugin === "slimbox") {
@@ -677,6 +699,12 @@
             config_photos: {
                 'titleFormat': formatTitle,
                 'hideOnContentClick': false
+            },
+            config_youtube: {
+                'showNavArrows': false,
+                'hideOnContentClick': false,
+                'width': '90%',
+                'height': '90%'
             },
             config_slideshow: {
                 'showNavArrows': false,
