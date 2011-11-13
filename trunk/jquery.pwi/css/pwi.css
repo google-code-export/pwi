@@ -62,6 +62,7 @@
 }
 
 .pwi_photo{
+    position:relative;
 	float: left;
 	margin: 1em;
 	text-align: center;
@@ -73,6 +74,12 @@
 
 .pwi_photo a{
 	text-decoration: none;	
+}
+
+#video {
+    position:absolute;
+    top:0;
+    left:0;
 }
 
 .pwi_pager{
