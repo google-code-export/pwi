@@ -170,7 +170,7 @@
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
                 }
                 else {
-                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + settings.thumbSize + "' /></a>");
+                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
