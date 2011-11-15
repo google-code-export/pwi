@@ -232,6 +232,7 @@
                     $thumb = j.feed.entry[i].media$group.media$thumbnail[0].url;
                 if ((($.inArray(j.feed.entry[i].gphoto$name.$t, settings.albums) > -1) || 
                      (settings.albums.length === 0)) &&
+                    ($.inArray(j.feed.entry[i].gphoto$name.$t, settings.removeAlbums) == -1) && 
                     ((j.feed.entry[i].gphoto$albumType === undefined) ||
                      ($.inArray(j.feed.entry[i].gphoto$albumType.$t, settings.removeAlbumTypes) == -1)) &&
                     ((settings.albumStartDateTime == "" || $albumDate >= $startDate) &&
@@ -659,6 +660,7 @@
         onclickThumb: "", //-- overload the function when clicked on a photo thumbnail
         onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
 
+        removeAlbums: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
         removeAlbumTypes: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
         showAlbumTitles: true,  //--following settings should be self-explanatory
         showAlbumTitlesLength: 9999,
