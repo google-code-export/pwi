@@ -6,7 +6,8 @@
   * NEW:
     * Issue 43 (feature request): Added option to show map of a picture
     * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
-	* Added support for Youtube videos from Picasa
+    * Issue 87 (feature request): Option to exclude specific albums
+    * Added support for Youtube videos from Picasa
   * FIXES:
     * Issue 83 (bug): Issue with user@company.com
     * Issue 86 (bug): Documentation update
