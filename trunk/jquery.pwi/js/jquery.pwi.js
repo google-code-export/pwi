@@ -97,6 +97,11 @@
                     break;
             }
         }
+
+        // Function:        formatDate
+        // Description:     Format date to <day>-<month>-<year>
+        // Parameters:      $dt: String containing a numeric date/time
+        // Return:          Date string
         function formatDate($dt) {
             var $today = new Date(Number($dt)),
             $year = $today.getUTCFullYear();
@@ -105,9 +110,20 @@
             }
             return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
         }
+
+        // Function:        nl2br
+        // Description:     Convert all new-lines to HTML breaks
+        // Parameters:      s: String to check
+        // Return:          String containing HTML breaks
         function nl2br(s) {
             return s.replace(/\n/g, '<br />\n');
         }
+
+        // Function:        formatDateTime
+        // Description:     Format date to <day>-<month>-<year> <hours>:<minutes>
+        //                  Time is only shown when not equal to 00:00
+        // Parameters:      $dt: String containing a numeric date/time
+        // Return:          Date/Time string
         function formatDateTime($dt) {
             var $today = new Date(Number($dt));
             $year = $today.getUTCFullYear();
@@ -121,6 +137,47 @@
                     return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
                 } else {
                     return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+                }
+            }
+        }
+
+        // Function:        sortData
+        // Description:     Sort array according to sortMode
+        // Parameters:      j: array containing all photo or album records
+        //                  sortMode: mode to sort; name or date; ascending or descending
+        // Return:          Sorted array
+        function sortData(j, sortMode) {
+            if (sortMode !== "none") {
+
+                function ascDateSort(a, b) {
+                    return Number(a.gphoto$timestamp.$t) > Number(b.gphoto$timestamp.$t);
+                }
+                function descDateSort(a, b) {
+                    return Number(a.gphoto$timestamp.$t) < Number(b.gphoto$timestamp.$t);
+                }
+                function ascNameSort(a, b) {
+                    var nameA = a.title.$t.toLowerCase( );
+                    var nameB = b.title.$t.toLowerCase( );
+                    if (nameA < nameB) {return -1}
+                    if (nameA > nameB) {return 1}
+                    return 0;
+                }
+                function descNameSort(a, b) {
+                    var nameA = a.title.$t.toLowerCase( );
+                    var nameB = b.title.$t.toLowerCase( );
+                    if (nameA > nameB) {return -1}
+                    if (nameA < nameB) {return 1}
+                    return 0;
+                }
+
+                if (sortMode === "ASC_DATE") {
+                    j.feed.entry.sort(ascDateSort);
+                } else if (sortMode === "DESC_DATE") {
+                    j.feed.entry.sort(descDateSort);
+                } else if (sortMode === "ASC_NAME") {
+                    j.feed.entry.sort(ascNameSort);
+                } else if (sortMode === "DESC_NAME") {
+                    j.feed.entry.sort(descNameSort);
                 }
             }
         }
@@ -226,6 +283,8 @@
             if ($na > settings.albumMaxResults) {
                 $na = settings.albumMaxResults;
             }
+
+            sortData(j, settings.sortAlbums);
 
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
                 var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
@@ -469,6 +528,8 @@
                 $scPhotos.append($navRow);
             }
 
+            sortData(j, settings.sortPhotos);
+
             var startShow = ((settings.page - 1) * settings.maxResults);
             var endShow = settings.maxResults * settings.page;
             var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
@@ -539,6 +600,9 @@
             $len = j.feed ? j.feed.entry.length : 0,
             i = 0;
             var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
+
+            sortData(j, settings.sortPhotos);
+
             while (i < settings.maxResults && i < $len) {
                 var $scPhoto = photo(j.feed.entry[i], false, $tmpUsername);
                 $scPhotos.append($scPhoto);
@@ -548,6 +612,8 @@
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
             if (settings.popupPlugin === "fancybox") {
                 settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
+                settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
+                settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
                 settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
@@ -657,11 +723,12 @@
         thumbCss: {
             'margin': '5px'
         },
-        onclickThumb: "", //-- overload the function when clicked on a photo thumbnail
-        onclickAlbumThumb: "", //-- overload the function when clicked on a album thumbnail
-
-        removeAlbums: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
-        removeAlbumTypes: [],  //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
+        onclickThumb: "",       //-- overload the function when clicked on a photo thumbnail
+        onclickAlbumThumb: "",  //-- overload the function when clicked on a album thumbnail
+        sortAlbums: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
+        sortPhotos: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
+        removeAlbums: [],       //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
+        removeAlbumTypes: [],   //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
         showAlbumTitles: true,  //--following settings should be self-explanatory
         showAlbumTitlesLength: 9999,
         showAlbumThumbs: true,
