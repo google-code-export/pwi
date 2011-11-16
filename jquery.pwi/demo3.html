@@ -13,13 +13,32 @@
 		<script type="text/javascript">
 		    $(document).ready(function () {
 
-		        $("#container").pwi({
+		        $("#container1").pwi({
 		            username: 'jdiderik',
 		            maxResults: 3,
 		            thumbSize: 160,
                     thumbCrop: 1,
 		            mode: 'latest',
-		            album: '',
+                    album: '',
+                    showPhotoCaption: true,
+                    showPhotoCaptionDate: true,
+		            thumbCss: { margin: '10px', 'border': '2px dotted blue' },
+		            onclickThumb: function (event) {
+		                var e = this;
+		                alert('Your custom function here');
+		                //console.log(e);
+		            }
+		        });
+		        $("#container2").pwi({
+		            username: 'jdiderik',
+		            maxResults: 3,
+		            thumbSize: 160,
+                    thumbCrop: 1,
+		            mode: 'latest',
+                    album: '',
+                    showPhotoCaption: true,
+                    showPhotoCaptionDate: true,
+                    sortPhotos: "ASC_DATE",
 		            thumbCss: { margin: '10px', 'border': '2px dotted blue' },
 		            onclickThumb: function (event) {
 		                var e = this;
@@ -31,7 +50,10 @@
 	</script>
 	</head>
 	<body>
-	<h3><a href="index.html">PWI</a> Demo 3, Latest (3 photos), custom thumb CSS  (EXcluding slimbox2 and BlockUI)</h3>
-	<div id="container"> </div>
+    <h3><a href="index.html">PWI</a> Demo 3, Latest (3 photos), custom thumb CSS  (EXcluding slimbox2 and BlockUI) and sorting</h3>
+    Unsorted:
+	<div id="container1"> </div>
+    Sorted by date:
+	<div id="container2"> </div>
 	</body>
 </html>
