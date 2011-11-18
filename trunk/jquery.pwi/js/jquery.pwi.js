@@ -665,7 +665,6 @@
                 var $minSize = ($windowHeight > $windowWidth) ? $windowWidth : $windowHeight;
                 for (var i = 1; i < $allowedSizes.length; i++) {
                     if ($minSize < $allowedSizes[i]) {
-                        alert($windowHeight + "  " + $windowWidth + "  " + $minSize + "  " + $allowedSizes[i-1]);
                         return $allowedSizes[i-1];
                     }
                 }
