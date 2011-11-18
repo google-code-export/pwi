@@ -38,6 +38,7 @@
                 opts.popupPlugin = "slimbox";
             }
         }
+
         elem = this;
         function _initialize() {
             settings = opts;
@@ -656,11 +657,29 @@
             return $self;
         }
 
+        function checkPhotoSize(photoSize) {
+            var $allowedSizes = [94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600];
+            if (settings.photoSize === "auto") {
+                var $windowHeight = $(window).height();
+                var $windowWidth = $(window).width();
+                var $minSize = ($windowHeight > $windowWidth) ? $windowWidth : $windowHeight;
+                for (var i = 1; i < $allowedSizes.length; i++) {
+                    if ($minSize < $allowedSizes[i]) {
+                        alert($windowHeight + "  " + $windowWidth + "  " + $minSize + "  " + $allowedSizes[i-1]);
+                        return $allowedSizes[i-1];
+                    }
+                }
+            }
+            else {
+                return photoSize;
+            }
+        }
+
         function getAlbum() {
             if (settings.photostore[settings.album]) {
                 album(settings.photostore[settings.album]);
             } else {
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
                 show(true, '');
                 $.getJSON($u, 'callback=?', album);
             }
@@ -669,7 +688,7 @@
 
         function getLatest() {
             show(true, '');
-            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + settings.photoSize;
+            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
             $.getJSON($u, 'callback=?', latest);
             return $self;
         }
@@ -714,7 +733,7 @@
         albumPage: 1, //-- force load on specific album
         albumTypes: "public", //-- load public albums, not used for now
         page: 1, //-- initial page for an photo page
-        photoSize: 800, //-- size of large photo loaded in slimbox, fancybox or other. Allowed sizes: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600
+        photoSize: "auto", //-- size of large photo loaded in slimbox, fancybox or other. Allowed sizes: auto, 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
         thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
