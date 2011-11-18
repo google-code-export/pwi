@@ -8,7 +8,8 @@
     * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
     * Issue 87 (feature request): Option to exclude specific albums
     * Added support for Youtube videos from Picasa
-	* Sorting of albums and photos, using name or date (ascending and descending)
+    * Sorting of albums and photos, using name or date (ascending and descending)
+    * Select maximum size of photo that can displayed
   * FIXES:
     * Issue 83 (bug): Issue with user@company.com
     * Issue 86 (bug): Documentation update
