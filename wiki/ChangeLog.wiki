@@ -4,6 +4,7 @@
 ===Updates since v1.5===
 
   * NEW:
+    * Added ColorBox support
     * Issue 43 (feature request): Added option to show map of a picture
     * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
     * Issue 87 (feature request): Option to exclude specific albums
