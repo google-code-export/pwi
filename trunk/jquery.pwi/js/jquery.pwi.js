@@ -19,6 +19,18 @@
             // Detect the popup plugin type
             if ($.fn.fancybox) {
                 opts.popupPlugin = "fancybox";
+            }
+            else if($.fn.colorbox) {
+                opts.popupPlugin = "colorbox";
+            }
+            else if($.fn.slimbox) {
+                opts.popupPlugin = "slimbox";
+            }
+        }
+
+        if (opts.popupExt == "") {
+            if (opts.popupPlugin === "fancybox")
+            {
                 opts.popupExt = function(rel, photos){
                     if (rel === "lb") {     // Settings for normal photos
                         photos.fancybox(opts.fancybox_config.config_photos);
@@ -34,8 +46,22 @@
                     }
                 };
             }
-            else if($.fn.slimbox) {
-                opts.popupPlugin = "slimbox";
+            else if(opts.popupPlugin === "colorbox")
+            {
+                opts.popupExt = function(rel, photos){
+                    if (rel === "lb") {     // Settings for normal photos
+                        photos.colorbox(opts.colorbox_config.config_photos);
+                    }
+                    else if (rel === "yt") {     // Settings for normal photos
+                        photos.colorbox(opts.colorbox_config.config_youtube);
+                    }
+                    else if (rel === "sl") {     // Settings for slideshows
+                        photos.colorbox(opts.colorbox_config.config_slideshow);
+                    }
+                    else if (rel === "map") {    // Settings for maps
+                        photos.colorbox(opts.colorbox_config.config_maps);
+                    }
+                };
             }
         }
 
@@ -211,7 +237,7 @@
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
                 }
                 else {
-                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
+                    $html.append("<a class='" + (settings.popupPlugin === "fancybox" ? "iframe" : "youtube") + "' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
@@ -570,7 +596,7 @@
 
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
-            if (settings.popupPlugin === "fancybox") {
+            if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
                 settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
                 settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
@@ -803,6 +829,20 @@
                 'showNavArrows': false,
                 'titleShow': false,
                 'hideOnContentClick': false
+            }
+
+        },
+        colorbox_config: {
+            config_photos: {
+            },
+            config_youtube: {
+                'iframe' : true, 
+                'innerWidth' : '80%',
+                'innerHeight' : '80%'
+            },
+            config_slideshow: {
+            },
+            config_maps: {
             }
 
         },
