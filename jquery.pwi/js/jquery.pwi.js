@@ -4,7 +4,7 @@
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
- * @revision 1.5.0
+ * @revision 1.5.1
  * @date September 18, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
@@ -259,7 +259,7 @@
                 }
                 else {
                     if (settings.popupPlugin !== "slimbox") {
-                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
+                        $html.append("<a class='" + (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") + "' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
                     }
                     else {
                         $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + " (" + settings.labels.videoNotSupported + ")'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
@@ -274,7 +274,7 @@
                     $html.append("<br/>");
                     if((settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
                         if((j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
-                            var $locationLink = $("<a class='iframe' href='http://maps.google.com/?output=embed&t=h&z=15&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='map-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
+                            var $locationLink = $("<a class='" + (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") + "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='map-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
                             $html.append($locationLink);
                         }
                     }
@@ -505,14 +505,14 @@
                 if (($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
                     for (var i = 0; i < j.feed.link.length; i++) {
                         if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
                             break;
                         }
                     }
                 } else {
                     for (var i = 0; i < j.feed.link.length; i++) {
                         if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "' title='" + $album_date + "'>" + settings.labels.slideshow + "</a><br>");
+                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
                             break;
                         }
                     }
@@ -821,29 +821,31 @@
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         fancybox_config: {
             config_photos: {
-                'titleFormat': formatTitle,
-                'hideOnContentClick': false
+                closeClick : false,
+                beforeLoad : formatPhotoTitleFancyBox
             },
             config_youtube: {
-                'showNavArrows': false,
-                'hideOnContentClick': false,
-                'width': '90%',
-                'height': '90%'
+                arrows      : false,
+        		fitToView	: false,
+		        width		: '90%',
+        		height		: '90%',
+        		autoSize	: false,
+        		closeClick	: false,
+        		openEffect	: 'none',
+        		closeEffect	: 'none',
             },
             config_slideshow: {
-                'showNavArrows': false,
-                'titleShow': false,
-                'hideOnContentClick': false
+                arrows      : false,
+                closeClick  : false
             },
             config_maps: {
-                'showNavArrows': false,
-                'titleShow': false,
-                'hideOnContentClick': false
+                arrows      : false
             }
 
         },
         colorbox_config: {
             config_photos: {
+                title       : formatPhotoTitleColorBox
             },
             config_youtube: {
                 'iframe' : true, 
@@ -884,15 +886,23 @@
 })(jQuery);
 
 // This function is called by FancyBox to format the title of a picture
-function formatTitle(title, currentArray, currentIndex, currentOpts) {
-    var newTitle = '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + title + '</td><td id="fancybox-title-float-right"></td></tr></table>';
-    if (currentOpts.orig.context.parentNode.childElementCount > 1) {
-        var $links = currentOpts.orig.context.parentNode.getElementsByClassName('downloadlink');
+function formatPhotoTitleFancyBox() {
+    this.title = this.element.title;
+    if (this.element.parentNode.childElementCount > 1) {
+        var $links = this.element.parentNode.getElementsByClassName('downloadlink');
         if ($links.length > 0) {
             var downloadLink = '<a style="color: #FFF;" href="' + $links[0].href + '">Download</a>';
-            newTitle = '<table id="fancybox-title-float-wrap" cellpadding="0" cellspacing="0"><tr><td id="fancybox-title-float-left"></td><td id="fancybox-title-float-main">' + title + '&nbsp;&nbsp;' + downloadLink + '</td><td id="fancybox-title-float-right"></td></tr></table>';
+            this.title = this.title + '&nbsp;&nbsp;' + downloadLink;
         }
     }
-    return newTitle;
 }
 
+function formatPhotoTitleColorBox() {
+    if (this.parentNode.childElementCount > 1) {
+        var $links = this.parentNode.getElementsByClassName('downloadlink');
+        if ($links.length > 0) {
+            return this.title +  '&nbsp;&nbsp;' + "Download".link($links[0].href);
+        }
+    }
+    return this.title;
+}
