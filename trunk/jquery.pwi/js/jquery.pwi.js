@@ -237,7 +237,11 @@
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
                 }
                 else {
-                    $html.append("<a class='" + (settings.popupPlugin === "fancybox" ? "iframe" : "youtube") + "' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
+                    if (settings.popupPlugin !== "slimbox") {
+                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
+                    } else {
+                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d  + " (" + settings.labels.videoNotSupported + ")'></a>");
+                    }
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
@@ -254,7 +258,12 @@
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
                 }
                 else {
-                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
+                    if (settings.popupPlugin !== "slimbox") {
+                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
+                    }
+                    else {
+                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + " (" + settings.labels.videoNotSupported + ")'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                    }
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
@@ -352,7 +361,7 @@
                     if ($keywordMatch == true) {
                         $albumCount++;
                         if (settings.showAlbumThumbs) {
-                            $scAlbum = $("<div class='pwi_album' style='height:180px;" + (settings.albumThumbAlign == 1 ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
+                            $scAlbum = $("<div class='pwi_album' style='" + (settings.albumThumbAlign == 1 ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
                         } else {
                             $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
                         }
@@ -806,6 +815,7 @@
             prev: "Previous",
             next: "Next",
             showPermaLink: "Show PermaLink",
+            videoNotSupported: "Video not supported",
             devider: "|"
         }, //-- translate if needed
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
