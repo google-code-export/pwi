@@ -19,10 +19,7 @@ This demo shows the use of !FancyBox without any configuration.
 The following settings are used for this demo:
 {{{
     var settings = {
-        username: '<USERNAME>',
-        popupExt: function(photos){
-            photos.fancybox()
-            }
+        username: '<USERNAME>'
     }
     $("#container").pwi(settings);
 }}}
@@ -51,10 +48,7 @@ The following settings are used for this demo:
         albumThumbSize: 72,
         thumbCrop: 1,
         thumbAlign: 1,
-        removeAlbumTypes: ["ScrapBook", "ProfilePhotos"],
-        popupExt: function(photos){
-            photos.fancybox({ 'titleFormat': formatTitle })
-            }
+        removeAlbumTypes: ["ScrapBook", "ProfilePhotos"]
     }
     $("#container").pwi(settings);
 }}}
@@ -69,20 +63,17 @@ The following settings are used for this demo:
     var settings2007 = {
         username: '<USERNAME>',
         albumStartDateTime: "2007-01-01", 
-        albumEndDateTime: "2007-12-31",
-        popupExt: function(photos){ photos.fancybox({ }) }
+        albumEndDateTime: "2007-12-31"
     }
     var settings2008 = {
         username: '<USERNAME>',
         albumStartDateTime: "2008-01-01", 
-        albumEndDateTime: "2008-12-31",
-        popupExt: function(photos){ photos.fancybox({ }) }
+        albumEndDateTime: "2008-12-31"
     }
     var settings2009 = {
         username: '<USERNAME>',
         albumStartDateTime: "2009-01-01", 
-        albumEndDateTime: "2009-12-31",
-        popupExt: function(photos){ photos.fancybox({ }) }
+        albumEndDateTime: "2009-12-31"
     }
     
     $("#container2007").pwi(settings2007);
