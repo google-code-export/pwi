@@ -60,7 +60,9 @@
           username: 'jdiderik',
           maxresults: 50,
           mode: 'album',
-          album: 'ConcertRacoon',
+          album: 'MarathonBrRotterdamBr2007',
+          showPhotoLocation: true,
+          mapIconLocation: "images/icon-earth.png",
           popupPlugin: $viewerSelected
         };
         $("#container").pwi(settings);
@@ -69,7 +71,7 @@
     </script>
   </head>
   <body style="font-family:arial">
-    <h3><a href="index.html">PWI</a> Demo 2, Single album view</h3>
+    <h3><a href="index.html">PWI</a> Demo 2, Single album view, show map</h3>
 
     <form name="selector">
       Select popup-viewer: 
@@ -107,8 +109,10 @@
           username: '&lt;&lt;USERNAME&gt;&gt;',
           maxresults: 50,
           mode: 'album',
-          album: 'ConcertRacoon'
-          };
+          album: '&lt;&lt;ALBUMNAME&gt;&gt;',
+          showPhotoLocation: true,
+          mapIconLocation: "images/icon-earth.png",
+        };
         $("#container").pwi(settings);
       });
 
