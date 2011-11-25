@@ -272,7 +272,7 @@
                 }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
-                    if((settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
+                    if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
                         if((j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
                             var $locationLink = $("<a class='" + (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") + "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='map-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
                             $html.append($locationLink);
@@ -488,37 +488,35 @@
                 $scPhotosDesc.append("<div class='title'>" + $at + "</div>");
                 $scPhotosDesc.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
                 $scPhotosDesc.append("<div class='description'>" + $ad + "</div>");
-                if (settings.showSlideshowLink) {
-                    if (settings.mode === 'keyword' || settings.keyword !== "") {
-                        //alert("currently not supported");
-                    } else {
-                        $scPhotosDesc.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
-                    }
-                }
                 $scPhotos.append($scPhotosDesc);
             }
 
-            // SlimBox only supports images, so it cannot show the iframe containing the slideshow
-            if ((settings.showSlideshow) && (settings.popupPlugin === "fancybox")) {
-                var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
-                var $slideShow = $("<div class='pwi_photo'/>");
-                if (($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
-                    for (var i = 0; i < j.feed.link.length; i++) {
-                        if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
-                            break;
-                        }
-                    }
+            if ((settings.showSlideshowLink) || (settings.showSlideshow)) {
+                if (settings.mode === 'keyword' || settings.keyword !== "") {
+                    //alert("currently not supported");
+                } else if (settings.popupPlugin === "slimbox") {
+                    $scPhotos.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
                 } else {
-                    for (var i = 0; i < j.feed.link.length; i++) {
-                        if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                            $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
-                            break;
+                    var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
+                    var $slideShow = $("<div class='pwi_photo'/>");
+                    if ((settings.popupPlugin === "colorbox") || ($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
+                        for (var i = 0; i < j.feed.link.length; i++) {
+                            if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
+                                break;
+                            }
+                        }
+                    } else {
+                        for (var i = 0; i < j.feed.link.length; i++) {
+                            if (j.feed.link[i].type == "application/x-shockwave-flash") {
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
+                                break;
+                            }
                         }
                     }
+                    $scPhotos.append($slideShow);
+                    $scPhotos.append("<div style='clear: both;height:0px;'/>");
                 }
-                $scPhotos.append($slideShow);
-                $scPhotos.append("<div style='clear: both;height:0px;'/>");
             }
 
             if ($np > settings.maxResults) {
@@ -646,7 +644,7 @@
             }
             $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
-            if (settings.popupPlugin === "fancybox") {
+            if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
                 settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
                 settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
@@ -790,7 +788,7 @@
         showAlbumDescription: true,
         showAlbumLocation: true,
         showSlideshow: true, //-- Set to true to show slideshow in popup
-        showSlideshowLink: false,
+        showSlideshowLink: false,   //-- Identical to showSlideshow
         showPhotoCaption: false,
         showPhotoCaptionDate: false,
         showCaptionLength: 9999,
@@ -845,18 +843,27 @@
         },
         colorbox_config: {
             config_photos: {
-                title       : formatPhotoTitleColorBox
+                title       : formatPhotoTitleColorBox,
+                'loop' : false
             },
             config_youtube: {
                 'iframe' : true, 
                 'innerWidth' : '80%',
-                'innerHeight' : '80%'
+                'innerHeight' : '80%',
+                'rel' : 'nofollow'
             },
             config_slideshow: {
+                'iframe' : true, 
+                'innerWidth' : '80%',
+                'innerHeight' : '80%',
+                'rel' : 'nofollow'
             },
             config_maps: {
+                'iframe' : true, 
+                'innerWidth' : '80%',
+                'innerHeight' : '80%',
+                'rel' : 'nofollow'
             }
-
         },
         slimbox_config: {
             loop: false,
