@@ -830,7 +830,7 @@
         		autoSize	: false,
         		closeClick	: false,
         		openEffect	: 'none',
-        		closeEffect	: 'none',
+        		closeEffect	: 'none'
             },
             config_slideshow: {
                 arrows      : false,
