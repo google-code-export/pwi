@@ -31,11 +31,12 @@
         if (opts.popupExt == "") {
             if (opts.popupPlugin === "fancybox")
             {
-                opts.popupExt = function(rel, photos){
+                opts.popupExt = function(photos, rel){
+                    rel = typeof(rel) != "undefined" ? rel : "lb";
                     if (rel === "lb") {     // Settings for normal photos
                         photos.fancybox(opts.fancybox_config.config_photos);
                     }
-                    else if (rel === "yt") {     // Settings for normal photos
+                    else if (rel === "yt") {     // Settings for youtube videos
                         photos.fancybox(opts.fancybox_config.config_youtube);
                     }
                     else if (rel === "sl") {     // Settings for slideshows
@@ -48,11 +49,12 @@
             }
             else if(opts.popupPlugin === "colorbox")
             {
-                opts.popupExt = function(rel, photos){
+                opts.popupExt = function(photos, rel){
+                    rel = typeof(rel) != "undefined" ? rel : "lb";
                     if (rel === "lb") {     // Settings for normal photos
                         photos.colorbox(opts.colorbox_config.config_photos);
                     }
-                    else if (rel === "yt") {     // Settings for normal photos
+                    else if (rel === "yt") {     // Settings for youtube videos
                         photos.colorbox(opts.colorbox_config.config_youtube);
                     }
                     else if (rel === "sl") {     // Settings for slideshows
@@ -221,7 +223,7 @@
                 }
             }
             if (settings.showPhotoDate) {
-                if (j.exif$tags.exif$time) {
+                if ((j.exif$tags) && (j.exif$tags.exif$time)) {
                     $d = formatDateTime(j.exif$tags.exif$time.$t);
                 } else if (j.gphoto$timestamp) {
                     $d = formatDateTime(j.gphoto$timestamp.$t);
@@ -461,6 +463,7 @@
                 $ad,
                 $album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
                 $item_plural = ($np == "1") ? false : true;
+            var $relUsername = settings.username.replace(/[@\.]/g, "_");
 
             if (j.feed.subtitle === undefined) {
                 $ad = "";
@@ -502,14 +505,14 @@
                     if ((settings.popupPlugin === "colorbox") || ($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
                         for (var i = 0; i < j.feed.link.length; i++) {
                             if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + $relUsername + "'>" + settings.labels.slideshow + "</a><br>");
                                 break;
                             }
                         }
                     } else {
                         for (var i = 0; i < j.feed.link.length; i++) {
                             if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + settings.username + "'>" + settings.labels.slideshow + "</a><br>");
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + $relUsername + "'>" + settings.labels.slideshow + "</a><br>");
                                 break;
                             }
                         }
@@ -566,10 +569,9 @@
 
             var startShow = ((settings.page - 1) * settings.maxResults);
             var endShow = settings.maxResults * settings.page;
-            var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
             for (var i = 0; i < $np; i++)
             {
-                var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)), $tmpUsername);
+                var $scPhoto = photo(j.feed.entry[i], !((i >= startShow) && (i < endShow)), $relUsername);
                 $scPhotos.append($scPhoto);
             }
 
@@ -604,12 +606,12 @@
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
-                settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
-                settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
-                settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
-                settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
+                settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
+                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']", "yt"));
+                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']", "sl"));
+                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']", "map"));
             } else if (settings.popupPlugin === "slimbox") {
-                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
+                $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
                         if (el.parentNode.childElementCount > 1) {
@@ -633,24 +635,24 @@
             var $scPhotos = $("<div/>"),
             $len = j.feed ? j.feed.entry.length : 0,
             i = 0;
-            var $tmpUsername = settings.username.replace(/[@\.]/g, "_");
+            var $relUsername = settings.username.replace(/[@\.]/g, "_");
 
             sortData(j, settings.sortPhotos);
 
             while (i < settings.maxResults && i < $len) {
-                var $scPhoto = photo(j.feed.entry[i], false, $tmpUsername);
+                var $scPhoto = photo(j.feed.entry[i], false, $relUsername);
                 $scPhotos.append($scPhoto);
                 i++;
             }
             $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
-                settings.popupExt("lb", $s.find("a[rel='lb-" + $tmpUsername + "']"));
-                settings.popupExt("yt", $s.find("a[rel='yt-" + $tmpUsername + "']"));
-                settings.popupExt("sl", $s.find("a[rel='sl-" + $tmpUsername + "']"));
-                settings.popupExt("map", $s.find("a[rel='map-" + $tmpUsername + "']"));
+                settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
+                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
+                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']"), "sl");
+                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
             } else if (settings.popupPlugin === "slimbox") {
-                $s.find("a[rel='lb-" + $tmpUsername + "']").slimbox(settings.slimbox_config,
+                $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
                         if (el.parentNode.childElementCount > 1) {
@@ -844,25 +846,26 @@
         colorbox_config: {
             config_photos: {
                 title       : formatPhotoTitleColorBox,
-                'loop' : false
+                loop : false
             },
             config_youtube: {
-                'iframe' : true, 
-                'innerWidth' : '80%',
-                'innerHeight' : '80%',
-                'rel' : 'nofollow'
+                iframe : true, 
+                innerWidth : '80%',
+                innerHeight : '80%',
+                rel : 'nofollow'
             },
             config_slideshow: {
-                'iframe' : true, 
-                'innerWidth' : '80%',
-                'innerHeight' : '80%',
-                'rel' : 'nofollow'
+                iframe : true, 
+                innerWidth : '80%',
+                innerHeight : '80%',
+                loop : false,
+                rel : 'nofollow'
             },
             config_maps: {
-                'iframe' : true, 
-                'innerWidth' : '80%',
-                'innerHeight' : '80%',
-                'rel' : 'nofollow'
+                iframe : true, 
+                innerWidth : '80%',
+                innerHeight : '80%',
+                rel : 'nofollow'
             }
         },
         slimbox_config: {
