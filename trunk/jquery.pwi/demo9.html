@@ -69,7 +69,9 @@
           showAlbumDescription: false,
           popupPlugin: $viewerSelected
           };
-        $("#container").pwi(settings);
+        $("#container1").pwi(settings);
+        settings.album = 'Test';
+        $("#container2").pwi(settings);
       });
 
     </script>
@@ -88,7 +90,11 @@
     </form>
     <br />
     <hr />
-    <div id="container"> </div>
+    Find all pictures tagged "me" in all albums:
+    <div id="container1"> </div>
+    <hr />
+    Find all pictures tagged "me" in album Test only:
+    <div id="container2"> </div>
     <hr />
     Click <a id="inline" href="#data">here</a> to view the code for this example.
     <div style="display:none">
@@ -119,13 +125,19 @@
           showSlideshowLink: false,
           showAlbumDescription: false
           };
-        $("#container").pwi(settings);
+        $("#container1").pwi(settings);
+        settings.album = 'Test';
+        $("#container2").pwi(settings);
       });
 
     &lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;div id="container"&gt; &lt;/div&gt;
+    Find all pictures tagged "me" in all albums:
+    &lt;div id="container1"&gt; &lt;/div&gt;
+    &lt;hr&gt;
+    Find all pictures tagged "me" in album Test only:
+    &lt;div id="container2"&gt; &lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;
         </pre>
