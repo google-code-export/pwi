@@ -44,6 +44,15 @@
 
 }
 
+.pwi_slideshow{
+	text-align: left;
+	color: #000000;
+	font-family: Arial;
+	font-size: 8pt;
+	background-color: #FFFFFF;
+	padding: 10px;
+}
+
 .pwi_album{
 	float: left;
 	margin: 1em;
