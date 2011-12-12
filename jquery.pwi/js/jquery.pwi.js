@@ -4,7 +4,7 @@
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
- * @revision 1.5.1
+ * @revision 2.0.0 Beta
  * @date September 18, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
@@ -79,7 +79,8 @@
         }
         function _start() {
             if (settings.username === '') {
-                alert('Make sure you specify at least your username.' + '\n' + 'See http://pwi.googlecode.com for more info');
+                alert('Make sure you specify at least your username.' + '\n' +
+                        'See http://pwi.googlecode.com for more info');
                 return;
             }
             if (settings.useQueryParameters) {
@@ -162,10 +163,13 @@
             if ($today == "Invalid Date") {
                 return $dt;
             } else {
-                if (($today.getUTCHours() == 0) && ($today.getUTCMinutes() == 0) && ($today.getUTCSeconds() == 0)) {
+                if (($today.getUTCHours() == 0) && ($today.getUTCMinutes() == 0) &&
+                    ($today.getUTCSeconds() == 0)) {
                     return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
                 } else {
-                    return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year + " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" + $today.getUTCMinutes() : $today.getUTCMinutes()));
+                    return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year +
+                            " " + $today.getUTCHours() + ":" + ($today.getUTCMinutes() < 10 ? "0" +
+                                $today.getUTCMinutes() : $today.getUTCMinutes()));
                 }
             }
         }
@@ -211,6 +215,11 @@
             }
         }
 
+        // Function:        photo
+        // Description:     Create a photo-div
+        // Parameters:      j: array containing all photo or album records
+        //                  sortMode: mode to sort; name or date; ascending or descending
+        // Return:          Sorted array
         function photo(j, hidden, username) {
             var $html, $d = "", $c = "", $youtubeId = "";
             if (j.summary) {
@@ -236,18 +245,24 @@
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
                 if ($youtubeId == "") {
-                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'></a>");
+                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
+                            username + "' title='" + $d + "'></a>");
                 }
                 else {
                     if (settings.popupPlugin !== "slimbox") {
-                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username + "' title='" + $d + "'></a>");
+                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" +
+                                $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username +
+                                "' title='" + $d + "'></a>");
                     } else {
-                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d  + " (" + settings.labels.videoNotSupported + ")'></a>");
+                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
+                                "' rel='lb-" + username + "' title='" + $d  + " (" +
+                                settings.labels.videoNotSupported + ")'></a>");
                     }
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" +
+                            j.media$group.media$content[0].url + "'/>");
                     $html.append($downloadDiv);
                 }
                 return $html;
@@ -255,41 +270,70 @@
             else
             {
                 $d += $c.replace(new RegExp("'", "g"), "&#39;");
-                $html = $("<div class='pwi_photo' style='height:" + (settings.thumbSize + ((settings.showPhotoCaption || settings.showPhotoLocation) ? 15 : 1)) + "px;" + (settings.thumbAlign == 1 ? "width:" + (settings.thumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
+                $html = $("<div class='pwi_photo' style='cursor: pointer;'/>");
                 if ($youtubeId == "") {
-                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
+                            username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url +
+                            "' height='" + j.media$group.media$thumbnail[0].height +
+                            "' width='" + j.media$group.media$thumbnail[0].width + "'/></a>");
                 }
                 else {
                     if (settings.popupPlugin !== "slimbox") {
-                        $html.append("<a class='" + (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") + "' href='http://www.youtube.com/embed/" + $youtubeId + "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username + "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url + "'/><img id='video' src='" + settings.videoBorder + "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
+                        $html.append("<a class='" + (settings.popupPlugin === "fancybox" ?
+                                    "fancybox.iframe" : "iframe") +
+                                "' href='http://www.youtube.com/embed/" + $youtubeId +
+                                "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username +
+                                "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url  +
+                                "' height='" + j.media$group.media$thumbnail[0].height +
+                                "' width='" + j.media$group.media$thumbnail[0].width + "'/>" +
+                                "<img id='video' src='" + settings.videoBorder +
+                                "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
                     }
                     else {
-                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" + username + "' title='" + $d + " (" + settings.labels.videoNotSupported + ")'><img src='" + j.media$group.media$thumbnail[0].url + "'/></a>");
+                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
+                                "' rel='lb-" + username + "' title='" + $d + " (" +
+                                settings.labels.videoNotSupported + ")'>" +
+                                "<img src='" + j.media$group.media$thumbnail[0].url +
+                                "' height='" + j.media$group.media$thumbnail[0].height +
+                                "' width='" + j.media$group.media$thumbnail[0].width + "'/></a>");
                     }
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" + j.media$group.media$content[0].url + "'/>");
+                    $downloadDiv.append("<a class='downloadlink' href='" +
+                            j.media$group.media$content[0].url + "'/>");
                     $html.append($downloadDiv);
                 }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
-                    if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) && (settings.mapIconLocation != "")) {
-                        if((j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
-                            var $locationLink = $("<a class='" + (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") + "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" + j.georss$where.gml$Point.gml$pos.$t + "' rel='map-" + settings.username + "'><img src='" + settings.mapIconLocation + "'></a>");
+                    if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) &&
+                       (settings.mapIconLocation != "")) {
+                        if((j.georss$where) && (j.georss$where.gml$Point) &&
+                           (j.georss$where.gml$Point.gml$pos)) {
+                            var $locationLink = $("<a class='" +
+                                    (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") +
+                                    "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" +
+                                    j.georss$where.gml$Point.gml$pos.$t +
+                                    "' rel='map-" + settings.username + "'>" +
+                                    "<img src='" + settings.mapIconLocation + "'></a>");
                             $html.append($locationLink);
                         }
                     }
                     if (settings.showPhotoCaption) {
                         if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
                         if(settings.showPhotoDownload) {
-                            $c += '<a href="' + j.media$group.media$content[0].url + '">' + settings.labels.downloadphotos + '</a>';
+                            $c += '<a href="' + j.media$group.media$content[0].url + '">' +
+                                settings.labels.downloadphotos + '</a>';
                         }
-                        if ($c.length > settings.showCaptionLength) { $c = $c.substring(0, settings.showCaptionLength); }
+                        if ($c.length > settings.showCaptionLength) {
+                            $c = $c.substring(0, settings.showCaptionLength);
+                        }
                         $html.append($c);
                     }
                 }
-                if (typeof (settings.onclickThumb) === "function") { var obj = j; $html.bind('click.pwi', obj, clickThumb); }
+                if (typeof (settings.onclickThumb) === "function") {
+                    var obj = j; $html.bind('click.pwi', obj, clickThumb);
+                }
 
                 return $html;
             }
@@ -325,8 +369,7 @@
             sortData(j, settings.sortAlbums);
 
             while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
-                var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t)),
-                    $thumb = j.feed.entry[i].media$group.media$thumbnail[0].url;
+                var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t));
                 if ((($.inArray(j.feed.entry[i].gphoto$name.$t, settings.albums) > -1) || 
                      (settings.albums.length === 0)) &&
                     ($.inArray(j.feed.entry[i].gphoto$name.$t, settings.removeAlbums) == -1) && 
@@ -362,11 +405,7 @@
 
                     if ($keywordMatch == true) {
                         $albumCount++;
-                        if (settings.showAlbumThumbs) {
-                            $scAlbum = $("<div class='pwi_album' style='" + (settings.albumThumbAlign == 1 ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "cursor: pointer;'/>");
-                        } else {
-                            $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
-                        }
+                        $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
                         var jfeed = j.feed.entry[i];
                         $scAlbum.bind('click.pwi', jfeed, function (e) {
                             e.stopPropagation();
@@ -381,11 +420,20 @@
                             }
                         });
                         if (settings.showAlbumThumbs) {
-                            $scAlbum.append("<img src='" + $thumb + "'/>");
+                            $scAlbum.append("<img src='" + j.feed.entry[i].media$group.media$thumbnail[0].url +
+                                "' height='" + j.feed.entry[i].media$group.media$thumbnail[0].height +
+                                "' width='" + j.feed.entry[i].media$group.media$thumbnail[0].width + "'/>");
                         }
                         if (settings.showAlbumTitles) {
                             $item_plural = (j.feed.entry[i].gphoto$numphotos.$t == "1") ? false : true;
-                            $scAlbum.append("<br/>" + ( (j.feed.entry[i].title.$t.length > settings.showAlbumTitlesLength) ? j.feed.entry[i].title.$t.substring(0, settings.showCaptionLength) : j.feed.entry[i].title.$t) + "<br/>" + (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") + (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" + j.feed.entry[i].gphoto$numphotos.$t + " " + ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
+                            $scAlbum.append("<br/>" +
+                                    ( (j.feed.entry[i].title.$t.length > settings.showAlbumTitlesLength) ?
+                                      j.feed.entry[i].title.$t.substring(0, settings.showCaptionLength) :
+                                      j.feed.entry[i].title.$t) + "<br/>" +
+                                    (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") +
+                                    (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                     j.feed.entry[i].gphoto$numphotos.$t + " " +
+                                     ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
                         }
                         $scAlbums.append($scAlbum);
                     }
@@ -453,6 +501,21 @@
 
             settings.albumstore = j;
             show(false, $scAlbums);
+
+            // Now make sure all divs have the same width and heigth
+            var divs=document.getElementsByClassName('pwi_album');
+            var divHeigth = 0;
+            var divWidth = 0;
+            for (var i=0;i<divs.length;i++){
+                if (divs[i].clientHeight > divHeigth)
+                    divHeigth = divs[i].clientHeight;
+                if (divs[i].clientWidth > divWidth)
+                    divWidth = divs[i].clientWidth;
+            } 
+            $('div.pwi_album').css('height', (divHeigth+2)+'px');
+            if (settings.albumThumbAlign == 1) {
+                $('div.pwi_album').css('width', (divWidth+2)+'px');
+            };
         }
 
         function album(j) {
@@ -489,7 +552,10 @@
             if (settings.showAlbumDescription) {
                 $scPhotosDesc = $("<div class='pwi_album_description'/>");
                 $scPhotosDesc.append("<div class='title'>" + $at + "</div>");
-                $scPhotosDesc.append("<div class='details'>" + $np + " " + ($item_plural ? settings.labels.photos : settings.labels.photo) + (settings.showAlbumdate ? ", " + $album_date : "") + (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
+                $scPhotosDesc.append("<div class='details'>" + $np + " " +
+                        ($item_plural ? settings.labels.photos : settings.labels.photo) +
+                        (settings.showAlbumdate ? ", " + $album_date : "") +
+                        (settings.showAlbumLocation && $loc ? ", " + $loc : "") + "</div>");
                 $scPhotosDesc.append("<div class='description'>" + $ad + "</div>");
                 $scPhotos.append($scPhotosDesc);
             }
@@ -498,21 +564,32 @@
                 if (settings.mode === 'keyword' || settings.keyword !== "") {
                     //alert("currently not supported");
                 } else if (settings.popupPlugin === "slimbox") {
-                    $scPhotos.append("<div><a href='http://picasaweb.google.com/" + settings.username + "/" + j.feed.gphoto$name.$t + "" + ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") + "#slideshow/" + j.feed.entry[0].gphoto$id.$t + "' rel='gb_page_fs[]' target='_new' class='sslink'>" + settings.labels.slideshow + "</a></div>");
+                    $scPhotos.append("<div><a href='http://picasaweb.google.com/" +
+                            settings.username + "/" + j.feed.gphoto$name.$t + "" +
+                            ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") +
+                            "#slideshow/" + j.feed.entry[0].gphoto$id.$t +
+                            "' rel='gb_page_fs[]' target='_new' class='sslink'>" +
+                            settings.labels.slideshow + "</a></div>");
                 } else {
                     var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
-                    var $slideShow = $("<div class='pwi_photo'/>");
-                    if ((settings.popupPlugin === "colorbox") || ($isIE6) || (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
+                    var $slideShow = $("<div class='pwi_slideshow'/>");
+                    if ((settings.popupPlugin === "colorbox") || ($isIE6) ||
+                        (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
                         for (var i = 0; i < j.feed.link.length; i++) {
-                            if ((j.feed.link[i].type == "text/html") && (j.feed.link[i].rel == "alternate")) {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "#slideshow/' rel='sl-" + $relUsername + "'>" + settings.labels.slideshow + "</a><br>");
+                            if ((j.feed.link[i].type == "text/html") &&
+                                (j.feed.link[i].rel == "alternate")) {
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href +
+                                        "#slideshow/' rel='sl-" + $relUsername + "'>" +
+                                        settings.labels.slideshow + "</a><br>");
                                 break;
                             }
                         }
                     } else {
                         for (var i = 0; i < j.feed.link.length; i++) {
                             if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href + "' rel='sl-" + $relUsername + "'>" + settings.labels.slideshow + "</a><br>");
+                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href +
+                                        "' rel='sl-" + $relUsername + "'>" +
+                                        settings.labels.slideshow + "</a><br>");
                                 break;
                             }
                         }
@@ -591,7 +668,8 @@
                         });
 ;
                 var $url=document.URL.split("?", 2);
-                var $permalinkUrl = $url[0] + "?pwi_album_selected=" + j.feed.gphoto$name.$t + "&pwi_albumpage=" + settings.page;
+                var $permalinkUrl = $url[0] + "?pwi_album_selected=" + j.feed.gphoto$name.$t +
+                        "&pwi_albumpage=" + settings.page;
 
                 $scPhotos.append($permaLinkEnable);
                 var $permaShowBox = $("<div style='display:none;' id='permalinkbox' />");
@@ -607,9 +685,9 @@
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
-                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']", "yt"));
-                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']", "sl"));
-                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']", "map"));
+                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
+                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']"), "sl");
+                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
@@ -629,6 +707,21 @@
             $scPhotos.append("<div style='clear: both;height:0px;'/>");
 
             show(false, $scPhotos);
+
+            // Now make sure all divs have the same width and heigth
+            var divs=document.getElementsByClassName('pwi_photo');
+            var divHeigth = 0;
+            var divWidth = 0;
+            for (var i=0;i<divs.length;i++){
+                if (divs[i].clientHeight > divHeigth)
+                    divHeigth = divs[i].clientHeight;
+                if (divs[i].clientWidth > divWidth)
+                    divWidth = divs[i].clientWidth;
+            } 
+            $('div.pwi_photo').css('height', (divHeigth+2)+'px');
+            if (settings.thumbAlign == 1) {
+                $('div.pwi_photo').css('width', (divWidth+2)+'px');
+            }
         }
 
         function latest(j) {
@@ -686,7 +779,9 @@
                 albums(settings.albumstore);
             } else {
                 show(true, '');
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' + settings.albumThumbSize + ((settings.albumCrop == 1) ? "c" : "u");
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+                    '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' +
+                    settings.albumThumbSize + ((settings.albumCrop == 1) ? "c" : "u");
                 $.getJSON($u, 'callback=?', albums);
             }
             return $self;
@@ -713,7 +808,12 @@
             if (settings.photostore[settings.album]) {
                 album(settings.photostore[settings.album]);
             } else {
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
+                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+                    ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' +
+                    ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
+                    ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") +
+                    '&imgmax=d&thumbsize=' + settings.thumbSize +
+                    ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
                 show(true, '');
                 $.getJSON($u, 'callback=?', album);
             }
@@ -722,7 +822,13 @@
 
         function getLatest() {
             show(true, '');
-            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username + (settings.album !== "" ? '/album/' + settings.album : '') + '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' + ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") + ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") + '&imgmax=d&thumbsize=' + settings.thumbSize + ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
+            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+                (settings.album !== "" ? '/album/' + settings.album : '') +
+                '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' +
+                ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
+                ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") +
+                '&imgmax=d&thumbsize=' + settings.thumbSize +
+                ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
             $.getJSON($u, 'callback=?', latest);
             return $self;
         }
@@ -822,6 +928,8 @@
         fancybox_config: {
             config_photos: {
                 closeClick : false,
+                nextEffect : 'none',
+                loop       : false,
                 beforeLoad : formatPhotoTitleFancyBox
             },
             config_youtube: {
