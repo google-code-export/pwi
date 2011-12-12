@@ -1,8 +1,13 @@
-/*! 
- * fancyBox 2.0
- * Copyright 2011, Janis Skarnelis (www.fancyapps.com)
+ /*!
+ * fancyBox - jQuery Plugin
+ * version: 2.0.3 (29/11/2011)
+ * @requires jQuery v1.6 or later
+ *
+ * Examples at http://fancyapps.com/fancybox/
  * License: www.fancyapps.com/fancybox/#license
- *	
+ *
+ * Copyright 2011 Janis Skarnelis - janis@fancyapps.com
+ *
  */
 (function (window, document, $) {
 	var W = $(window),
@@ -15,7 +20,7 @@
 
 	$.extend(F, {
 		// The current version of fancyBox
-		version: '2.0',
+		version: '2.0.3',
 
 		defaults: {
 			padding: 15,
@@ -33,17 +38,19 @@
 			aspectRatio: false,
 			topRatio: 0.5,
 
-			fixed: (!$.browser.msie || $.browser.version > 6) && $.support.boxModel,
+			fixed: !$.browser.msie || $.browser.version > 6,
 			scrolling: 'auto', // 'auto', 'yes' or 'no'
 			wrapCSS: 'fancybox-default',
 
 			arrows: true,
 			closeBtn: true,
-			closeClick: true,
+			closeClick: false,
+			nextClick : false,
 			mouseWheel: true,
 			autoPlay: false,
 			playSpeed: 3000,
 
+			modal: false,
 			loop: true,
 			ajax: {},
 			keys: {
@@ -55,16 +62,16 @@
 			// Override some properties
 			index: 0,
 			type: null,
-			url: null,
+			href: null,
 			content: null,
 			title: null,
 
 			// HTML templates
 			tpl: {
 				wrap: '<div class="fancybox-wrap"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div>',
-				image: '<img class="fancybox-image" src="{url}" alt="" />',
-				iframe: '<iframe class="fancybox-iframe" name="fancybox-frame{rnd}" frameborder="0" hspace="0" ' + ($.browser.msie ? 'allowtransparency="true""' : '') + ' scrolling="{scrolling}" src="{url}"></iframe>',
-				swf: '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%"><param name="wmode" value="transparent" /><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="{url}" /><embed src="{url}" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="100%" height="100%" wmode="transparent"></embed></object>',
+				image: '<img class="fancybox-image" src="{href}" alt="" />',
+				iframe: '<iframe class="fancybox-iframe" name="fancybox-frame{rnd}" frameborder="0" hspace="0" ' + ($.browser.msie ? 'allowtransparency="true""' : '') + ' scrolling="{scrolling}" src="{href}"></iframe>',
+				swf: '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%"><param name="wmode" value="transparent" /><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="{href}" /><embed src="{href}" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="100%" height="100%" wmode="transparent"></embed></object>',
 				error: '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
 				closeBtn: '<div title="Close" class="fancybox-item fancybox-close"></div>',
 				next: '<a title="Next" class="fancybox-item fancybox-next"><span></span></a>',
@@ -200,6 +207,8 @@
 				return;
 			}
 
+			F.unbindEvents();
+
 			//If forced or is still opening then remove immediately
 			if (!F.isOpen || (a && a[0] === true)) {
 				$(".fancybox-wrap").stop().trigger('onReset').remove();
@@ -232,7 +241,7 @@
 				stop = function () {
 					clear();
 
-					D.unbind('.player');
+					$('body').unbind('.player');
 
 					F.player.isActive = false;
 
@@ -244,10 +253,10 @@
 
 						set();
 
-						D.bind({
-							'onCancel.player onComplete.player onUpdate.player': set,
-							'onClose.player': stop,
-							'onStart.player': clear
+						$('body').bind({
+							'onCancel.player afterShow.player onUpdate.player': set,
+							'beforeClose.player': stop,
+							'beforeLoad.player': clear
 						});
 
 						F.trigger('onPlayStart');
@@ -262,11 +271,15 @@
 		},
 
 		next: function () {
-			F.current && F.jumpto(F.current.index + 1);
+			if (F.current) {
+				F.jumpto(F.current.index + 1);
+			}
 		},
 
 		prev: function () {
-			F.current && F.jumpto(F.current.index - 1);
+			if (F.current) {
+				F.jumpto(F.current.index - 1);
+			}
 		},
 
 		jumpto: function (index) {
@@ -359,8 +372,12 @@
 			};
 		},
 
-		// unbind the keyboard / clicking actions
+		// Unbind the keyboard / clicking actions
 		unbindEvents: function () {
+			if (F.wrap) {
+				F.wrap.unbind('.fb');	
+			}
+
 			D.unbind('.fb');
 			W.unbind('.fb');
 		},
@@ -378,7 +395,7 @@
 			if (keys) {
 				D.bind('keydown.fb', function (e) {
 					// Ignore key events within form elements
-					if ($.inArray(e.target.tagName.toLowerCase, ['input', 'textarea', 'select', 'button']) > -1) {
+					if ($.inArray(e.target.tagName.toLowerCase(), ['input', 'textarea', 'select', 'button']) > -1) {
 						return;
 					}
 
@@ -409,7 +426,7 @@
 		},
 
 		trigger: function (event) {
-			var ret, obj = event === 'onCancel' || event === 'beforeLoad' ? 'coming' : 'current';
+			var ret, obj = $.inArray(event, ['onCancel', 'beforeLoad', 'afterLoad']) > -1 ? 'coming' : 'current';
 
 			if (!F[obj]) {
 				return;
@@ -444,97 +461,123 @@
 
 		_start: function (index) {
 			var element = F.group[index] || null,
-				coming = $.extend(true, {}, F.opts, (element && $.metadata ? $(element).metadata() : {})),
-				isDom = false,
-				rez = false,
-				url, type;
-
-			coming.index = index;
-			coming.element = element;
+				isDom,
+				href,
+				type,
+				rez,
+				coming = $.extend(true, {}, F.opts, ($.isPlainObject(element) ? element : {}), {
+					index : index,
+					element : element
+				});
 
 			// Convert margin property to array - top, right, bottom, left
 			if (typeof coming.margin === 'number') {
 				coming.margin = [coming.margin, coming.margin, coming.margin, coming.margin];
 			}
 
-			//Give a chance for callback or helpers to update item (type, title, etc)
+			// 'modal' propery is just a shortcut
+			if (coming.modal) {
+				$.extend(true, coming, {
+					closeBtn : false,
+					closeClick: false,
+					nextClick : false,
+					arrows : false,
+					mouseWheel : false,
+					keys : null,
+					helpers: {
+						overlay : {
+							css: {
+								cursor : 'auto'
+							},
+							closeClick : false
+						}
+					}
+				});
+			}
+
+			//Give a chance for callback or helpers to update coming item (type, title, etc)
 			F.coming = coming;
 
 			if (false === F.trigger('beforeLoad')) {
 				F.coming = null;
 				return;
-			} else {
-				coming = F.coming;
-				type = coming.type;
 			}
 
-			//If custom content exists than use it as element
-			if (coming.content) {
-				element = coming.content;
+			if (typeof element === 'object' && (element.nodeType || element instanceof $)) {
+				isDom = true;
+				coming.href = $(element).attr('href') || coming.href;
+				coming.title = $(element).attr('title') || coming.title;
+
+				if ($.metadata) {
+					$.extend(coming, $(element).metadata());	
+				}
 			}
 
-			//Check if content type is set, if not, try to get
+			type = coming.type;
+			href = coming.href;
+
+			///Check if content type is set, if not, try to get
 			if (!type) {
-				url = coming.url;
+				if (isDom) {
+					rez = $(element).data('fancybox-type');
 
-				//If element is object than we can detect if it is DOM element and get source path, if not - maybe it`s url
-				if (typeof element === 'object') {
-					isDom = (element.nodeType || element instanceof $);
-					url = $(element).attr('href') || null;
-
-				} else {
-					url = element;
+					if (!rez && element.className) {
+						rez = element.className.match(/fancybox\.(\w+)/);
+						rez = rez ? rez[1] : false;
+					}
 				}
 
-				//If we have source path we can use it to load content ... 
-				if (url) {
-					if (isDom) {
-						rez = $(element).data('fancybox-type');
+				if (rez) {
+					type = rez;
 
-						if (!rez && element.className) {
-							rez = element.className.match(/fancybox\.(\w+)/);
-							rez = rez ? rez[1] : false;
-						}
-					}
-
-					if (rez) {
-						type = rez;
-
-					} else if (F.isImage(url)) {
+				} else if (href) {
+					if (F.isImage(href)) {
 						type = 'image';
 
-					} else if (F.isSWF(url)) {
+					} else if (F.isSWF(href)) {
 						type = 'swf';
 
-					} else if (url.match(/^#/)) {
+					} else if (href.match(/^#/)) {
 						type = 'inline';
-
-					} else {
-						coming.content = url;
-					}
-
-					if (type === 'inline') {
-						coming.content = $(url);
 					}
 				}
 
+				// ...if not - display element itself
 				if (!type) {
-					// ...if not - we can display given DOM element itself ..
-					if (isDom) {
-						type = 'inline';
-						coming.content = element;
-
-						// .. or assume that we have HTML 
-					} else if (coming.content) {
-						type = 'html';
-					}
+					type = isDom ? 'inline' : 'html';
 				}
 
 				coming.type = type;
-				coming.url = url;
 			}
 
-			F.coming = coming;
+			// Check before try to load; 'inline' and 'html' types need content, others - href
+			if (type === 'inline' || type === 'html') {
+				if (!coming.content) {
+					coming.content = type === 'inline' && href ? $(href) : element;
+				}
+
+				if (!coming.content.length) {
+					type = null;
+				}
+
+			} else {
+				coming.href = href || element;
+
+				if (!coming.href) {
+					type = null;
+				}
+			}
+
+			/*
+				Add reference to the group, so it`s possible to access from callbacks, example:
+
+				afterLoad : function() {
+					this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
+				}
+
+			*/
+
+			coming.group = F.group;
 
 			if (type === 'image') {
 				F._loadImage();
@@ -546,7 +589,7 @@
 				F._afterLoad();
 
 			} else {
-				return F._error();
+				F._error();
 			}
 		},
 
@@ -578,7 +621,7 @@
 				F._error();
 			};
 
-			F.imgPreload.src = F.coming.url;
+			F.imgPreload.src = F.coming.href;
 
 			if (!F.imgPreload.complete) {
 				F.showLoading();
@@ -589,9 +632,9 @@
 			F.showLoading();
 
 			F.ajaxLoad = $.ajax($.extend({}, F.coming.ajax, {
-				url: F.coming.url,
+				url: F.coming.href,
 				error: function (jqXHR, textStatus, errorThrown) {
-					if (textStatus !== 'abort' && jqXHR.status > 0) {
+					if (textStatus !== 'abort') {
 						F.coming.content = errorThrown;
 
 						F._error();
@@ -613,7 +656,7 @@
 		_afterLoad: function () {
 			F.hideLoading();
 
-			if (F.current && false === F.trigger('afterLoad')) {
+			if (!F.coming || false === F.trigger('afterLoad', F.current)) {
 				F.coming = false;
 
 				return;
@@ -623,38 +666,40 @@
 				$(".fancybox-item").remove();
 
 				F.wrap.stop(true).removeClass('fancybox-opened');
+				F.inner.css('overflow', 'hidden');
 
 				F.transitions[F.current.prevMethod]();
 
 			} else {
 				$(".fancybox-wrap").stop().trigger('onReset').remove();
+
+				F.trigger('afterClose');
 			}
+
+			F.unbindEvents();
 
 			F.isOpen = false;
 			F.current = F.coming;
 			F.coming = false;
 
 			//Build the neccessary markup
-			F.wrap = $(F.current.tpl.wrap).addClass(F.current.wrapCSS).appendTo('body');
+			F.wrap = $(F.current.tpl.wrap).addClass('fancybox-tmp ' + F.current.wrapCSS).appendTo('body');
 			F.outer = $('.fancybox-outer', F.wrap).css('padding', F.current.padding + 'px');
 			F.inner = $('.fancybox-inner', F.wrap);
 
 			F._setContent();
 
-			F.unbindEvents();
-			F.bindEvents();
-
 			//Give a chance for helpers or callbacks to update elements
 			F.trigger('beforeShow');
 
+			//Set initial dimensions and hide
 			F._setDimension();
 
-			if (F.isOpened) {
-				F.transitions[F.current.nextMethod]();
+			F.wrap.hide().removeClass('fancybox-tmp');
 
-			} else {
-				F.transitions[F.current.openMethod]();
-			}
+			F.bindEvents();
+
+			F.transitions[ F.isOpened ? F.current.nextMethod : F.current.openMethod ]();
 		},
 
 		_setContent: function () {
@@ -662,49 +707,49 @@
 				type = current.type;
 
 			switch (type) {
-			case 'inline':
-			case 'ajax':
-			case 'html':
-				if (type === 'inline') {
-					content = current.content.show().detach();
+				case 'inline':
+				case 'ajax':
+				case 'html':
+					if (type === 'inline') {
+						content = current.content.show().detach();
 
-					if (content.parent().hasClass('fancybox-inner')) {
-						content.parents('.fancybox-wrap').trigger('onReset').remove();
+						if (content.parent().hasClass('fancybox-inner')) {
+							content.parents('.fancybox-wrap').trigger('onReset').remove();
+						}
+
+						$(F.wrap).bind('onReset', function () {
+							content.appendTo('body').hide();
+						});
+
+					} else {
+						content = current.content;
 					}
 
-					$(F.wrap).bind('onReset', function () {
-						content.appendTo('body').hide();
-					});
+					if (current.autoSize) {
+						loadingBay = $('<div class="fancybox-tmp"></div>').appendTo($("body")).append(content);
 
-				} else {
-					content = current.content;
-				}
+						current.width = loadingBay.outerWidth();
+						current.height = loadingBay.outerHeight(true);
 
-				if (current.autoSize) {
-					loadingBay = $('<div class="fancybox-tmp"></div>').appendTo($("body")).append(content);
+						content = loadingBay.contents().detach();
 
-					current.width = loadingBay.outerWidth();
-					current.height = loadingBay.outerHeight(true);
-
-					content = loadingBay.children().detach();
-
-					loadingBay.remove();
-				}
+						loadingBay.remove();
+					}
 
 				break;
 
-			case 'image':
-				content = current.tpl.image.replace('{url}', current.url);
+				case 'image':
+					content = current.tpl.image.replace('{href}', current.href);
 
-				current.aspectRatio = true;
+					current.aspectRatio = true;
 				break;
 
-			case 'swf':
-				content = current.tpl.swf.replace(/\{width\}/g, current.width).replace(/\{height\}/g, current.height).replace(/\{url\}/g, current.url);
+				case 'swf':
+					content = current.tpl.swf.replace(/\{width\}/g, current.width).replace(/\{height\}/g, current.height).replace(/\{href\}/g, current.href);
 				break;
 
-			case 'iframe':
-				content = current.tpl.iframe.replace('{url}', current.url).replace('{scrolling}', current.scrolling).replace('{rnd}', new Date().getTime());
+				case 'iframe':
+					content = current.tpl.iframe.replace('{href}', current.href).replace('{scrolling}', current.scrolling).replace('{rnd}', new Date().getTime());
 				break;
 			}
 
@@ -713,24 +758,24 @@
 				current.scrolling = false;
 			}
 
-			F.current = current;
-
 			F.inner.append(content);
 		},
 
 		_setDimension: function () {
-			var viewport = F.getViewport(),
-				margin = F.current.margin,
-				padding2 = F.current.padding * 2,
-				width = F.current.width + padding2,
-				height = F.current.height + padding2,
-				ratio = F.current.width / F.current.height,
+			var current = F.current,
+				viewport = F.getViewport(),
+				margin = current.margin,
+				padding2 = current.padding * 2,
+				width = current.width + padding2,
+				height = current.height + padding2,
+				ratio = current.width / current.height,
 
-				maxWidth = F.current.maxWidth,
-				maxHeight = F.current.maxHeight,
-				minWidth = F.current.minWidth,
-				minHeight = F.current.minHeight,
-				height_;
+				maxWidth = current.maxWidth,
+				maxHeight = current.maxHeight,
+				minWidth = current.minWidth,
+				minHeight = current.minHeight,
+				height_,
+				space;
 
 			viewport.w -= (margin[1] + margin[3]);
 			viewport.h -= (margin[0] + margin[2]);
@@ -743,7 +788,7 @@
 				height = ((viewport.h * parseFloat(height)) / 100);
 			}
 
-			if (F.current.fitToView) {
+			if (current.fitToView) {
 				maxWidth = Math.min(viewport.w, maxWidth);
 				maxHeight = Math.min(viewport.h, maxHeight);
 			}
@@ -751,7 +796,7 @@
 			maxWidth = Math.max(minWidth, maxWidth);
 			maxHeight = Math.max(minHeight, maxHeight);
 
-			if (F.current.aspectRatio) {
+			if (current.aspectRatio) {
 				if (width > maxWidth) {
 					width = maxWidth;
 					height = ((width - padding2) / ratio) + padding2;
@@ -793,7 +838,7 @@
 				while ((width > maxWidth || height_ > maxHeight) && width > minWidth && height_ > minHeight) {
 					height = height - 10;
 
-					if (F.current.aspectRatio) {
+					if (current.aspectRatio) {
 						width = Math.round(((height - padding2) * ratio) + padding2);
 
 						if (width < minWidth) {
@@ -812,21 +857,26 @@
 				}
 			}
 
-			F.current.dim = {
+			current.dim = {
 				width: width,
 				height: height_
 			};
 
-			F.current.canGrow = F.current.autoSize && height > minHeight && height < maxHeight;
-			F.current.canShrink = false;
-			F.current.canExpand = false;
+			current.canGrow = current.autoSize && height > minHeight && height < maxHeight;
+			current.canShrink = false;
+			current.canExpand = false;
 
-			if ((width - padding2) < F.current.width || (height - padding2) < F.current.height) {
-				F.current.canExpand = true;
+			if ((width - padding2) < current.width || (height - padding2) < current.height) {
+				current.canExpand = true;
 
 			} else if ((width > viewport.w || height_ > viewport.h) && width > minWidth && height > minHeight) {
-				F.current.canShrink = true;
+				current.canShrink = true;
 			}
+
+			space = height_ - padding2;
+
+			F.innerSpace = space - F.inner.height();
+			F.outerSpace = space - F.outer.height();
 		},
 
 		_getPosition: function (a) {
@@ -866,8 +916,8 @@
 			F.inner.css('overflow', current.scrolling === 'auto' ? 'auto' : (current.scrolling === 'yes' ? 'scroll' : 'hidden'));
 
 			//Assign a click event
-			if (current.closeClick) {
-				F.inner.bind('click.fb', F.close);
+			if (current.closeClick || current.nextClick) {
+				F.inner.bind('click.fb', current.nextClick ? F.next : F.close);
 			}
 
 			//Create a close button
@@ -896,8 +946,6 @@
 		},
 
 		_afterZoomOut: function () {
-			F.unbindEvents();
-
 			F.trigger('afterClose');
 
 			F.wrap.trigger('onReset').remove();
@@ -978,13 +1026,12 @@
 		},
 
 		zoomIn: function () {
-			var startPos, endPos, dim = F.current.dim,
-				space = dim.height - (F.current.padding * 2);
+			var current = F.current,
+				startPos,
+				endPos,
+				dim = current.dim;
 
-			F.innerSpace = space - F.inner.height();
-			F.outerSpace = space - F.outer.height();
-
-			if (F.current.openEffect === 'elastic') {
+			if (current.openEffect === 'elastic') {
 				endPos = $.extend({}, dim, F._getPosition(true));
 
 				//Remove "position" property
@@ -992,82 +1039,83 @@
 
 				startPos = this.getOrigPosition();
 
-				if (F.current.openOpacity) {
+				if (current.openOpacity) {
 					startPos.opacity = 0;
 					endPos.opacity = 1;
 				}
 
-				F.wrap.css(startPos).animate(endPos, {
-					duration: F.current.openSpeed,
-					easing: F.current.openEasing,
+				F.wrap.css(startPos).show().animate(endPos, {
+					duration: current.openSpeed,
+					easing: current.openEasing,
 					step: this.step,
 					complete: F._afterZoomIn
 				});
 
 			} else {
-				F.wrap.css($.extend({}, F.current.dim, F._getPosition()));
+				F.wrap.css($.extend({}, dim, F._getPosition()));
 
-				if (F.current.openEffect === 'fade') {
-					F.wrap.hide().fadeIn(F.current.openSpeed, F._afterZoomIn);
+				if (current.openEffect === 'fade') {
+					F.wrap.fadeIn(current.openSpeed, F._afterZoomIn);
 
 				} else {
+					F.wrap.show();
 					F._afterZoomIn();
 				}
 			}
 		},
 
 		zoomOut: function () {
-			var endPos, space = F.wrap.height() - (F.current.padding * 2);
+			var current = F.current,
+				endPos;
 
-			if (F.current.closeEffect === 'elastic') {
+			if (current.closeEffect === 'elastic') {
 				if (F.wrap.css('position') === 'fixed') {
 					F.wrap.css(F._getPosition(true));
 				}
 
-				F.innerSpace = space - F.inner.height();
-				F.outerSpace = space - F.outer.height();
-
 				endPos = this.getOrigPosition();
 
-				if (F.current.closeOpacity) {
+				if (current.closeOpacity) {
 					endPos.opacity = 0;
 				}
 
 				F.wrap.animate(endPos, {
-					duration: F.current.closeSpeed,
-					easing: F.current.closeEasing,
+					duration: current.closeSpeed,
+					easing: current.closeEasing,
 					step: this.step,
 					complete: F._afterZoomOut
 				});
 
 			} else {
-				F.wrap.fadeOut(F.current.closeEffect === 'fade' ? F.current.Speed : 0, F._afterZoomOut);
+				F.wrap.fadeOut(current.closeEffect === 'fade' ? current.closeSpeed : 0, F._afterZoomOut);
 			}
 		},
 
 		changeIn: function () {
-			var startPos;
+			var current = F.current,
+				startPos;
 
 			if (F.current.nextEffect === 'elastic') {
 				startPos = F._getPosition(true);
 				startPos.opacity = 0;
 				startPos.top = (parseInt(startPos.top, 10) - 200) + 'px';
 
-				F.wrap.css(startPos).animate({
+				F.wrap.css(startPos).show().animate({
 					opacity: 1,
 					top: '+=200px'
 				}, {
-					duration: F.current.nextSpeed,
+					duration: current.nextSpeed,
 					complete: F._afterZoomIn
 				});
 
 			} else {
 				F.wrap.css(F._getPosition());
 
-				if (F.current.nextEffect === 'fade') {
-					F.wrap.hide().fadeIn(F.current.nextSpeed, F._afterZoomIn);
+				if (current.nextEffect === 'fade') {
+					F.wrap.hide().fadeIn(current.nextSpeed, F._afterZoomIn);
 
 				} else {
+					F.wrap.show();
 					F._afterZoomIn();
 				}
 			}
@@ -1130,13 +1178,13 @@
 				background: 'black'
 			}).appendTo('body');
 
+			this.update();
+
 			if (opts.closeClick) {
 				this.overlay.bind('click.fb', F.close);
 			}
 
 			W.bind("resize.fb", $.proxy(this.update, this));
-
-			this.update();
 
 			this.overlay.fadeTo(opts.speedIn || "fast", opts.opacity || 1);
 		},
@@ -1163,7 +1211,7 @@
 
 	F.helpers.title = {
 		beforeShow: function (opts) {
-			var title, text = F.current.title || F.current.element.title || '';
+			var title, text = F.current.title;
 
 			if (text) {
 				title = $('<div class="fancybox-title fancybox-title-' + opts.type + '-wrap">' + text + '</div>').appendTo('body');
@@ -1189,21 +1237,30 @@
 			selector = this.selector || '';
 
 		function run(e) {
-			var group = [];
+			var group = [], relType = false, relVal = $(this).data('fancybox-group');
 
 			e.preventDefault();
 
-			if (this.rel && this.rel !== '' && this.rel !== 'nofollow') {
-				group = selector.length ? $(selector).filter('[rel="' + this.rel + '"]') : $('[rel="' + this.rel + '"]');
+			// Check if element has 'data-fancybox-group' attribute, if not - use 'rel'
+			if (typeof relVal !== 'undefined') {
+				relType = relVal ? 'data-fancybox-group' : false;
+
+			} else if (this.rel && this.rel !== '' && this.rel !== 'nofollow') {
+				relVal = this.rel;
+				relType = 'rel';
+			}
+
+			if (relType) {
+				group = selector.length ? $(selector).filter('[' + relType + '="' + relVal + '"]') : $('[' + relType + '="' + relVal + '"]');
 			}
 
 			if (group.length) {
 				opts.index = group.index(this);
 
-				F(group.get(), opts);
+				F.open(group.get(), opts);
 
 			} else {
-				F(this, opts);
+				F.open(this, opts);
 			}
 
 			return false;
@@ -1215,5 +1272,8 @@
 		} else {
 			$(this).unbind('click.fb-start').bind('click.fb-start', run);
 		}
+
+		return this;
 	};
+
 }(window, document, jQuery));

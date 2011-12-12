@@ -1,18 +1,4 @@
-/*! 
- * fancyBox 2.0
- * Copyright 2011, Janis Skarnelis (www.fancyapps.com)
- * License: www.fancyapps.com/fancybox/#license
- *	
-*/
-.fancybox-tmp {
-	position: absolute;
-	top: -9999px;
-	left: -9999px;
-	padding: 0;
-	overflow: auto;
-	visibility: hidden;
-}
-
+/*! fancyBox v2.0.3 fancyapps.com | fancyapps.com/fancybox/#license */
 .fancybox-tmp iframe, .fancybox-tmp object {
 	vertical-align: top;
 	padding: 0;
@@ -88,7 +74,7 @@
 	width: 42px;
 	height: 42px;
 	background: url('fancybox_loading.gif');
-	opacity: 0.9;
+	opacity: 0.8;
 	cursor: pointer;
 	z-index: 1010;
 }
@@ -155,6 +141,15 @@
 .fancybox-next:hover span {
 	left: auto;
 	right: 20px;
+}
+
+.fancybox-tmp {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+	padding: 0;
+	overflow: visible;
+	visibility: hidden;
 }
 
 /* Overlay helper */
