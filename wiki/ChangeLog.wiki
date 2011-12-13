@@ -7,8 +7,8 @@ This version is available through the Source tab.
 
   * NEW:
     * Upgrade to jQuery 1.7.0.
-    * Upgrade to FancyBox 2.0
-    * Added ColorBox support
+    * Upgrade to !FancyBox 2.0
+    * Added !ColorBox support
     * Redesign of demos: allow user to choose which viewer to use
     * Issue 43 (feature request): Added option to show map of a picture
     * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
@@ -16,6 +16,7 @@ This version is available through the Source tab.
     * Added support for Youtube videos from Picasa
     * Sorting of albums and photos, using name or date (ascending and descending)
     * Select maximum size of photo that can displayed
+    * Improved overview of albums and album layout
   * FIXES:
     * Issue 68 (bug): Upgraded blockui to 2.39
     * Issue 83 (bug): Issue with user@company.com
@@ -28,7 +29,7 @@ This version is available through the Source tab.
   * NEW:
     * Added Permalink feature using Query parameters
     * Improved download link function, including extra option to control this
-    * Optionally remove albums with type Blogger, Scrapbook and/or ProfilePhotos albums
+    * Optionally remove albums with type Blogger, Scrapbook and/or !ProfilePhotos albums
 
   * FIXES:
     * Fixed alignment on albums overview page
