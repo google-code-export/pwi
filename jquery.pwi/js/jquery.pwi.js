@@ -176,10 +176,10 @@
                 return;
 
             function ascDateSort(a, b) {
-                return Number(a.gphoto$timestamp.$t) > Number(b.gphoto$timestamp.$t);
+                return Number(a.gphoto$timestamp.$t) - Number(b.gphoto$timestamp.$t);
             }
             function descDateSort(a, b) {
-                return Number(a.gphoto$timestamp.$t) < Number(b.gphoto$timestamp.$t);
+                return Number(b.gphoto$timestamp.$t) - Number(a.gphoto$timestamp.$t);
             }
             function ascNameSort(a, b) {
                 var nameA = a.title.$t.toLowerCase( );
