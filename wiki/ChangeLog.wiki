@@ -17,6 +17,7 @@ This version is available through the Source tab.
     * Sorting of albums and photos, using name or date (ascending and descending)
     * Select maximum size of photo that can displayed
     * Improved overview of albums and album layout
+    * Improved paging of selection of albums
   * FIXES:
     * Issue 68 (bug): Upgraded blockui to 2.39
     * Issue 83 (bug): Issue with user@company.com
