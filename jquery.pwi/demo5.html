@@ -129,12 +129,12 @@
 
       $(document).ready(function () {
         var settings = {
-          username: '&lt;&lt;USERNAME&gt;&gt;'
+          username: '&lt;&lt;USERNAME&gt;&gt;',
           albumsPerPage: 4,
           onclickAlbumThumb: function (e) {
             $("#container2").html("");
             $("#container2").pwi({
-              username: '&lt;&lt;USERNAME&gt;&gt;'
+              username: '&lt;&lt;USERNAME&gt;&gt;',
               maxResults: 25,
               showAlbumDescription: false,
               mode: 'album',
@@ -142,7 +142,7 @@
               album: e.data.gphoto$name.$t  // The ident of the selected album
             });
           }
-        });
+        };
         $("#container1").pwi(settings);
       });
 
