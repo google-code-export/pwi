@@ -59,7 +59,7 @@
         $("#viewername2").text($viewerJs);
         $("a#inline").fancybox({closeClick: false});
 
-        var settings1 = {
+        var settings = {
           username: 'jdiderik',
           maxResults: 4,
           thumbSize: 160,
@@ -72,22 +72,9 @@
             alert('Your custom function here');
           }
         };
-        var settings2 = {
-          username: 'jdiderik',
-          maxResults: 4,
-          thumbSize: 160,
-          thumbCrop: 1,
-          mode: 'latest',
-          showPhotoCaption: true,
-          showPhotoCaptionDate: true,
-          sortPhotos: "ASC_DATE",
-          thumbCss: { margin: '10px', 'border': '2px dotted blue' },
-          onclickThumb: function (event) {
-            alert('Your custom function here');
-          }
-        };
-        $("#container1").pwi(settings1);
-        $("#container2").pwi(settings2);
+        $("#container1").pwi(settings);
+        settings.sortPhotos = "ASC_DATE";
+        $("#container2").pwi(settings);
           
       });
     </script>
@@ -130,7 +117,7 @@
     &lt;script type="text/javascript"&gt;
 
       $(document).ready(function () {
-        var settings1 = {
+        var settings = {
           username: '&lt;&lt;USERNAME&gt;&gt;',
           maxResults: 4,
           thumbSize: 160,
@@ -143,22 +130,9 @@
             alert('Your custom function here');
           }
         };
-        $("#container1").pwi(settings1);
-        var settings2 = {
-          username: '&lt;&lt;USERNAME&gt;&gt;',
-          maxResults: 4,
-          thumbSize: 160,
-          thumbCrop: 1,
-          mode: 'latest',
-          showPhotoCaption: true,
-          showPhotoCaptionDate: true,
-          sortPhotos: "ASC_DATE",
-          thumbCss: { margin: '10px', 'border': '2px dotted blue' },
-          onclickThumb: function (event) {
-            alert('Your custom function here');
-          }
-        };
-        $("#container2").pwi(settings2);
+        $("#container1").pwi(settings);
+        settings.sortPhotos = "ASC_DATE";
+        $("#container2").pwi(settings);
       });
 
     &lt;/script&gt;
