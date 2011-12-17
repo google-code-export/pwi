@@ -120,7 +120,7 @@
 
       $(document).ready(function () {
         var settings = {
-          username: '&lt;&lt;USERNAME&gt;&gt;'
+          username: '&lt;&lt;USERNAME&gt;&gt;',
           maxResults: 50,
           showAlbumDescription: false,
           showAlbumThumbs: false,
@@ -128,21 +128,20 @@
           showPhotoCaption: false,
           showAlbumPhotoCount: false,
           photoCaptionLength: 5,
-          showPhotoCaptionDate: false,
-          popupPlugin: $viewerSelected
+          showPhotoCaptionDate: false
           };
         $("#container").pwi(settings);
       });
+    &lt;/script&gt;
 
-     &lt;style type="text/css"&gt;
+    &lt;style type="text/css"&gt;
       .pwi_album
       {
         float: none;
         margin: 0;
         text-align: left;
       }
-    &lt;style&gt;
-   &lt;/script&gt;
+    &lt;/style&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;div id="container"&gt; &lt;/div&gt;
