@@ -26,7 +26,7 @@
         var $queryParams = $url[1].split("&");
         for ($queryParam in $queryParams) {
           var $split = $queryParams[$queryParam].split("=", 2);
-          if ($split[0] = "viewer") {
+          if ($split[0] === "viewer") {
             $viewerSelected = $split[1];
           }
         }
