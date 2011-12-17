@@ -5,7 +5,7 @@
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
  * @revision 2.0.0 Beta
- * @date September 18, 2011
+ * @date December 18, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
@@ -141,14 +141,6 @@
             return ($today.getUTCDate() + "-" + ($today.getUTCMonth() + 1) + "-" + $year);
         }
 
-        // Function:        nl2br
-        // Description:     Convert all new-lines to HTML breaks
-        // Parameters:      s: String to check
-        // Return:          String containing HTML breaks
-        function nl2br(s) {
-            return s.replace(/\n/g, '<br />\n');
-        }
-
         // Function:        formatDateTime
         // Description:     Format date to <day>-<month>-<year> <hours>:<minutes>
         //                  Time is only shown when not equal to 00:00
@@ -179,41 +171,63 @@
         // Parameters:      j: array containing all photo or album records
         //                  sortMode: mode to sort; name or date; ascending or descending
         // Return:          Sorted array
-        function sortData(j, sortMode) {
-            if (sortMode !== "none") {
+        function sortData(entries, sortMode) {
+            if (sortMode === "none")
+                return;
 
-                function ascDateSort(a, b) {
-                    return Number(a.gphoto$timestamp.$t) > Number(b.gphoto$timestamp.$t);
-                }
-                function descDateSort(a, b) {
-                    return Number(a.gphoto$timestamp.$t) < Number(b.gphoto$timestamp.$t);
-                }
-                function ascNameSort(a, b) {
-                    var nameA = a.title.$t.toLowerCase( );
-                    var nameB = b.title.$t.toLowerCase( );
-                    if (nameA < nameB) {return -1}
-                    if (nameA > nameB) {return 1}
-                    return 0;
-                }
-                function descNameSort(a, b) {
-                    var nameA = a.title.$t.toLowerCase( );
-                    var nameB = b.title.$t.toLowerCase( );
-                    if (nameA > nameB) {return -1}
-                    if (nameA < nameB) {return 1}
-                    return 0;
-                }
+            function ascDateSort(a, b) {
+                return Number(a.gphoto$timestamp.$t) > Number(b.gphoto$timestamp.$t);
+            }
+            function descDateSort(a, b) {
+                return Number(a.gphoto$timestamp.$t) < Number(b.gphoto$timestamp.$t);
+            }
+            function ascNameSort(a, b) {
+                var nameA = a.title.$t.toLowerCase( );
+                var nameB = b.title.$t.toLowerCase( );
+                if (nameA < nameB) {return -1}
+                if (nameA > nameB) {return 1}
+                return 0;
+            }
+            function descNameSort(a, b) {
+                var nameA = a.title.$t.toLowerCase( );
+                var nameB = b.title.$t.toLowerCase( );
+                if (nameA > nameB) {return -1}
+                if (nameA < nameB) {return 1}
+                return 0;
+            }
 
-                if (sortMode === "ASC_DATE") {
-                    j.feed.entry.sort(ascDateSort);
-                } else if (sortMode === "DESC_DATE") {
-                    j.feed.entry.sort(descDateSort);
-                } else if (sortMode === "ASC_NAME") {
-                    j.feed.entry.sort(ascNameSort);
-                } else if (sortMode === "DESC_NAME") {
-                    j.feed.entry.sort(descNameSort);
-                }
+            if (sortMode === "ASC_DATE") {
+                entries.sort(ascDateSort);
+            } else if (sortMode === "DESC_DATE") {
+                entries.sort(descDateSort);
+            } else if (sortMode === "ASC_NAME") {
+                entries.sort(ascNameSort);
+            } else if (sortMode === "DESC_NAME") {
+                entries.sort(descNameSort);
             }
         }
+
+
+        // Function:        alignPictures
+        // Description:     Align all pictures horizontally and vertically
+        // Parameters:      divName: Name of the div containing the pictures
+        // Return:          none
+        function alignPictures(divName) {
+            // Now make sure all divs have the same width and heigth
+            var divHeigth = 0;
+            var divWidth = 0;
+            $(divName).each(function(index, element) {
+                if (element.clientHeight > divHeigth)
+                    divHeigth = element.clientHeight;
+                if (element.clientWidth > divWidth)
+                    divWidth = element.clientWidth;
+            });
+            $(divName).css('height', (divHeigth+2)+'px');
+            if (settings.thumbAlign == 1) {
+                $(divName).css('width', (divWidth+2)+'px');
+            }
+        }
+
 
         // Function:        photo
         // Description:     Create a photo-div
@@ -226,9 +240,9 @@
                 var $matched = j.summary.$t.match(/\[youtube\s*:\s*(.*)\s*\](.*)/);
                 if ($matched) { // Found youtube video entry
                     $youtubeId = $matched[1];
-                    $c = nl2br($matched[2]);
+                    $c = $matched[2].replace(/\n/g, '<br />\n');
                 } else {
-                    $c = nl2br(j.summary.$t);
+                    $c = j.summary.$t.replace(/\n/g, '<br />\n');
                 }
             }
             if (settings.showPhotoDate) {
@@ -248,16 +262,14 @@
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
                             username + "' title='" + $d + "'></a>");
                 }
-                else {
-                    if (settings.popupPlugin !== "slimbox") {
-                        $html.append("<a class='iframe' href='http://www.youtube.com/embed/" +
-                                $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username +
-                                "' title='" + $d + "'></a>");
-                    } else {
-                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
-                                "' rel='lb-" + username + "' title='" + $d  + " (" +
-                                settings.labels.videoNotSupported + ")'></a>");
-                    }
+                else if (settings.popupPlugin !== "slimbox") {
+                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" +
+                            $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username +
+                            "' title='" + $d + "'></a>");
+                } else {
+                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
+                            "' rel='lb-" + username + "' title='" + $d  + " (" +
+                            settings.labels.videoNotSupported + ")'></a>");
                 }
                 if(settings.showPhotoDownloadPopup) {
                     var $downloadDiv = $("<div style='display: none'/>");
@@ -341,52 +353,45 @@
 
         function albums(j) {
             var $scAlbums = $("<div/>"), i = 0;
-            var $na = 0, $navrow = "", $albumCount = 0;
             var $startDate, $endDate;
             if (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) == null) {
                 $startDate = new Date(settings.albumStartDateTime);
                 if (isNaN($startDate)) {
-                    var tmpDate = settings.albumStartDateTime.replace(/-/g, "/");
-                    $startDate = new Date(tmpDate);
+                    $startDate = new Date(settings.albumStartDateTime.replace(/-/g, "/"));
                 }
                 $endDate = new Date(settings.albumEndDateTime);
                 if (isNaN($endDate)) {
-                    var tmpDate = settings.albumEndDateTime.replace(/-/g, "/");
-                    $endDate = new Date(tmpDate);
+                    $endDate = new Date(settings.albumEndDateTime.replace(/-/g, "/"));
                 }
             } else {
-                var tmpDate = settings.albumStartDateTime.replace(/-/g, "/");
-                $startDate = new Date(tmpDate);
-                tmpDate = settings.albumEndDateTime.replace(/-/g, "/");
-                $endDate = new Date(tmpDate);
-            }
-            i = settings.albumsPerPage * (settings.albumPage - 1);
-            $na = j.feed.entry.length;
-            if ($na > settings.albumMaxResults) {
-                $na = settings.albumMaxResults;
+                $startDate = new Date(settings.albumStartDateTime.replace(/-/g, "/"));
+                $endDate = new Date(settings.albumEndDateTime.replace(/-/g, "/"));
             }
 
-            sortData(j, settings.sortAlbums);
+            sortData(j.feed.entry, settings.sortAlbums);
 
-            while (i < settings.albumMaxResults && i < $na && i < (settings.albumsPerPage * settings.albumPage)) {
-                var $albumDate = new Date(Number(j.feed.entry[i].gphoto$timestamp.$t));
-                if ((($.inArray(j.feed.entry[i].gphoto$name.$t, settings.albums) > -1) || 
+            // Select albums to show
+            var $albumCounter = 0;
+            var $albumsToShow = $.grep(j.feed.entry, function(n, i) {
+                if (i >= settings.albumMaxResults) return false;
+                var $albumDate = new Date(Number(n.gphoto$timestamp.$t));
+                if ((($.inArray(n.gphoto$name.$t, settings.albums) > -1) || 
                      (settings.albums.length === 0)) &&
-                    ($.inArray(j.feed.entry[i].gphoto$name.$t, settings.removeAlbums) == -1) && 
-                    ((j.feed.entry[i].gphoto$albumType === undefined) ||
-                     ($.inArray(j.feed.entry[i].gphoto$albumType.$t, settings.removeAlbumTypes) == -1)) &&
+                    ($.inArray(n.gphoto$name.$t, settings.removeAlbums) == -1) && 
+                    ((n.gphoto$albumType === undefined) ||
+                     ($.inArray(n.gphoto$albumType.$t, settings.removeAlbumTypes) == -1)) &&
                     ((settings.albumStartDateTime == "" || $albumDate >= $startDate) &&
                      (settings.albumEndDateTime == "" || $albumDate <= $endDate))) {
 
                     var $keywordMatch = true;
                     if (settings.albumKeywords.length > 0) {
                         $keywordMatch = false;
-                        var $matched = j.feed.entry[i].summary.$t.match(/\[keywords\s*:\s*(.*)\s*\]/);
+                        var $matched = n.summary.$t.match(/\[keywords\s*:\s*(.*)\s*\]/);
                         if ($matched) {
                             var $keywordArray = new Array();
                             var $keywords= $matched[1].split(/,/);
                             for (var p in $keywords) {
-                                $newmatch = $keywords[p].match(/\s*['"](.*)['"]\s*/);
+                                var $newmatch = $keywords[p].match(/\s*['"](.*)['"]\s*/);
                                 if ($newmatch) {
                                     $keywordArray.push($newmatch[1]);
                                 }
@@ -402,57 +407,64 @@
                             }
                         }
                     }
+                    if ($keywordMatch == false) 
+                        return false;
 
-                    if ($keywordMatch == true) {
-                        $albumCount++;
-                        $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
-                        var jfeed = j.feed.entry[i];
-                        $scAlbum.bind('click.pwi', jfeed, function (e) {
-                            e.stopPropagation();
-                            settings.page = 1;
-                            settings.album = e.data.gphoto$name.$t;
-                            if (typeof (settings.onclickAlbumThumb) === "function") {
-                                settings.onclickAlbumThumb(e);
-                                return false;
-                            } else {
-                                getAlbum();
-                                return false;
-                            }
-                        });
-                        if (settings.showAlbumThumbs) {
-                            $scAlbum.append("<img src='" + j.feed.entry[i].media$group.media$thumbnail[0].url +
-                                "' height='" + j.feed.entry[i].media$group.media$thumbnail[0].height +
-                                "' width='" + j.feed.entry[i].media$group.media$thumbnail[0].width + "'/>");
-                        }
-                        if (settings.showAlbumTitles) {
-                            $item_plural = (j.feed.entry[i].gphoto$numphotos.$t == "1") ? false : true;
-                            $scAlbum.append("<br/>" +
-                                    ( (j.feed.entry[i].title.$t.length > settings.showAlbumTitlesLength) ?
-                                      j.feed.entry[i].title.$t.substring(0, settings.showCaptionLength) :
-                                      j.feed.entry[i].title.$t) + "<br/>" +
-                                    (settings.showAlbumdate ? formatDate(j.feed.entry[i].gphoto$timestamp.$t) : "") +
-                                    (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" +
-                                     j.feed.entry[i].gphoto$numphotos.$t + " " +
-                                     ($item_plural ? settings.labels.photos :  settings.labels.photo) : ""));
-                        }
-                        $scAlbums.append($scAlbum);
-                    }
+                    $albumCounter++;
+                    if (($albumCounter >  (settings.albumsPerPage * settings.albumPage)) ||
+                        ($albumCounter <= (settings.albumsPerPage * (settings.albumPage - 1))))
+                        return false;
+                    else
+                        return true;
                 }
-                i++;
-            }
-            $scAlbums.append("<div style='clear: both;height:0px;'/>");
+                return false;
+            });
 
-            if ($albumCount == 0) {
+            if ($albumsToShow.length == 0) {
                 $scAlbums = $("<div class='pwi_album_description'/>");
                 $scAlbums.append("<div class='title'>" + settings.labels.noalbums + "</div>");
                 show(false, $scAlbums);
-                return 
+                return;
             }
 
-            // less albums-per-page then max so paging
+            // Show the selected albums
+            $.each($albumsToShow, function(i, n) {
+                var $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
+                $scAlbum.bind('click.pwi', n, function (e) {
+                    e.stopPropagation();
+                    settings.page = 1;
+                    settings.album = e.data.gphoto$name.$t;
+                    if (typeof (settings.onclickAlbumThumb) === "function") {
+                        settings.onclickAlbumThumb(e);
+                        return false;
+                    } else {
+                        getAlbum();
+                        return false;
+                    }
+                });
+                if (settings.showAlbumThumbs) {
+                    $scAlbum.append("<img src='" + n.media$group.media$thumbnail[0].url +
+                            "' height='" + n.media$group.media$thumbnail[0].height +
+                            "' width='" + n.media$group.media$thumbnail[0].width + "'/>");
+                }
+                if (settings.showAlbumTitles) {
+                    $scAlbum.append("<br/>" +
+                            ((n.title.$t.length > settings.showAlbumTitlesLength) ?
+                             n.title.$t.substring(0, settings.showCaptionLength) :
+                             n.title.$t) + "<br/>" +
+                            (settings.showAlbumdate ? formatDate(n.gphoto$timestamp.$t) : "") +
+                            (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                             n.gphoto$numphotos.$t + " " +
+                             ((n.gphoto$numphotos.$t == "1") ? settings.labels.photo :  settings.labels.photos) : ""));
+                }
+                $scAlbums.append($scAlbum);
+            });
 
-            if ($na > settings.albumsPerPage) {
-                var $pageCount = ($na / settings.albumsPerPage);
+            $scAlbums.append("<div style='clear: both;height:0px;'/>");
+
+            // less albums-per-page then max so paging
+            if ($albumCounter > settings.albumsPerPage) {
+                var $pageCount = ($albumCounter / settings.albumsPerPage);
                 var $ppage = $("<div class='pwi_prevpage'/>").text(settings.labels.prev),
                 $npage = $("<div class='pwi_nextpage'/>").text(settings.labels.next);
                 $navRow = $("<div class='pwi_pager'/>");
@@ -502,20 +514,7 @@
             settings.albumstore = j;
             show(false, $scAlbums);
 
-            // Now make sure all divs have the same width and heigth
-            var divs=document.getElementsByClassName('pwi_album');
-            var divHeigth = 0;
-            var divWidth = 0;
-            for (var i=0;i<divs.length;i++){
-                if (divs[i].clientHeight > divHeigth)
-                    divHeigth = divs[i].clientHeight;
-                if (divs[i].clientWidth > divWidth)
-                    divWidth = divs[i].clientWidth;
-            } 
-            $('div.pwi_album').css('height', (divHeigth+2)+'px');
-            if (settings.albumThumbAlign == 1) {
-                $('div.pwi_album').css('width', (divWidth+2)+'px');
-            };
+            alignPictures('div.pwi_album');
         }
 
         function album(j) {
@@ -642,7 +641,7 @@
                 $scPhotos.append($navRow);
             }
 
-            sortData(j, settings.sortPhotos);
+            sortData(j.feed.entry, settings.sortPhotos);
 
             var startShow = ((settings.page - 1) * settings.maxResults);
             var endShow = settings.maxResults * settings.page;
@@ -693,7 +692,7 @@
                     function(el) {
                         var $newTitle = el.title;
                         if (el.parentNode.childElementCount > 1) {
-                            var $links = el.parentNode.getElementsByClassName('downloadlink');
+                            var $links = $(".downloadlink", el.parentNode);
                             if ($links.length > 0) {
                                 var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
                                 $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
@@ -708,20 +707,7 @@
 
             show(false, $scPhotos);
 
-            // Now make sure all divs have the same width and heigth
-            var divs=document.getElementsByClassName('pwi_photo');
-            var divHeigth = 0;
-            var divWidth = 0;
-            for (var i=0;i<divs.length;i++){
-                if (divs[i].clientHeight > divHeigth)
-                    divHeigth = divs[i].clientHeight;
-                if (divs[i].clientWidth > divWidth)
-                    divWidth = divs[i].clientWidth;
-            } 
-            $('div.pwi_photo').css('height', (divHeigth+2)+'px');
-            if (settings.thumbAlign == 1) {
-                $('div.pwi_photo').css('width', (divWidth+2)+'px');
-            }
+            alignPictures('div.pwi_photo');
         }
 
         function latest(j) {
@@ -730,7 +716,7 @@
             i = 0;
             var $relUsername = settings.username.replace(/[@\.]/g, "_");
 
-            sortData(j, settings.sortPhotos);
+            sortData(j.feed.entry, settings.sortPhotos);
 
             while (i < settings.maxResults && i < $len) {
                 var $scPhoto = photo(j.feed.entry[i], false, $relUsername);
@@ -749,7 +735,7 @@
                     function(el) {
                         var $newTitle = el.title;
                         if (el.parentNode.childElementCount > 1) {
-                            var $links = el.parentNode.getElementsByClassName('downloadlink');
+                            var $links = $(".downloadlink", el.parentNode);
                             if ($links.length > 0) {
                                 var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
                                 $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
@@ -760,6 +746,8 @@
                 );
             }
             show(false, $scPhotos);
+
+            alignPictures('div.pwi_photo');
         }
 
         function clickAlbumThumb(event) {
@@ -934,13 +922,13 @@
             },
             config_youtube: {
                 arrows      : false,
-        		fitToView	: false,
-		        width		: '90%',
-        		height		: '90%',
-        		autoSize	: false,
-        		closeClick	: false,
-        		openEffect	: 'none',
-        		closeEffect	: 'none'
+                fitToView   : false,
+                width       : '90%',
+                height      : '90%',
+                autoSize    : false,
+                closeClick  : false,
+                openEffect  : 'none',
+                closeEffect : 'none'
             },
             config_slideshow: {
                 arrows      : false,
@@ -1007,7 +995,7 @@
 function formatPhotoTitleFancyBox() {
     this.title = this.element.title;
     if (this.element.parentNode.childElementCount > 1) {
-        var $links = this.element.parentNode.getElementsByClassName('downloadlink');
+        var $links = $(".downloadlink", this.element.parentNode);
         if ($links.length > 0) {
             var downloadLink = '<a style="color: #FFF;" href="' + $links[0].href + '">Download</a>';
             this.title = this.title + '&nbsp;&nbsp;' + downloadLink;
@@ -1017,7 +1005,7 @@ function formatPhotoTitleFancyBox() {
 
 function formatPhotoTitleColorBox() {
     if (this.parentNode.childElementCount > 1) {
-        var $links = this.parentNode.getElementsByClassName('downloadlink');
+        var $links = $(".downloadlink", this.parentNode);
         if ($links.length > 0) {
             return this.title +  '&nbsp;&nbsp;' + "Download".link($links[0].href);
         }
