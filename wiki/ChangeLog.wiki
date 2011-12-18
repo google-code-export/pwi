@@ -11,7 +11,7 @@ This version is available as BETA release.
     * Added !ColorBox support
     * Redesign of demos: allow user to choose which viewer to use
     * Issue 43 (feature request): Added option to show map of a picture
-    * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8
+    * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8 (now demo5)
     * Issue 87 (feature request): Option to exclude specific albums
     * Added support for Youtube videos from Picasa
     * Sorting of albums and photos, using name or date (ascending and descending)
