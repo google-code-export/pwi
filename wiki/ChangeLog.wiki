@@ -1,9 +1,9 @@
 #summary PWI Change Log.
 #labels Featured
 
-===Updates since v1.5===
+===Updates v2.0===
 
-This version is available through the Source tab.
+This version is available as BETA release.
 
   * NEW:
     * Upgrade to jQuery 1.7.0.
