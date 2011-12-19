@@ -993,14 +993,14 @@
 
 // This function is called by FancyBox to format the title of a picture
 function formatPhotoTitleFancyBox() {
-    this.title = this.element.title;
     if (this.element.parentNode.childElementCount > 1) {
         var $links = $(".downloadlink", this.element.parentNode);
         if ($links.length > 0) {
             var downloadLink = '<a style="color: #FFF;" href="' + $links[0].href + '">Download</a>';
-            this.title = this.title + '&nbsp;&nbsp;' + downloadLink;
+            this.element.title = this.element.title + '&nbsp;&nbsp;' + downloadLink;
         }
     }
+    this.title = this.element.title;
 }
 
 function formatPhotoTitleColorBox() {
