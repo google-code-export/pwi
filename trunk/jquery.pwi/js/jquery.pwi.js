@@ -39,11 +39,11 @@
                     else if (rel === "yt") {     // Settings for youtube videos
                         photos.fancybox(opts.fancybox_config.config_youtube);
                     }
-                    else if (rel === "sl") {     // Settings for slideshows
-                        photos.fancybox(opts.fancybox_config.config_slideshow);
-                    }
                     else if (rel === "map") {    // Settings for maps
                         photos.fancybox(opts.fancybox_config.config_maps);
+                    }
+                    else if (rel === "map_overview") {    // Settings for overview-map
+                        photos.fancybox(opts.fancybox_config.config_map_overview);
                     }
                 };
             }
@@ -57,11 +57,11 @@
                     else if (rel === "yt") {     // Settings for youtube videos
                         photos.colorbox(opts.colorbox_config.config_youtube);
                     }
-                    else if (rel === "sl") {     // Settings for slideshows
-                        photos.colorbox(opts.colorbox_config.config_slideshow);
-                    }
                     else if (rel === "map") {    // Settings for maps
                         photos.colorbox(opts.colorbox_config.config_maps);
+                    }
+                    else if (rel === "map_overview") {    // Settings for overview-map
+                        photos.colorbox(opts.colorbox_config.config_map_overview);
                     }
                 };
             }
@@ -231,9 +231,10 @@
 
         // Function:        photo
         // Description:     Create a photo-div
-        // Parameters:      j: array containing all photo or album records
-        //                  sortMode: mode to sort; name or date; ascending or descending
-        // Return:          Sorted array
+        // Parameters:      j: element containing the photo data
+        //                  hidden: photo should not be shown, but included in HTML
+        //                  username: processed username
+        // Return:          HTML containing the photo-div
         function photo(j, hidden, username) {
             var $html, $d = "", $c = "", $youtubeId = "";
             if (j.summary) {
@@ -255,6 +256,7 @@
                 }
                 $d += " ";
             }
+            $d += $c.replace(new RegExp("'", "g"), "&#39;");
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
@@ -271,17 +273,9 @@
                             "' rel='lb-" + username + "' title='" + $d  + " (" +
                             settings.labels.videoNotSupported + ")'></a>");
                 }
-                if(settings.showPhotoDownloadPopup) {
-                    var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" +
-                            j.media$group.media$content[0].url + "'/>");
-                    $html.append($downloadDiv);
-                }
-                return $html;
             }
             else
             {
-                $d += $c.replace(new RegExp("'", "g"), "&#39;");
                 $html = $("<div class='pwi_photo' style='cursor: pointer;'/>");
                 if ($youtubeId == "") {
                     $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
@@ -310,35 +304,27 @@
                                 "' width='" + j.media$group.media$thumbnail[0].width + "'/></a>");
                     }
                 }
-                if(settings.showPhotoDownloadPopup) {
-                    var $downloadDiv = $("<div style='display: none'/>");
-                    $downloadDiv.append("<a class='downloadlink' href='" +
-                            j.media$group.media$content[0].url + "'/>");
-                    $html.append($downloadDiv);
-                }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
-                    if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) &&
-                       (settings.mapIconLocation != "")) {
-                        if((j.georss$where) && (j.georss$where.gml$Point) &&
-                           (j.georss$where.gml$Point.gml$pos)) {
-                            var $locationLink = $("<a class='" +
-                                    (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") +
-                                    "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" +
-                                    j.georss$where.gml$Point.gml$pos.$t +
-                                    "' rel='map-" + settings.username + "'>" +
-                                    "<img src='" + settings.mapIconLocation + "'></a>");
-                            $html.append($locationLink);
-                        }
+                    if ((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) &&
+                        (settings.mapIconLocation != "") &&
+                        (j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
+                        var $locationLink = $("<a class='" +
+                                (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") +
+                                "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" +
+                                j.georss$where.gml$Point.gml$pos.$t +
+                                "' rel='map-" + settings.username + "'>" +
+                                "<img src='" + settings.mapIconLocation + "'></a>");
+                        $html.append($locationLink);
                     }
                     if (settings.showPhotoCaption) {
                         if (settings.showPhotoCaptionDate && settings.showPhotoDate) { $c = $d; }
+                        if ($c.length > settings.showCaptionLength) {
+                            $c = $c.substring(0, settings.showCaptionLength);
+                        }
                         if(settings.showPhotoDownload) {
                             $c += '<a href="' + j.media$group.media$content[0].url + '">' +
                                 settings.labels.downloadphotos + '</a>';
-                        }
-                        if ($c.length > settings.showCaptionLength) {
-                            $c = $c.substring(0, settings.showCaptionLength);
                         }
                         $html.append($c);
                     }
@@ -346,9 +332,14 @@
                 if (typeof (settings.onclickThumb) === "function") {
                     var obj = j; $html.bind('click.pwi', obj, clickThumb);
                 }
-
-                return $html;
             }
+            if(settings.showPhotoDownloadPopup) {
+                var $downloadDiv = $("<div style='display: none'/>");
+                $downloadDiv.append("<a class='downloadlink' href='" +
+                        j.media$group.media$content[0].url + "'/>");
+                $html.append($downloadDiv);
+            }
+            return $html;
         }
 
         function albums(j) {
@@ -436,11 +427,10 @@
                     settings.album = e.data.gphoto$name.$t;
                     if (typeof (settings.onclickAlbumThumb) === "function") {
                         settings.onclickAlbumThumb(e);
-                        return false;
                     } else {
                         getAlbum();
-                        return false;
                     }
+                    return false;
                 });
                 if (settings.showAlbumThumbs) {
                     $scAlbum.append("<img src='" + n.media$group.media$thumbnail[0].url +
@@ -559,43 +549,29 @@
                 $scPhotos.append($scPhotosDesc);
             }
 
-            if ((settings.showSlideshowLink) || (settings.showSlideshow)) {
-                if (settings.mode === 'keyword' || settings.keyword !== "") {
-                    //alert("currently not supported");
-                } else if (settings.popupPlugin === "slimbox") {
-                    $scPhotos.append("<div><a href='http://picasaweb.google.com/" +
-                            settings.username + "/" + j.feed.gphoto$name.$t + "" +
-                            ((settings.authKey !== "") ? "?authkey=" + settings.authKey : "") +
-                            "#slideshow/" + j.feed.entry[0].gphoto$id.$t +
-                            "' rel='gb_page_fs[]' target='_new' class='sslink'>" +
-                            settings.labels.slideshow + "</a></div>");
-                } else {
-                    var $isIE6 = !$.support.opacity && !window.XMLHttpRequest;
-                    var $slideShow = $("<div class='pwi_slideshow'/>");
-                    if ((settings.popupPlugin === "colorbox") || ($isIE6) ||
-                        (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) != null)) {
-                        for (var i = 0; i < j.feed.link.length; i++) {
-                            if ((j.feed.link[i].type == "text/html") &&
-                                (j.feed.link[i].rel == "alternate")) {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href +
-                                        "#slideshow/' rel='sl-" + $relUsername + "'>" +
-                                        settings.labels.slideshow + "</a><br>");
-                                break;
-                            }
-                        }
+            if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation)) {
+                var $geoTagged = $.grep(j.feed.entry, function(n, i) {
+                    if((n.georss$where) && (n.georss$where.gml$Point) &&
+                    (n.georss$where.gml$Point.gml$pos)) {
+                        return true;
                     } else {
-                        for (var i = 0; i < j.feed.link.length; i++) {
-                            if (j.feed.link[i].type == "application/x-shockwave-flash") {
-                                $slideShow.append("<a class='iframe' href='" + j.feed.link[i].href +
-                                        "' rel='sl-" + $relUsername + "'>" +
-                                        settings.labels.slideshow + "</a><br>");
-                                break;
-                            }
-                        }
+                        return false
                     }
-                    $scPhotos.append($slideShow);
-                    $scPhotos.append("<div style='clear: both;height:0px;'/>");
-                }
+                });
+
+                var $globalMap = $("<div class='pwi_overviewmap' />");
+                $globalMap.append("<a class='inline' href='#map_canvas' rel='map_overview-" + $relUsername + "'>" +
+                        settings.labels.showMap + "</a><br>");
+                $scPhotos.append($globalMap);
+                $scPhotos.append("<div style='clear: both;height:0px;'/>");
+
+                var $mapDiv = $("<div style='display:none' />");
+                var $windowHeight = $(window).height() * 0.75;
+                var $windowWidth = $(window).width() * 0.75;
+                $mapDiv.append("<div id='map_canvas' style='width: " + $windowWidth + "px; height: " + $windowHeight + "px' />");
+                $scPhotos.append($mapDiv);
+
+                $.fn.pwi.additionalMapsSettings = $geoTagged;
             }
 
             if ($np > settings.maxResults) {
@@ -685,8 +661,9 @@
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
-                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']"), "sl");
                 settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
+                var $s = $(".pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+                settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
@@ -728,8 +705,9 @@
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
-                settings.popupExt($s.find("a[rel='sl-" + $relUsername + "']"), "sl");
                 settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
+                var $s = $(".pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+                settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
@@ -883,8 +861,6 @@
         showAlbumPhotoCount: true,
         showAlbumDescription: true,
         showAlbumLocation: true,
-        showSlideshow: true, //-- Set to true to show slideshow in popup
-        showSlideshowLink: false,   //-- Identical to showSlideshow
         showPhotoCaption: false,
         showPhotoCaptionDate: false,
         showCaptionLength: 9999,
@@ -894,6 +870,7 @@
         showPermaLink: false,
         showPhotoLocation: false,
         mapIconLocation: "",
+        mapSize: 0.75,      // 75% of the window
         useQueryParameters: true,
         loadingImage: "",
         videoBorder: "images/video.jpg",
@@ -902,13 +879,13 @@
             photos: "photos",
             downloadphotos: "Download photos",
             albums: "Back to albums",
-            slideshow: "Display slideshow",
             noalbums: "No albums available",
             loading: "PWI fetching data...",
             page: "Page",
             prev: "Previous",
             next: "Next",
             showPermaLink: "Show PermaLink",
+            showMap: "Show Map",
             videoNotSupported: "Video not supported",
             devider: "|"
         }, //-- translate if needed
@@ -918,7 +895,10 @@
                 closeClick : false,
                 nextEffect : 'none',
                 loop       : false,
-                beforeLoad : formatPhotoTitleFancyBox
+                beforeLoad : formatPhotoTitleFancyBox,
+                helpers	   : {
+                    buttons	: {}
+                }
             },
             config_youtube: {
                 arrows      : false,
@@ -930,38 +910,40 @@
                 openEffect  : 'none',
                 closeEffect : 'none'
             },
-            config_slideshow: {
-                arrows      : false,
-                closeClick  : false
-            },
             config_maps: {
-                arrows      : false
+                arrows      : false,
+                width       : '90%',
+                height      : '90%'
+            },
+            config_map_overview: {
+                arrows      : false,
+                afterShow   : mapOverviewCallback
             }
-
         },
         colorbox_config: {
             config_photos: {
-                title       : formatPhotoTitleColorBox,
-                loop : false
+                title           : formatPhotoTitleColorBox,
+                loop            : false,
+                slideshow       : true,
+                slideshowAuto   : false
+
             },
             config_youtube: {
-                iframe : true, 
-                innerWidth : '80%',
-                innerHeight : '80%',
-                rel : 'nofollow'
-            },
-            config_slideshow: {
-                iframe : true, 
-                innerWidth : '80%',
-                innerHeight : '80%',
-                loop : false,
-                rel : 'nofollow'
+                iframe          : true, 
+                innerWidth      : '80%',
+                innerHeight     : '80%',
+                rel             : 'nofollow'
             },
             config_maps: {
-                iframe : true, 
-                innerWidth : '80%',
-                innerHeight : '80%',
-                rel : 'nofollow'
+                iframe          : true, 
+                innerWidth      : '80%',
+                innerHeight     : '80%',
+                rel             : 'nofollow'
+            },
+            config_map_overview: {
+                inline          : true,
+                rel             : 'nofollow',
+                onComplete      : mapOverviewCallback
             }
         },
         slimbox_config: {
@@ -1002,6 +984,61 @@ function formatPhotoTitleFancyBox() {
     }
     this.title = this.element.title;
 }
+
+function mapOverviewCallback() {
+    var myOptions = {
+        zoom: 1,
+        center: new google.maps.LatLng(0, 0),
+        mapTypeId: google.maps.MapTypeId.HYBRID
+    }
+
+    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    var markerBounds = new google.maps.LatLngBounds();
+
+    // Detect locations that are close together, and move the second one just a little bit
+    var $locationArray = new Array();
+    for(i = 0; i < $.fn.pwi.additionalMapsSettings.length; i++) {
+        var n = $.fn.pwi.additionalMapsSettings[i];
+        var latLng = n.georss$where.gml$Point.gml$pos.$t.split(" ");
+        var latitude = parseFloat(latLng[0]);
+        var longitude = parseFloat(latLng[1]);
+        for(j = i+1; j < $.fn.pwi.additionalMapsSettings.length; j++) {
+            var $latLng2 = $.fn.pwi.additionalMapsSettings[j].georss$where.gml$Point.gml$pos.$t.split(" ");
+            if((Math.abs(latitude  - parseFloat($latLng2[0])) < 0.0001) &&
+               (Math.abs(longitude - parseFloat($latLng2[1])) < 0.0001)) {
+                latitude += 0.0001;
+                longitude += 0.0001;
+            }
+        }
+        var $element = {};
+        $element.latitude = latitude;
+        $element.longitude = longitude;
+        $element.img = n.media$group.media$thumbnail[0].url;
+        $element.summary = n.summary.$t.replace(/\n/g, '<br />\n');
+        $locationArray.push($element);
+    }
+
+    $.each($locationArray, function(i, n) {
+        var myLatLng = new google.maps.LatLng(n.latitude, n.longitude);
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map
+        }); 
+        var photoLink="<div id='content'><img src='" + n.img + "' />" + n.summary + "</div>";
+
+        var infowindow = new google.maps.InfoWindow({
+            content: photoLink
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map,marker);
+        });
+        
+        markerBounds.extend(myLatLng);
+    });
+
+    map.fitBounds(markerBounds);
+}
+
 
 function formatPhotoTitleColorBox() {
     if (this.parentNode.childElementCount > 1) {
