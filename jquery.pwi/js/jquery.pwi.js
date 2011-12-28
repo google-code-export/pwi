@@ -560,8 +560,13 @@
                 });
 
                 var $globalMap = $("<div class='pwi_overviewmap' />");
-                $globalMap.append("<a class='inline' href='#map_canvas' rel='map_overview-" + $relUsername + "'>" +
-                        settings.labels.showMap + "</a><br>");
+                var $link = $("<a class='fancybox.inline' href='#map_canvas' rel='map_overview-" + $relUsername + "' >" +
+                        settings.labels.showMap + "</a>");
+                if (($.browser.msie) && (parseFloat($.browser.version) < 8.0)) {
+                    // For some reason the href field contains the complete path
+                    $link[0].href = "#map_canvas";
+                }
+                $globalMap.append($link);
                 $scPhotos.append($globalMap);
                 $scPhotos.append("<div style='clear: both;height:0px;'/>");
 
