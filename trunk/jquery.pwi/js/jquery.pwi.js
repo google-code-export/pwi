@@ -13,7 +13,7 @@
 (function ($) {
     var elem, opts = {};
     $.fn.pwi = function (opts) {
-        var $self, settings = {};
+        var $self, settings = {}, strings = {};
         opts = $.extend(true,{}, $.fn.pwi.defaults, opts);
         if (opts.popupPlugin == "") {
             // Detect the popup plugin type
@@ -72,6 +72,7 @@
             settings = opts;
             ts = new Date().getTime();
             settings.id = ts;
+            strings = $.fn.pwi.strings;
             $self = $("<div id='pwi_" + ts + "'/>").appendTo(elem);
             $self.addClass('pwi_container');
             _start();
@@ -449,8 +450,7 @@
                 }
                 $scAlbums.append($scAlbum);
             });
-
-            $scAlbums.append("<div style='clear: both;height:0px;'/>");
+            $scAlbums.append(strings.clearDiv);
 
             // less albums-per-page then max so paging
             if ($albumCounter > settings.albumsPerPage) {
@@ -489,7 +489,7 @@
                     });
                 }
                 $navRow.append($npage);
-                $navRow.append("<div style='clear: both;height:0px;'/>");
+                $navRow.append(strings.clearDiv);
 
                 if ($navRow.length > 0 && (settings.showPager === 'both' || settings.showPager === 'top')) {
                     $scAlbums.prepend($navRow.clone(true));
@@ -549,7 +549,7 @@
                 $scPhotos.append($scPhotosDesc);
             }
 
-            if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation)) {
+            if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) && (typeof(google) != "undefined")) {
                 var $geoTagged = $.grep(j.feed.entry, function(n, i) {
                     if((n.georss$where) && (n.georss$where.gml$Point) &&
                     (n.georss$where.gml$Point.gml$pos)) {
@@ -568,14 +568,13 @@
                 }
                 $globalMap.append($link);
                 $scPhotos.append($globalMap);
-                $scPhotos.append("<div style='clear: both;height:0px;'/>");
+                $scPhotos.append(strings.clearDiv);
 
                 var $mapDiv = $("<div style='display:none' />");
                 var $windowHeight = $(window).height() * 0.75;
                 var $windowWidth = $(window).width() * 0.75;
                 $mapDiv.append("<div id='map_canvas' style='width: " + $windowWidth + "px; height: " + $windowHeight + "px' />");
                 $scPhotos.append($mapDiv);
-
                 $.fn.pwi.additionalMapsSettings = $geoTagged;
             }
 
@@ -615,7 +614,7 @@
                     });
                 }
                 $navRow.append($npage);
-                $navRow.append("<div style='clear: both;height:0px;'/>");
+                $navRow.append(strings.clearDiv);
             }
 
             if ($navRow.length > 0 && (settings.showPager === 'both' || settings.showPager === 'top')) {
@@ -637,13 +636,11 @@
             }
 
             if (settings.showPermaLink) {
-                $scPhotos.append("<div style='clear: both;height:0px;'/>");
+                $scPhotos.append(strings.clearDiv);
                 var $permaLinkEnable = $("<div id='permalinkenable' class='pwi_nextpage'/>").text(settings.labels.showPermaLink).bind('click.pwi', p, function (e) {
                             e.stopPropagation();
-                            var ele = document.getElementById("permalinkbox");
-                            if (ele) {ele.style.display = "block";}
-                            ele = document.getElementById("permalinkenable");
-                            if (ele) {ele.style.display = "none";}
+                            $('#permalinkbox').show();
+                            $('#permalinkenable').hide();
                             return false;
                         });
 ;
@@ -685,7 +682,7 @@
                 );
             }
 
-            $scPhotos.append("<div style='clear: both;height:0px;'/>");
+            $scPhotos.append(strings.clearDiv);
 
             show(false, $scPhotos);
 
@@ -705,7 +702,7 @@
                 $scPhotos.append($scPhoto);
                 i++;
             }
-            $scPhotos.append("<div style='clear: both;height:0px;'> </div>");
+            $scPhotos.append(strings.clearDiv);
             var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
@@ -750,7 +747,7 @@
                 albums(settings.albumstore);
             } else {
                 show(true, '');
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+                var $u = strings.picasaUrl + settings.username +
                     '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' +
                     settings.albumThumbSize + ((settings.albumCrop == 1) ? "c" : "u");
                 $.getJSON($u, 'callback=?', albums);
@@ -779,7 +776,7 @@
             if (settings.photostore[settings.album]) {
                 album(settings.photostore[settings.album]);
             } else {
-                var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+                var $u = strings.picasaUrl + settings.username +
                     ((settings.album !== "") ? '/album/' + settings.album : "") + '?kind=photo&alt=json' +
                     ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
                     ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") +
@@ -793,7 +790,7 @@
 
         function getLatest() {
             show(true, '');
-            var $u = 'http://picasaweb.google.com/data/feed/api/user/' + settings.username +
+            var $u = strings.picasaUrl + settings.username +
                 (settings.album !== "" ? '/album/' + settings.album : '') +
                 '?kind=photo&max-results=' + settings.maxResults + '&alt=json&q=' +
                 ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
@@ -807,15 +804,13 @@
         function show(loading, data) {
             if (loading) {
                 if (settings.loadingImage.length > 0) {
-                    var ele = document.getElementById(settings.loadingImage);
-                    if (ele) {ele.style.display = "block";}
+                    $(settings.loadingImage).show();
                 }
                 document.body.style.cursor = "wait";
                 if ($.blockUI){ $self.block(settings.blockUIConfig);}
             } else {
                 if (settings.loadingImage.length > 0) {
-                    var ele = document.getElementById(settings.loadingImage);
-                    if (ele) {ele.style.display = "none";}
+                    $(settings.loadingImage).hide();
                 }
                 document.body.style.cursor = "default";
                 if ($.blockUI){ $self.unblock(); }
@@ -975,6 +970,10 @@
         popupPlugin: "", // If empty the name will be determined automatically
         popupExt: "", //--  don't touch. Configure using other options
         token: ""
+    };
+    $.fn.pwi.strings = {
+        clearDiv: "<div style='clear: both;height:0px;'/>",
+        picasaUrl: "http://picasaweb.google.com/data/feed/api/user/"
     };
 })(jQuery);
 
