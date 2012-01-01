@@ -66,7 +66,7 @@
 }
 
 #fancybox-loading {
-	position: fixed;
+	position: absolute;
 	top: 50%;
 	left: 50%;
 	margin-top: -21px;
@@ -91,6 +91,11 @@
 	height: 36px;
 	cursor: pointer;
 	z-index: 1004;
+}
+
+* html .fancybox-close {
+    background: transparent;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='fancy_close.png', sizingMethod='scale'); 
 }
 
 .fancybox-prev, .fancybox-next {

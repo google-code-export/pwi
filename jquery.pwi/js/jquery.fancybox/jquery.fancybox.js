@@ -39,7 +39,6 @@
 			topRatio: 0.5,
 
 			fixed: !$.browser.msie || $.browser.version > 6,
-			//fixed: !$.browser.msie || $.browser.version > 6 || !document.documentElement.hasOwnProperty('ontouchstart'),
 			scrolling: 'auto', // 'auto', 'yes' or 'no'
 			wrapCSS: 'fancybox-default',
 
