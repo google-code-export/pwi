@@ -26,6 +26,7 @@
 		buttons: {},
 
 		update: function () {
+			if (!this.buttons.toggle) return;
 			var toggle = this.buttons.toggle.removeClass('btnDisabled btnToggleOn');
 
 			//Size toggle button

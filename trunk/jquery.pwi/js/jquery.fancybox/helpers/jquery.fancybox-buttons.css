@@ -1,5 +1,5 @@
 #fancybox-buttons {
-	position: fixed;
+	position: absolute;
 	left: 0;
 	width: 100%;
 	z-index: 1005;
