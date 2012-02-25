@@ -4,7 +4,7 @@
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
- * @revision 2.0.0 Beta
+ * @revision 2.0.0
  * @date December 18, 2011
  * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
@@ -93,16 +93,18 @@
                     for ($queryParam in $queryParams) {
                         var $split = $queryParams[$queryParam].split("=", 2);
                         if ($split.length == 2) {
-                            if ($split[0] == 'pwi_album_selected') {
+                            switch ($split[0]) {
+                            case 'pwi_album_selected':
                                 settings.mode = 'album';
                                 settings.album = $split[1];
                                 $queryActive = true;
-                            }
-                            if ($split[0] == 'pwi_albumpage') {
+                                break;
+                            case 'pwi_albumpage':
                                 $page = $split[1];
-                            }
-                            if ($split[0] == 'pwi_showpermalink') {
+                                break;
+                            case 'pwi_showpermalink':
                                 settings.showPermaLink = true;
+                                break;
                             }
                         }
                     }
@@ -118,8 +120,6 @@
                     getLatest();
                     break;
                 case 'album':
-                    getAlbum();
-                    break;
                 case 'keyword':
                     getAlbum();
                     break;
@@ -197,14 +197,19 @@
                 return 0;
             }
 
-            if (sortMode === "ASC_DATE") {
-                entries.sort(ascDateSort);
-            } else if (sortMode === "DESC_DATE") {
-                entries.sort(descDateSort);
-            } else if (sortMode === "ASC_NAME") {
-                entries.sort(ascNameSort);
-            } else if (sortMode === "DESC_NAME") {
-                entries.sort(descNameSort);
+            switch (sortMode) {
+                case "ASC_DATE":
+                    entries.sort(ascDateSort);
+                    break;
+                case "DESC_DATE":
+                    entries.sort(descDateSort);
+                    break;
+                case "ASC_NAME":
+                    entries.sort(ascNameSort);
+                    break;
+                case "DESC_NAME":
+                    entries.sort(descNameSort);
+                    break;
             }
         }
 
@@ -218,13 +223,15 @@
             var divHeigth = 0;
             var divWidth = 0;
             $(divName).each(function(index, element) {
-                if (element.clientHeight > divHeigth)
+                if (element.clientHeight > divHeigth) {
                     divHeigth = element.clientHeight;
-                if (element.clientWidth > divWidth)
+                }
+                if (element.clientWidth > divWidth) {
                     divWidth = element.clientWidth;
+                }
             });
             $(divName).css('height', (divHeigth+2)+'px');
-            if (settings.thumbAlign == 1) {
+            if (settings.thumbAlign) {
                 $(divName).css('width', (divWidth+2)+'px');
             }
         }
@@ -250,10 +257,6 @@
             if (settings.showPhotoDate) {
                 if ((j.exif$tags) && (j.exif$tags.exif$time)) {
                     $d = formatDateTime(j.exif$tags.exif$time.$t);
-                } else if (j.gphoto$timestamp) {
-                    $d = formatDateTime(j.gphoto$timestamp.$t);
-                } else {
-                    $d = formatDateTime(j.published.$t);
                 }
                 $d += " ";
             }
@@ -421,7 +424,8 @@
 
             // Show the selected albums
             $.each($albumsToShow, function(i, n) {
-                var $scAlbum = $("<div class='pwi_album' style='cursor: pointer;'/>");
+                var $scAlbum = $("<div class='pwi_album' style='cursor: pointer; " +
+                    (settings.albumThumbAlign ? "width:" + (settings.albumThumbSize + 1) + "px;" : "") + "'/>");
                 $scAlbum.bind('click.pwi', n, function (e) {
                     e.stopPropagation();
                     settings.page = 1;
@@ -439,14 +443,16 @@
                             "' width='" + n.media$group.media$thumbnail[0].width + "'/>");
                 }
                 if (settings.showAlbumTitles) {
-                    $scAlbum.append("<br/>" +
-                            ((n.title.$t.length > settings.showAlbumTitlesLength) ?
+                    var $scAlbumTitle = $("<div class='pwi_album_title'/>");
+
+                    $scAlbumTitle.append(((n.title.$t.length > settings.showAlbumTitlesLength) ?
                              n.title.$t.substring(0, settings.showCaptionLength) :
                              n.title.$t) + "<br/>" +
                             (settings.showAlbumdate ? formatDate(n.gphoto$timestamp.$t) : "") +
                             (settings.showAlbumPhotoCount ? "&nbsp;&nbsp;&nbsp;&nbsp;" +
                              n.gphoto$numphotos.$t + " " +
                              ((n.gphoto$numphotos.$t == "1") ? settings.labels.photo :  settings.labels.photos) : ""));
+                    $scAlbum.append($scAlbumTitle);
                 }
                 $scAlbums.append($scAlbum);
             });
@@ -749,7 +755,7 @@
                 show(true, '');
                 var $u = strings.picasaUrl + settings.username +
                     '?kind=album&access=' + settings.albumTypes + '&alt=json&thumbsize=' +
-                    settings.albumThumbSize + ((settings.albumCrop == 1) ? "c" : "u");
+                    settings.albumThumbSize + (settings.albumCrop ? "c" : "u");
                 $.getJSON($u, 'callback=?', albums);
             }
             return $self;
@@ -781,7 +787,7 @@
                     ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
                     ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") +
                     '&imgmax=d&thumbsize=' + settings.thumbSize +
-                    ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
+                    ((settings.thumbCrop) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
                 show(true, '');
                 $.getJSON($u, 'callback=?', album);
             }
@@ -796,7 +802,7 @@
                 ((settings.authKey !== "") ? "&authkey=" + settings.authKey : "") +
                 ((settings.keyword !== "") ? "&tag=" + settings.keyword : "") +
                 '&imgmax=d&thumbsize=' + settings.thumbSize +
-                ((settings.thumbCrop == 1) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
+                ((settings.thumbCrop) ? "c" : "u") + "," + checkPhotoSize(settings.photoSize);
             $.getJSON($u, 'callback=?', latest);
             return $self;
         }
@@ -830,10 +836,10 @@
         albumKeywords: [], //-- Only show albums containing one of these keywords in the description. Use [keywords: "kw1", "kw2"] within the description
         albumStartDateTime: "", //-- Albums on or after this date will be shown. Format: YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD for date only
         albumEndDateTime: "", //-- Albums before or on this date will be shown
-        albumCrop: 1, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
+        albumCrop: true, //-- crop thumbs on albumpage to have all albums in square thumbs (see albumThumbSize for supported sizes)
         albumTitle: "", //-- overrule album title in 'album' mode
         albumThumbSize: 160, //-- specify thumbnail size of albumthumbs (default: 72, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
-        albumThumbAlign: 1, //-- Allign thumbs vertically between rows
+        albumThumbAlign: true, //-- Allign thumbs vertically between rows
         albumMaxResults: 999, //-- load only the first X albums
         albumsPerPage: 999, //-- show X albums per page (activates paging on albums when this amount is less then the available albums)
         albumPage: 1, //-- force load on specific album
@@ -843,8 +849,8 @@
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
         thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
-        thumbCrop: 0, //-- force crop on photo thumbnails (see thumbSize for supported sized)
-        thumbAlign: 0, //-- Allign thumbs vertically between rows
+        thumbCrop: false, //-- force crop on photo thumbnails (see thumbSize for supported sized)
+        thumbAlign: false, //-- Allign thumbs vertically between rows
         thumbCss: {
             'margin': '5px'
         },
@@ -880,14 +886,12 @@
             downloadphotos: "Download photos",
             albums: "Back to albums",
             noalbums: "No albums available",
-            loading: "PWI fetching data...",
             page: "Page",
             prev: "Previous",
             next: "Next",
             showPermaLink: "Show PermaLink",
             showMap: "Show Map",
-            videoNotSupported: "Video not supported",
-            devider: "|"
+            videoNotSupported: "Video not supported"
         }, //-- translate if needed
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         fancybox_config: {
