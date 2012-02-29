@@ -5,10 +5,10 @@
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
  * @revision 2.0.0
- * @date December 18, 2011
- * @copyright (c) 2010-2011 Jeroen Diderik(www.jdee.nl)
+ * @date Februari 29, 2012
+ * @copyright (c) 2010-2012 Jeroen Diderik(www.jdee.nl)
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
- * @Visit http://pwi.googlecode.com/ for more informations, duscussions etc about this library
+ * @Visit http://pwi.googlecode.com/ for more informations, discussions etc about this library
  */
 (function ($) {
     var elem, opts = {};
@@ -244,69 +244,55 @@
         //                  username: processed username
         // Return:          HTML containing the photo-div
         function photo(j, hidden, username) {
-            var $html, $d = "", $c = "", $youtubeId = "";
+            var $html, $d = "", $c = "", $youtubeId = "", $caption;
             if (j.summary) {
                 var $matched = j.summary.$t.match(/\[youtube\s*:\s*(.*)\s*\](.*)/);
                 if ($matched) { // Found youtube video entry
                     $youtubeId = $matched[1];
-                    $c = $matched[2].replace(/\n/g, '<br />\n');
+                    $c = $matched[2].replace(/[\r\n\t\s]+/g, ' ');
+                    $caption = $matched[2].replace(/[\n]/g, '<br/>');
                 } else {
-                    $c = j.summary.$t.replace(/\n/g, '<br />\n');
+                    $c = j.summary.$t.replace(/[\r\n\t\s]+/g, ' ');
+                    $caption = j.summary.$t.replace(/[\n]/g, '<br/>');
                 }
             }
             if (settings.showPhotoDate) {
                 if ((j.exif$tags) && (j.exif$tags.exif$time)) {
-                    $d = formatDateTime(j.exif$tags.exif$time.$t);
+                    $d = formatDateTime(j.exif$tags.exif$time.$t) + " ";
                 }
-                $d += " ";
             }
             $d += $c.replace(new RegExp("'", "g"), "&#39;");
+            var $thumbnail0 = j.media$group.media$thumbnail[0];
+            var $thumbnail1 = j.media$group.media$thumbnail[1];
+
             if (hidden)
             {
                 $html = $("<div class='pwi_photo' style='display: none'/>");
                 if ($youtubeId == "") {
-                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
+                    $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
                             username + "' title='" + $d + "'></a>");
-                }
-                else if (settings.popupPlugin !== "slimbox") {
-                    $html.append("<a class='iframe' href='http://www.youtube.com/embed/" +
-                            $youtubeId + "?autoplay=1&rel=0&hd=1' rel='yt-" + username +
-                            "' title='" + $d + "'></a>");
-                } else {
-                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
-                            "' rel='lb-" + username + "' title='" + $d  + " (" +
-                            settings.labels.videoNotSupported + ")'></a>");
                 }
             }
             else
             {
                 $html = $("<div class='pwi_photo' style='cursor: pointer;'/>");
-                if ($youtubeId == "") {
-                    $html.append("<a href='" + j.media$group.media$thumbnail[1].url + "' rel='lb-" +
-                            username + "' title='" + $d + "'><img src='" + j.media$group.media$thumbnail[0].url +
-                            "' height='" + j.media$group.media$thumbnail[0].height +
-                            "' width='" + j.media$group.media$thumbnail[0].width + "'/></a>");
+                if (($youtubeId == "") || (settings.popupPlugin === "slimbox")) {
+                    $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
+                            username + "' title='" + $d +
+                            ($youtubeId == "" ? "" : " (" + settings.labels.videoNotSupported + ")") +
+                            "'><img src='" + $thumbnail0.url + "' height='" + $thumbnail0.height +
+                            "' width='" + $thumbnail0.width + "'/></a>");
                 }
                 else {
-                    if (settings.popupPlugin !== "slimbox") {
-                        $html.append("<a class='" + (settings.popupPlugin === "fancybox" ?
-                                    "fancybox.iframe" : "iframe") +
-                                "' href='http://www.youtube.com/embed/" + $youtubeId +
-                                "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username +
-                                "' title='" + $d + "'><img id='main' src='" + j.media$group.media$thumbnail[0].url  +
-                                "' height='" + j.media$group.media$thumbnail[0].height +
-                                "' width='" + j.media$group.media$thumbnail[0].width + "'/>" +
-                                "<img id='video' src='" + settings.videoBorder +
-                                "' height='" + j.media$group.media$thumbnail[0].height + "' /></a>");
-                    }
-                    else {
-                        $html.append("<a href='" + j.media$group.media$thumbnail[1].url +
-                                "' rel='lb-" + username + "' title='" + $d + " (" +
-                                settings.labels.videoNotSupported + ")'>" +
-                                "<img src='" + j.media$group.media$thumbnail[0].url +
-                                "' height='" + j.media$group.media$thumbnail[0].height +
-                                "' width='" + j.media$group.media$thumbnail[0].width + "'/></a>");
-                    }
+                    $html.append("<a class='" + (settings.popupPlugin === "fancybox" ?
+                                "fancybox.iframe" : "iframe") +
+                            "' href='http://www.youtube.com/embed/" + $youtubeId +
+                            "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username +
+                            "' title='" + $d + "'><img id='main' src='" + $thumbnail0.url  +
+                            "' height='" + $thumbnail0.height +
+                            "' width='" + $thumbnail0.width + "'/>" +
+                            "<img id='video' src='" + settings.videoBorder +
+                            "' height='" + $thumbnail0.height + "' /></a>");
                 }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
@@ -343,6 +329,9 @@
                         j.media$group.media$content[0].url + "'/>");
                 $html.append($downloadDiv);
             }
+            var $captioDiv = $("<div style='display: none'/>");
+            $captioDiv.append("<a class='captiontext'>" + $caption + "</a>");
+            $html.append($captioDiv);
             return $html;
         }
 
@@ -438,9 +427,9 @@
                     return false;
                 });
                 if (settings.showAlbumThumbs) {
-                    $scAlbum.append("<img src='" + n.media$group.media$thumbnail[0].url +
-                            "' height='" + n.media$group.media$thumbnail[0].height +
-                            "' width='" + n.media$group.media$thumbnail[0].width + "'/>");
+                    var $thumbnail0 = n.media$group.media$thumbnail[0];
+                    $scAlbum.append("<img src='" + $thumbnail0.url + "' height='" + $thumbnail0.height +
+                            "' width='" + $thumbnail0.width + "'/>");
                 }
                 if (settings.showAlbumTitles) {
                     var $scAlbumTitle = $("<div class='pwi_album_title'/>");
@@ -676,11 +665,15 @@
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
-                        if (el.parentNode.childElementCount > 1) {
+                        if (el.parentNode.childNodes && (el.parentNode.childNodes.length > 1)) {
+                            var $caption = $(".captiontext", el.parentNode);
+                            if ($caption.length > 0) {
+                                $newTitle = $caption[0].innerHTML;
+                            }
                             var $links = $(".downloadlink", el.parentNode);
                             if ($links.length > 0) {
                                 var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
-                                $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
+                                $newTitle = $newTitle + "&nbsp;&nbsp;" + downloadLink;
                             }
                         }
                         return [el.href, $newTitle];
@@ -720,11 +713,15 @@
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
                     function(el) {
                         var $newTitle = el.title;
-                        if (el.parentNode.childElementCount > 1) {
+                        if (el.parentNode.childNodes && (el.parentNode.childNodes.length > 1)) {
+                            var $caption = $(".captiontext", el.parentNode);
+                            if ($caption.length > 0) {
+                                $newTitle = $caption[0].innerHTML;
+                            }
                             var $links = $(".downloadlink", el.parentNode);
                             if ($links.length > 0) {
                                 var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
-                                $newTitle = el.title + "&nbsp;&nbsp;" + downloadLink;
+                                $newTitle = $newTitle + "&nbsp;&nbsp;" + downloadLink;
                             }
                         }
                         return [el.href, $newTitle];
@@ -983,14 +980,19 @@
 
 // This function is called by FancyBox to format the title of a picture
 function formatPhotoTitleFancyBox() {
-    if (this.element.parentNode.childElementCount > 1) {
+    var $title = this.element.title;
+    if (this.element.parentNode.childNodes && (this.element.parentNode.childNodes.length > 1)) {
+        var $caption = $(".captiontext", this.element.parentNode);
+        if ($caption.length > 0) {
+            $title = $caption[0].innerHTML;
+        }
         var $links = $(".downloadlink", this.element.parentNode);
         if ($links.length > 0) {
             var downloadLink = '<a style="color: #FFF;" href="' + $links[0].href + '">Download</a>';
-            this.element.title = this.element.title + '&nbsp;&nbsp;' + downloadLink;
+            $title = $title + '&nbsp;&nbsp;' + downloadLink;
         }
     }
-    this.title = this.element.title;
+    this.title = $title;
 }
 
 function mapOverviewCallback() {
@@ -1049,11 +1051,16 @@ function mapOverviewCallback() {
 
 
 function formatPhotoTitleColorBox() {
-    if (this.parentNode.childElementCount > 1) {
+    var $title = this.title;
+    if (this.parentNode.childNodes && (this.parentNode.childNodes.length > 1)) {
+        var $caption = $(".captiontext", this.parentNode);
+        if ($caption.length > 0) {
+            $title = $caption[0].innerHTML;
+        }
         var $links = $(".downloadlink", this.parentNode);
         if ($links.length > 0) {
-            return this.title +  '&nbsp;&nbsp;' + "Download".link($links[0].href);
+            return $title +  '&nbsp;&nbsp;' + "Download".link($links[0].href);
         }
     }
-    return this.title;
+    return $title;
 }
