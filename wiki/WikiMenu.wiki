@@ -2,6 +2,7 @@
   * [PwiRequirements Requirements for running PWI]
   * [Configuration Configuring PWI]
   * [Video Showing YouTube videos]
+  * [Maps Showing maps]
   * [Fancybox Using FancyBox]
     * [FancyBoxDemoLatest Demo using latest code]
     * [FancyBoxDemoCurrent Demo using release 1.5]
