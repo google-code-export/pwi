@@ -3,27 +3,26 @@
 
 ===Updates v2.0===
 
-This version is available as BETA release.
-
   * NEW:
-    * Upgrade to jQuery 1.7.0.
+    * Upgrade to jQuery 1.7.1.
     * Upgrade to !FancyBox 2.0
     * Added !ColorBox support
     * Redesign of demos: allow user to choose which viewer to use
-    * Issue 43 (feature request): Added option to show map of a picture
-    * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8 (now demo5)
-    * Issue 87 (feature request): Option to exclude specific albums
-    * Added support for Youtube videos from Picasa
+    * Added support for !YouTube videos from Picasa
     * Sorting of albums and photos, using name or date (ascending and descending)
     * Select maximum size of photo that can displayed
     * Improved overview of albums and album layout
     * Improved paging of selection of albums
+    * Issue 43 (feature request): Added option to show map of a picture: for each photo separate and an overview map of all photos in an album
+    * Issue 76 (feature request): Leave albums displayed while viewing pictures: updated demo8 (now demo5)
+    * Issue 87 (feature request): Option to exclude specific albums
   * FIXES:
     * Issue 68 (bug): Upgraded blockui to 2.39
     * Issue 83 (bug): Issue with user@company.com
     * Issue 86 (bug): Documentation update
     * Issue 89 (bug): Translating labels could break PWI
     * Issue 90 (bug): Albums pagination
+    * Issue 95 (bug): Photo description missing
 
 ===Updates v1.5===
 
