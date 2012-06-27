@@ -655,12 +655,12 @@
 
 
             settings.photostore[settings.album] = j;
-            var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $s = $(opts.selector + " div.pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
                 settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
-                var $s = $(".pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+                var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
                 settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
@@ -703,12 +703,12 @@
                 i++;
             }
             $scPhotos.append(strings.clearDiv);
-            var $s = $("div.pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $s = $(opts.selector + " div.pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
                 settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
-                var $s = $(".pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+                var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
                 settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             } else if (settings.popupPlugin === "slimbox") {
                 $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
