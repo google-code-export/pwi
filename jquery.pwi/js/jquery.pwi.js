@@ -15,6 +15,7 @@
     $.fn.pwi = function (opts) {
         var $self, settings = {}, strings = {};
         opts = $.extend(true,{}, $.fn.pwi.defaults, opts);
+        opts.selector = this.selector;
         if (opts.popupPlugin == "") {
             // Detect the popup plugin type
             if ($.fn.fancybox) {
@@ -222,7 +223,7 @@
             // Now make sure all divs have the same width and heigth
             var divHeigth = 0;
             var divWidth = 0;
-            $(divName).each(function(index, element) {
+            $(opts.selector + " " + divName).each(function(index, element) {
                 if (element.clientHeight > divHeigth) {
                     divHeigth = element.clientHeight;
                 }
@@ -230,9 +231,9 @@
                     divWidth = element.clientWidth;
                 }
             });
-            $(divName).css('height', (divHeigth+2)+'px');
+            $(opts.selector + " " + divName).css('height', (divHeigth+2)+'px');
             if (settings.thumbAlign) {
-                $(divName).css('width', (divWidth+2)+'px');
+                $(opts.selector + " " + divName).css('width', (divWidth+2)+'px');
             }
         }
 
@@ -970,7 +971,8 @@
         photostore: {}, //-- don't touch
         popupPlugin: "", // If empty the name will be determined automatically
         popupExt: "", //--  don't touch. Configure using other options
-        token: ""
+        token: "", //-- don't touch
+        selector: "" //-- don't touch
     };
     $.fn.pwi.strings = {
         clearDiv: "<div style='clear: both;height:0px;'/>",
