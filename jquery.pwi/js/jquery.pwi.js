@@ -91,7 +91,7 @@
                     var $queryParams = $url[1].split("&");
                     var $queryActive = false;
                     var $page = 1;
-                    for ($queryParam in $queryParams) {
+                    for ($queryParam = 0; $queryParam < $queryParams.length; $queryParam++) {
                         var $split = $queryParams[$queryParam].split("=", 2);
                         if ($split.length == 2) {
                             switch ($split[0]) {
