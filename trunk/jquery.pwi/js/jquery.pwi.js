@@ -304,7 +304,7 @@
                                 (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") +
                                 "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" +
                                 j.georss$where.gml$Point.gml$pos.$t +
-                                "' rel='map-" + settings.username + "'>" +
+                                "' rel='map-" + username + "'>" +
                                 "<img src='" + settings.mapIconLocation + "'></a>");
                         $html.append($locationLink);
                     }
@@ -511,7 +511,7 @@
                 $ad,
                 $album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
                 $item_plural = ($np == "1") ? false : true;
-            var $relUsername = settings.username.replace(/[@\.]/g, "_");
+            var $relUsername = settings.username.replace(/[@\.]/g, "_") + settings.selector;
 
             if (j.feed.subtitle === undefined) {
                 $ad = "";
@@ -639,7 +639,7 @@
                             $('#permalinkenable').hide();
                             return false;
                         });
-;
+
                 var $url=document.URL.split("?", 2);
                 var $permalinkUrl = $url[0] + "?pwi_album_selected=" + j.feed.gphoto$name.$t +
                         "&pwi_albumpage=" + settings.page;
@@ -655,7 +655,7 @@
 
 
             settings.photostore[settings.album] = j;
-            var $s = $(opts.selector + " div.pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
@@ -693,7 +693,7 @@
             var $scPhotos = $("<div/>"),
             $len = j.feed ? j.feed.entry.length : 0,
             i = 0;
-            var $relUsername = settings.username.replace(/[@\.]/g, "_");
+            var $relUsername = settings.username.replace(/[@\.]/g, "_") + settings.selector;
 
             sortData(j.feed.entry, settings.sortPhotos);
 
@@ -703,7 +703,7 @@
                 i++;
             }
             $scPhotos.append(strings.clearDiv);
-            var $s = $(opts.selector + " div.pwi_photo", $scPhotos).css(settings.thumbCss);
+            var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
             if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
                 settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
                 settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
