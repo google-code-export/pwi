@@ -1,4 +1,4 @@
-#summary Configuring PWI
+﻿#summary Configuring PWI
 
 = Configuring PWI =
 
@@ -16,6 +16,7 @@ The following is an overview of all the options you can set.
 || useQueryParameters || true || Allow use of query parameters in the URL (parameters after a question-mark), to pass parameters to PWI. Needed for perma-link feature. [#Query_parameters See below] ||
 || loadingImage || "" || This image will be shown when data is being requested from Picasa ||
 || labels || || [#Labels See below] ||
+|| months || || [#Months See below] ||
 || fancybox_config || { } || See [Fancybox] page for configuration options ||
 || colorbox_config || { } || See [Colorbox] page for configuration options ||
 || slimbox_config || { } || See [Slimbox] page for configuration options ||
@@ -59,8 +60,6 @@ The following is an overview of all the options you can set.
 || thumbAlign || false || Allign thumbs vertically between rows ||
 || thumbCss || {'margin':'5px'} || override and add custom styles for the thumbs (see http://docs.jquery.com/CSS/css#properties for specification) ||
 || onclickThumb || "" ||  override click on single photo thumb. specify a function to replace slimbox,see demo 3 for an example ||
-|| showSlideshow || true ||  Set to true to show slideshow in popup ||
-|| showSlideshowLink || true ||  Display link to slideshow (native Picasa Web Album slideshow) on photo page ||
 || showPhotoCaption || false ||  Show caption underneath photo thumb (not recommended to prevent layout issues) ||
 || showPhotoCaptionDate || false || Show photo date in caption ||
 || showCaptionLength || 9999 || Maximum length of a photo caption to show ||
@@ -93,6 +92,10 @@ To translate the labels fill in the labels with texts in your language, or just 
 
 See [#Example Example] below on how to add these to your configuration.
 
+== Months ==
+
+To translate the monthnames fill in the names with the names in your language.
+
 == Query parameters ==
 
 Query parameters are used to pass information to a web page using the URL. This is the information usually after a question mark. PWI supports the following query parameters:
@@ -121,7 +124,8 @@ $(document).ready(function() {
 		albums: ["Album1","Album2"],
 		labels: {photo:"picture",
 		         photos: "pictures"
-		        }
+		        },
+        months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
 	};
 
 	$("#container").pwi(options);

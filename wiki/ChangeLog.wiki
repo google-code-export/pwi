@@ -1,5 +1,11 @@
-#summary PWI Change Log.
+﻿#summary PWI Change Log.
 #labels Featured
+
+===Latest===
+
+  * FIXES:
+    * Issue 105 (bug): Make sure PWI does not use settings from other PWI instance
+    * Issue 106 (bug): Make sure you cannot navigate from one PWI instance to another
 
 ===Updates v2.0===
 

@@ -1,4 +1,4 @@
-#summary PWI: Using Fancybox
+﻿#summary PWI: Using Fancybox
 
 = Introduction =
 
@@ -9,7 +9,7 @@ To use the Fancybox script the Fancybox !JavaScript library needs to loaded. Use
 {{{
 
     <!-- This can be your local jquery lib, but why not have it hosted by Google -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
     <!-- These files are needed for FancyBox -->
     <link   href="js/jquery.fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css"/>

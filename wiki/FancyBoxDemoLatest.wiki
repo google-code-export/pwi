@@ -1,10 +1,9 @@
-#summary FancyBox Demo
+﻿#summary FancyBox Demo
 
 = Introduction =
 
-On this page a number of demo's will be shown using the !FancyBox jQuery plugin.
-
-A number of demo's will be shown to show a number of possibilities of the pwi application.
+On this page a number of demo's will be shown using the !FancyBox jQuery plugin amd the latest (development) release of PWI,
+showing a number of possibilities of the pwi application.
 
 The following demo's are shown:
  * [FancyBoxDemoLatest#Demo_1:_Default_usage Default usage]

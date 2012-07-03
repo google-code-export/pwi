@@ -1,4 +1,4 @@
-#summary PWI: Using Colorbox
+﻿#summary PWI: Using Colorbox
 
 = Introduction =
 
@@ -8,7 +8,8 @@ To use the Colorbox script the Colorbox !JavaScript library needs to loaded. Use
 
 {{{
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!-- This can be your local jquery lib, but why not have it hosted by Google -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
     <!-- These files are needed for ColorBox -->
     <link   href="js/jquery.colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
