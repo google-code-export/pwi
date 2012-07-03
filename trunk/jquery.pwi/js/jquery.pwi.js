@@ -825,12 +825,12 @@
     };
 
     $.fn.pwi.defaults = {
-        mode: 'albums', //-- can be: album, albums, latest (keyword = obsolete but backwards compatible, now just fill in a keyword in the settings to enable keyword-photos)
+        mode: 'albums', //-- can be: album, albums, latest
         username: '', //-- Must be explicitly set!!!
         album: "", //-- For loading a single album
         authKey: "", //-- for loading a single album that is private (use in 'album' mode only)
         albums: [], //-- use to load specific albums only: ["MyAlbum", "TheSecondAlbumName", "OtherAlbum"]
-        keyword: "", 
+        keyword: "", //-- filter photo's within album using the photo-tag
         albumKeywords: [], //-- Only show albums containing one of these keywords in the description. Use [keywords: "kw1", "kw2"] within the description
         albumStartDateTime: "", //-- Albums on or after this date will be shown. Format: YYYY-MM-DDTHH:MM:SS or YYYY-MM-DD for date only
         albumEndDateTime: "", //-- Albums before or on this date will be shown
