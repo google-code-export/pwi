@@ -281,7 +281,8 @@
                     $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
                             username + "' title='" + $d +
                             ($youtubeId == "" ? "" : " (" + settings.labels.videoNotSupported + ")") +
-                            "'><img src='" + $thumbnail0.url + "' height='" + $thumbnail0.height +
+                            "'><img src='" + $thumbnail0.url + "' alt='" + settings.labels.photo +
+                            "' height='" + $thumbnail0.height +
                             "' width='" + $thumbnail0.width + "'/></a>");
                 }
                 else {
@@ -290,10 +291,10 @@
                             "' href='http://www.youtube.com/embed/" + $youtubeId +
                             "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username +
                             "' title='" + $d + "'><img id='main' src='" + $thumbnail0.url  +
-                            "' height='" + $thumbnail0.height +
+                            "' alt='" + settings.labels.photo + "' height='" + $thumbnail0.height +
                             "' width='" + $thumbnail0.width + "'/>" +
-                            "<img id='video' src='" + settings.videoBorder +
-                            "' height='" + $thumbnail0.height + "' /></a>");
+                            "<img id='video' src='" + settings.videoBorder + " title=''" +
+                            "' alt='' height='" + $thumbnail0.height + "' /></a>");
                 }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
@@ -305,7 +306,7 @@
                                 "' href='http://maps.google.com/?output=embed&t=h&z=15&q=" +
                                 j.georss$where.gml$Point.gml$pos.$t +
                                 "' rel='map-" + username + "'>" +
-                                "<img src='" + settings.mapIconLocation + "'></a>");
+                                "<img src='" + settings.mapIconLocation + "' alt='map'></a>");
                         $html.append($locationLink);
                     }
                     if (settings.showPhotoCaption) {
@@ -430,7 +431,7 @@
                 if (settings.showAlbumThumbs) {
                     var $thumbnail0 = n.media$group.media$thumbnail[0];
                     $scAlbum.append("<img src='" + $thumbnail0.url + "' height='" + $thumbnail0.height +
-                            "' width='" + $thumbnail0.width + "'/>");
+                            "' width='" + $thumbnail0.width + "' alt='album'/>");
                 }
                 if (settings.showAlbumTitles) {
                     var $scAlbumTitle = $("<div class='pwi_album_title'/>");
@@ -1036,7 +1037,7 @@ function mapOverviewCallback() {
             position: myLatLng,
             map: map
         }); 
-        var photoLink="<div id='content'><img src='" + n.img + "' />" + n.summary + "</div>";
+        var photoLink="<div id='content'><img src='" + n.img + "' alt='' title=''/>" + n.summary + "</div>";
 
         var infowindow = new google.maps.InfoWindow({
             content: photoLink
