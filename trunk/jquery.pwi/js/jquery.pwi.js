@@ -257,12 +257,20 @@
                     $caption = j.summary.$t.replace(/[\n]/g, '<br/>');
                 }
             }
+            if (settings.showPhotoFilename) {
+                if ($caption.length > 0) {
+                    $caption += ", ";
+                }
+                $caption += settings.labels.fileName + " " + j.media$group.media$title.$t;
+            }
             if (settings.showPhotoDate) {
                 if ((j.exif$tags) && (j.exif$tags.exif$time)) {
                     $d = formatDateTime(j.exif$tags.exif$time.$t) + " ";
                 }
             }
-            $d += $c.replace(new RegExp("'", "g"), "&#39;");
+            var $title = $c.replace(new RegExp("'", "g"), "&#39;");
+            $d += $title;
+
             var $thumbnail0 = j.media$group.media$thumbnail[0];
             var $thumbnail1 = j.media$group.media$thumbnail[1];
 
@@ -271,7 +279,7 @@
                 $html = $("<div class='pwi_photo' style='display: none'/>");
                 if ($youtubeId == "") {
                     $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
-                            username + "' title='" + $d + "'></a>");
+                            username + "' title='" + $title + "'></a>");
                 }
             }
             else
@@ -279,7 +287,7 @@
                 $html = $("<div class='pwi_photo' style='cursor: pointer;'/>");
                 if (($youtubeId == "") || (settings.popupPlugin === "slimbox")) {
                     $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
-                            username + "' title='" + $d +
+                            username + "' title='" + $title +
                             ($youtubeId == "" ? "" : " (" + settings.labels.videoNotSupported + ")") +
                             "'><img src='" + $thumbnail0.url + "' alt='" + settings.labels.photo +
                             "' height='" + $thumbnail0.height +
@@ -290,7 +298,7 @@
                                 "fancybox.iframe" : "iframe") +
                             "' href='http://www.youtube.com/embed/" + $youtubeId +
                             "?autoplay=1&rel=0&hd=1&autohide=1' rel='yt-" + username +
-                            "' title='" + $d + "'><img id='main' src='" + $thumbnail0.url  +
+                            "' title='" + $title + "'><img id='main' src='" + $thumbnail0.url  +
                             "' alt='" + settings.labels.photo + "' height='" + $thumbnail0.height +
                             "' width='" + $thumbnail0.width + "'/>" +
                             "<img id='video' src='" + settings.videoBorder + " title=''" +
@@ -872,6 +880,7 @@
         showPhotoDownload: false,
         showPhotoDownloadPopup: false,
         showPhotoDate: true,
+        showPhotoFilename: false,
         showPermaLink: false,
         showPhotoLocation: false,
         mapIconLocation: "",
@@ -890,6 +899,7 @@
             next: "Next",
             showPermaLink: "Show PermaLink",
             showMap: "Show Map",
+            fileName: "Filename:",
             videoNotSupported: "Video not supported"
         }, //-- translate if needed
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -899,8 +909,8 @@
                 nextEffect : 'none',
                 loop       : false,
                 beforeLoad : formatPhotoTitleFancyBox,
-                helpers	   : {
-                    buttons	: {}
+                helpers    : {
+                    buttons    : {}
                 }
             },
             config_youtube: {
