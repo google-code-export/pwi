@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-        <title>Fancybox Demo 2 - Picassa Webalbum Integrator (PWI)</title>
+        <title>ColorBox Demo 1 - Picassa Webalbum Integrator (PWI)</title>
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-        <link   href="http://pwi.googlecode.com/svn/tags/REL_2_0_0/js/jquery.fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css"/>
-        <script src="http://pwi.googlecode.com/svn/tags/REL_2_0_0/js/jquery.fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+        <link   href="http://pwi.googlecode.com/svn/trunk/jquery.pwi/js/jquery.colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
+        <script src="http://pwi.googlecode.com/svn/trunk/jquery.pwi/js/jquery.colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
         
         <link   href="http://pwi.googlecode.com/svn/tags/REL_2_0_0/css/pwi.css" rel="stylesheet" type="text/css"/>
         <script src="http://pwi.googlecode.com/svn/tags/REL_2_0_0/js/jquery.pwi-min.js" type="text/javascript"></script>
@@ -17,15 +17,8 @@
 
                 var settings = {
                     username: 'jdiderik',
-                    loadingImage: 'loadinggif',
-                    showPhotoDownloadPopup: true,
-                    albumCrop: 0,
-                    albumThumbSize: 72,
-                    thumbCrop: 1,
-                    thumbAlign: 1,
-                    removeAlbumTypes: ["ScrapBook", "ProfilePhotos"],
                     popupExt: function(photos){
-                        photos.fancybox({ 'titleFormat': formatTitle })
+                        photos.ColorBox()
                         }
                 }
                 
@@ -34,8 +27,7 @@
         </script>
     </head>
     <body>
-    <h3>Fancybox Demo 2: Fancybox with download link in picture description</h3>
-    <div id="loadinggif"><img src="https://pwi.googlecode.com/svn/tags/REL_2_0_0/loading.gif"></div>
+    <h3>ColorBox Demo 1: Standard ColorBox implementation</h3>
     <div id="container"> </div>
     </body>
 </html>
