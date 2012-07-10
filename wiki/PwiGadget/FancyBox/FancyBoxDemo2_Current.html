@@ -17,16 +17,15 @@
 
                 var settings = {
                     username: 'jdiderik',
-                    loadingImage: 'loadinggif',
                     showPhotoDownloadPopup: true,
+                    showPhotoCaption: true,
+                    showPhotoLocation: true,
+                    mapIconLocation: "http://pwi.googlecode.com/svn/trunk/jquery.pwi/images/icon-earth.png",
                     albumCrop: 0,
                     albumThumbSize: 72,
                     thumbCrop: 1,
                     thumbAlign: 1,
-                    removeAlbumTypes: ["ScrapBook", "ProfilePhotos"],
-                    popupExt: function(photos){
-                        photos.fancybox({ 'titleFormat': formatTitle })
-                        }
+                    removeAlbumTypes: ["ScrapBook", "ProfilePhotos"]
                 }
                 
                 $("#container").pwi(settings);

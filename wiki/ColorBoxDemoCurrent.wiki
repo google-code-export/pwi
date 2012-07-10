@@ -1,19 +1,19 @@
-﻿#summary FancyBox Demo
+﻿#summary ColorBox Demo
 
 = Introduction =
 
-On this page a number of demo's will be shown using the !FancyBox jQuery plugin amd the current release of PWI,
+On this page a number of demo's will be shown using the !ColorBox jQuery plugin amd the current release of PWI,
 showing a number of possibilities of the pwi application.
 
 The following demo's are shown:
- * [FancyBoxDemoCurrent#Demo_1:_Default_usage Default usage]
- * [FancyBoxDemoCurrent#Demo_2:_Some_extra_layout_options Some extra layout options]
- * [FancyBoxDemoCurrent#Demo_3:_Grouped_by_year Grouped by year]
+ * [ColorBoxDemoCurrent#Demo_1:_Default_usage Default usage]
+ * [ColorBoxDemoCurrent#Demo_2:_Some_extra_layout_options Some extra layout options]
+ * [ColorBoxDemoCurrent#Demo_3:_Grouped_by_year Grouped by year]
 
 
 = Demo 1: Default usage =
 
-This demo shows the use of !FancyBox without any configuration.
+This demo shows the use of !ColorBox without any configuration.
 
 The following settings are used for this demo:
 {{{
@@ -22,14 +22,14 @@ The following settings are used for this demo:
     }
     $("#container").pwi(settings);
 }}}
-<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo1_Current.xml" width="640" height="480" />
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/ColorBox/ColorBoxDemo1_Current.xml" width="640" height="480" />
 
 = Demo 2: Some extra layout options =
 
-This demo shows the use of !FancyBox with a number of extra layout options:
+This demo shows the use of !ColorBox with a number of extra layout options:
   * Smaller uncropped album thumbnails
   * Cropped picture thumbnails
-  * Download link in photo description in Fancybox popup
+  * Download link in photo description in !ColorBox popup
   * Show waiting-image when loading
   * Remove albums with type !ScrapBook and !ProfilePhoto
   * Show map when location is available (see Marathon Rotterdam map)
@@ -50,7 +50,7 @@ The following settings are used for this demo:
     }
     $("#container").pwi(settings);
 }}}
-<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo2_Current.xml" width="640" height="480" />
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/ColorBox/ColorBoxDemo2_Current.xml" width="640" height="480" />
 
 = Demo 3: Grouped by year =
 
@@ -78,4 +78,4 @@ The following settings are used for this demo:
     $("#container2008").pwi(settings2008);
     $("#container2009").pwi(settings2009);
 }}}
-<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/FancyBox/FancyBoxDemo3_Current.xml" width="640" height="480" />
+<wiki:gadget url="http://pwi.googlecode.com/svn/wiki/PwiGadget/ColorBox/ColorBoxDemo3_Current.xml" width="640" height="480" />

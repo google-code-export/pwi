@@ -38,7 +38,6 @@ The following settings are used for this demo:
 {{{
     var settings = {
         username: '<USERNAME>',
-        loadingImage: 'loadinggif',
         showPhotoDownloadPopup: true,
         showPhotoCaption: true,
         showPhotoLocation: true,
