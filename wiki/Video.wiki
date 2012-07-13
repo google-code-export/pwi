@@ -18,8 +18,9 @@ Showing !YouTube videos is very easy:
 
 For example, to show the video that is available in the demo use the
 following description:
-
+{{{
 [youtube: hgadtxgXZ_k]Show !YouTube video
+}}}
 
 = Configuration =
 
@@ -37,4 +38,3 @@ I choose !YouTube over Picasa?
     offers many more features
   * To show the Picasa video takes much more effort than showing the !YouTube video
   * Easier to show other video's, next to video's in your own account
-
