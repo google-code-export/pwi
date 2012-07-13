@@ -13,7 +13,7 @@ using !SlimBox.
 Showing !YouTube videos is very easy:
 
   * Select a picture that you want to use to show the video.
-  * Start the description of the photo with "[youtube: <youtube-id>]".
+  * Start the description of the photo with `"[youtube: <youtube-id>]"`.
   * Add any additional test to the description.
 
 For example, to show the video that is available in the demo use the
