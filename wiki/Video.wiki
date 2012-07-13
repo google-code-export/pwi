@@ -16,7 +16,7 @@ Showing !YouTube videos is very easy:
   * Start the description of the photo with `"[youtube: <youtube-id>]"`.
   * Add any additional test to the description.
 
-For example, to show the video that is available in the demo use the
+For example, to show the video that is available in the demo (see folder Test) use the
 following description:
 {{{
 [youtube: hgadtxgXZ_k]Show YouTube video
