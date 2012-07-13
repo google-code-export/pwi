@@ -20,6 +20,13 @@ following description:
 {{{
 [youtube: hgadtxgXZ_k]Show YouTube video
 }}}
+
+You can find the !YouTube-ID in the URL when you are watching a video. The URL used by !YouTube looks like this:
+{{{
+http://www.youtube.com/watch?v=<youtube-id>&hd=1
+}}}
+You should use the part that you see after the `"v="` and before the next `"&"` or the end of the URL. 
+
 <br>
 = Configuration =
 
