@@ -1,0 +1,40 @@
+﻿#summary Showing !YouTube videos
+
+= Introduction =
+
+It is possible to link pictures in Picasa to certain !YouTube videos. When
+you click on this picture the !YouTube video will be shown instead of the
+photo.
+As !SlimBox does only support pictures this feature is not available when
+using !SlimBox.
+
+= Showing !YouTube videos =
+
+Showing !YouTube videos is very easy:
+
+  * Select a picture that you want to use to show the video.
+  * Start the description of the photo with "[youtube: <youtube-id>]".
+  * Add any additional test to the description.
+
+For example, to show the video that is available in the demo use the
+following description:
+
+[youtube: hgadtxgXZ_k]Show !YouTube video
+
+= Configuration =
+
+There is one general option for !YouTube videos:
+
+|| *Name* || *Default* || *Description* ||
+|| videoBorder || "images/video.jpg" || Image that will be used to overlap the thumbnail of a video ||
+
+= Why not use Picasa video? =
+
+I also looked at Picasa video before I decided to use !YouTube instead. Why did
+I choose !YouTube over Picasa? 
+
+  * The Picasa video functionality is basically uploading and viewing, while !YouTube
+    offers many more features
+  * To show the Picasa video takes much more effort than showing the !YouTube video
+  * Easier to show other video's, next to video's in your own account
+
