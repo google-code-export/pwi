@@ -40,7 +40,6 @@
           showAlbumDescription: false,
           mode: 'album',
           showSlideshow: false,
-          popupPlugin: $viewerSelected,
           album: albumName.value  // The ident of the selected album
         });
       };
@@ -186,8 +185,21 @@
 
     &lt;script type="text/javascript"&gt;
 
+      function changeAlbum(albumName) {
+        $("#container2").html("");
+        $("#container2").pwi({
+          username: '&lt;&lt;USERNAME&gt;&gt;',
+          maxResults: 25,
+          showAlbumDescription: false,
+          mode: 'album',
+          showSlideshow: false,
+          popupPlugin: $viewerSelected,
+          album: albumName.value  // The ident of the selected album
+        });
+      };
+
       $(document).ready(function () {
-        var settings = {
+        var settings1 = {
           username: '&lt;&lt;USERNAME&gt;&gt;',
           albumsPerPage: 4,
           onclickAlbumThumb: function (e) {
@@ -202,7 +214,22 @@
             });
           }
         };
-        $("#container1").pwi(settings);
+        var settings2 = {
+          username: '&lt;&lt;USERNAME&gt;&gt;',
+          onAlbumsStart: function (albums, code) {
+            var $scAlbums = $("&lt;div/&gt;");
+            var $selector = $("&lt;select name='viewerSelect' onchange='changeAlbum(this)'&gt;");
+            $scAlbums.append("&lt;form name='albums'&gt;");
+            $.each(albums, function(i, n) {
+              $selector.append("&lt;option value='" + n.gphoto$name.$t + "'&gt;" + n.title.$t + "&lt;/option&gt;");
+            });
+            $scAlbums.append($selector);
+            code.append($scAlbums);
+            return false;
+          }
+        };
+        $("#container1").pwi(settings1);
+        $("#selector1").pwi(settings2);
       });
 
     &lt;/script&gt;
@@ -214,6 +241,10 @@
       &lt;tr&gt;
         &lt;td align="center" valign="top" width="50%" style="border-style: double; border-width: 3" bordercolor="#663300"&gt;
           &lt;h2&gt;&lt;center&gt;Albums:&lt;/center&gt;&lt;/h2&gt;
+          Using Drop Down list:
+          &lt;div id="selector1"&gt; &lt;/div&gt;
+          &lt;br&gt;
+          Using Thumbnails:
           &lt;div id="container1"&gt; &lt;/div&gt;
         &lt;/td&gt;
         &lt;td width="10"&gt;
