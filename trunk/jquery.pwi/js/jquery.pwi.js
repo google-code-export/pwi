@@ -348,6 +348,14 @@
         function albums(j) {
             var $scAlbums = $("<div/>"), i = 0;
             var $startDate, $endDate;
+
+            if (typeof (settings.onAlbumsStart) === "function") {
+                if (settings.onAlbumsStart(j.feed.entry, $scAlbums) == false) {
+                    show(false, $scAlbums);
+                    return;
+                }
+            }
+
             if (navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i) == null) {
                 $startDate = new Date(settings.albumStartDateTime);
                 if (isNaN($startDate)) {
@@ -506,6 +514,10 @@
 
             // end paging
 
+            if (typeof (settings.onAlbumsEnd) === "function") {
+                settings.onAlbumsEnd(j.feed.entry, $scAlbums);
+            }
+
             settings.albumstore = j;
             show(false, $scAlbums);
 
@@ -522,6 +534,13 @@
                 $item_plural = ($np == "1") ? false : true;
             var $relUsername = settings.username.replace(/[@\.]/g, "_") + settings.selector;
 
+            if (typeof (settings.onAlbumStart) === "function") {
+                if (settings.onAlbumStart(j.feed.entry, $scPhotos) == false) {
+                    show(false, $scPhotos);
+                    return;
+                }
+            }
+
             if (j.feed.subtitle === undefined) {
                 $ad = "";
             } else {
@@ -533,6 +552,7 @@
                 }
             }
 
+            window.scrollTo(0,0);
             $at = (j.feed.title === "undefined" || settings.albumTitle.length > 0) ? settings.albumTitle : j.feed.title.$t;
             $scPhotos = $("<div/>");
             if (settings.mode != 'album' && settings.mode != 'keyword') {
@@ -692,6 +712,10 @@
             }
 
             $scPhotos.append(strings.clearDiv);
+
+            if (typeof (settings.onAlbumEnd) === "function") {
+                settings.onAlbumEnd(j.feed.entry, $scPhotos);
+            }
 
             show(false, $scPhotos);
 
@@ -863,6 +887,10 @@
         },
         onclickThumb: "",       //-- overload the function when clicked on a photo thumbnail
         onclickAlbumThumb: "",  //-- overload the function when clicked on a album thumbnail
+        onAlbumsStart: "",      //-- function will be executed when albums are received. Return true to continue, false to stop
+        onAlbumsEnd: "",        //-- function will be executed after albums are processed.
+        onAlbumStart: "",       //-- function will be executed when album is received. Return true to continue, false to stop
+        onAlbumEnd: "",         //-- function will be executed after album is received.
         sortAlbums: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
         sortPhotos: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
         removeAlbums: [],       //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync

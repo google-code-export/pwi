@@ -31,6 +31,20 @@
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     
     <script type="text/javascript">
+
+      function changeAlbum(albumName) {
+        $("#container2").html("");
+        $("#container2").pwi({
+          username: 'jdiderik',
+          maxResults: 25,
+          showAlbumDescription: false,
+          mode: 'album',
+          showSlideshow: false,
+          popupPlugin: $viewerSelected,
+          album: albumName.value  // The ident of the selected album
+        });
+      };
+
       var $viewerSelected = "fancybox";
       var $url=document.URL.split("?", 2);
       if ($url.length == 2) {
@@ -96,6 +110,21 @@
             });
           }
         });
+        $("#selector1").pwi({
+          username: 'jdiderik',
+          popupPlugin: $viewerSelected,
+          onAlbumsStart: function (albums, code) {
+            var $scAlbums = $("<div/>");
+            var $selector = $("<select name='viewerSelect' onchange='changeAlbum(this)'>");
+            $scAlbums.append("<form name='albums'>");
+            $.each(albums, function(i, n) {
+              $selector.append("<option value='" + n.gphoto$name.$t + "'>" + n.title.$t + "</option>");
+            });
+            $scAlbums.append($selector);
+            code.append($scAlbums);
+            return false;
+          }
+        });
       });
 
     </script>
@@ -117,6 +146,10 @@
       <tr>
         <td align="center" valign="top" width="50%" style="border-style: double; border-width: 3" bordercolor="#663300">
           <h2><center>Albums:</center></h2>
+          Using Drop Down list:
+          <div id="selector1"> </div>
+          <br>
+          Using Thumbnails:
           <div id="container1"> </div>
         </td>
         <td width="10">
