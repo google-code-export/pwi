@@ -526,7 +526,7 @@
 
         function album(j) {
             var $scPhotos, $scPhotosDesc, tmp = "",
-                $np = j.feed.openSearch$totalResults.$t,
+                $np = j.feed.entry.length,
                 $at = "", $navRow = "",
                 $loc = j.feed.gphoto$location === undefined ? "" : j.feed.gphoto$location.$t,
                 $ad,
