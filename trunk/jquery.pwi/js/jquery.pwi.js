@@ -4,9 +4,9 @@
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
- * @revision 2.0.0
- * @date Februari 29, 2012
- * @copyright (c) 2010-2012 Jeroen Diderik(www.jdee.nl)
+ * @revision 2.0.1
+ * @date April 10, 2013
+ * @copyright (c) 2010-2013 Jeroen Diderik(www.jdee.nl) and Johan Borkhuis
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, discussions etc about this library
  */
@@ -23,9 +23,6 @@
             }
             else if($.fn.colorbox) {
                 opts.popupPlugin = "colorbox";
-            }
-            else if($.fn.slimbox) {
-                opts.popupPlugin = "slimbox";
             }
         }
 
@@ -285,7 +282,7 @@
             else
             {
                 $html = $("<div class='pwi_photo' style='cursor: pointer;'/>");
-                if (($youtubeId == "") || (settings.popupPlugin === "slimbox")) {
+                if ($youtubeId == "") {
                     $html.append("<a href='" + $thumbnail1.url + "' rel='lb-" +
                             username + "' title='" + $title +
                             ($youtubeId == "" ? "" : " (" + settings.labels.videoNotSupported + ")") +
@@ -301,13 +298,12 @@
                             "' title='" + $title + "'><img id='main' src='" + $thumbnail0.url  +
                             "' alt='" + settings.labels.photo + "' height='" + $thumbnail0.height +
                             "' width='" + $thumbnail0.width + "'/>" +
-                            "<img id='video' src='" + settings.videoBorder + " title=''" +
+                            "<img id='video' src='" + settings.videoBorder + "' title=''" +
                             "' alt='' height='" + $thumbnail0.height + "' /></a>");
                 }
                 if((settings.showPhotoLocation) || (settings.showPhotoCaption)) {
                     $html.append("<br/>");
-                    if ((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) &&
-                        (settings.mapIconLocation != "") &&
+                    if ((settings.showPhotoLocation) && (settings.mapIconLocation != "") &&
                         (j.georss$where) && (j.georss$where.gml$Point) && (j.georss$where.gml$Point.gml$pos)) {
                         var $locationLink = $("<a class='" +
                                 (settings.popupPlugin === "fancybox" ? "fancybox.iframe" : "iframe") +
@@ -574,7 +570,7 @@
                 $scPhotos.append($scPhotosDesc);
             }
 
-            if((settings.popupPlugin !== "slimbox") && (settings.showPhotoLocation) && (typeof(google) != "undefined")) {
+            if((settings.showPhotoLocation) && (typeof(google) != "undefined")) {
                 var $geoTagged = $.grep(j.feed.entry, function(n, i) {
                     if((n.georss$where) && (n.georss$where.gml$Point) &&
                     (n.georss$where.gml$Point.gml$pos)) {
@@ -685,32 +681,11 @@
 
             settings.photostore[settings.album] = j;
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
-            if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
-                settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
-                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
-                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
-                var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
-                settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
-            } else if (settings.popupPlugin === "slimbox") {
-                $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
-                    function(el) {
-                        var $newTitle = el.title;
-                        if (el.parentNode.childNodes && (el.parentNode.childNodes.length > 1)) {
-                            var $caption = $(".captiontext", el.parentNode);
-                            if ($caption.length > 0) {
-                                $newTitle = $caption[0].innerHTML;
-                            }
-                            var $links = $(".downloadlink", el.parentNode);
-                            if ($links.length > 0) {
-                                var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
-                                $newTitle = $newTitle + "&nbsp;&nbsp;" + downloadLink;
-                            }
-                        }
-                        return [el.href, $newTitle];
-                    }
-                );
-            }
-
+            settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
+            settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
+            settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
+            var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+            settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             $scPhotos.append(strings.clearDiv);
 
             if (typeof (settings.onAlbumEnd) === "function") {
@@ -737,31 +712,11 @@
             }
             $scPhotos.append(strings.clearDiv);
             var $s = $(".pwi_photo", $scPhotos).css(settings.thumbCss);
-            if ((settings.popupPlugin === "fancybox") || (settings.popupPlugin === "colorbox")) {
-                settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
-                settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
-                settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
-                var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
-                settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
-            } else if (settings.popupPlugin === "slimbox") {
-                $s.find("a[rel='lb-" + $relUsername + "']").slimbox(settings.slimbox_config,
-                    function(el) {
-                        var $newTitle = el.title;
-                        if (el.parentNode.childNodes && (el.parentNode.childNodes.length > 1)) {
-                            var $caption = $(".captiontext", el.parentNode);
-                            if ($caption.length > 0) {
-                                $newTitle = $caption[0].innerHTML;
-                            }
-                            var $links = $(".downloadlink", el.parentNode);
-                            if ($links.length > 0) {
-                                var downloadLink = '<a href="' + $links[0].href + '">Download</a>';
-                                $newTitle = $newTitle + "&nbsp;&nbsp;" + downloadLink;
-                            }
-                        }
-                        return [el.href, $newTitle];
-                    }
-                );
-            }
+            settings.popupExt($s.find("a[rel='lb-" + $relUsername + "']"));
+            settings.popupExt($s.find("a[rel='yt-" + $relUsername + "']"), "yt");
+            settings.popupExt($s.find("a[rel='map-" + $relUsername + "']"), "map");
+            var $s = $(opts.selector + " div.pwi_overviewmap", $scPhotos).css(settings.thumbCss);
+            settings.popupExt($s.find("a[rel='map_overview-" + $relUsername + "']"), "map_overview");
             show(false, $scPhotos);
 
             alignPictures('div.pwi_photo');
@@ -876,7 +831,7 @@
         albumPage: 1, //-- force load on specific album
         albumTypes: "public", //-- load public albums, not used for now
         page: 1, //-- initial page for an photo page
-        photoSize: "auto", //-- size of large photo loaded in slimbox, fancybox or other. Allowed sizes: auto, 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600
+        photoSize: "auto", //-- size of large photo loaded in fancybox or other. Allowed sizes: auto, 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600
         maxResults: 50, //-- photos per page
         showPager: 'bottom', //'top', 'bottom', 'both' (for both albums and album paging)
         thumbSize: 72,  //-- specify thumbnail size of photos (default: 72, cropped not supported, supported cropped/uncropped: 32, 48, 64, 72, 104, 144, 150, 160 and uncropped only: 94, 110, 128, 200, 220, 288, 320, 400, 512, 576, 640, 720, 800, 912, 1024, 1152, 1280, 1440, 1600)
@@ -987,21 +942,6 @@
                 onComplete      : mapOverviewCallback
             }
         },
-        slimbox_config: {
-            loop: false,
-            overlayOpacity: 0.6,
-            overlayFadeDuration: 400,
-            resizeDuration: 400,
-            resizeEasing: "swing",
-            initialWidth: 250,
-            initlaHeight: 250,
-            imageFadeDuration: 400,
-            captionAnimationDuration: 400,
-            counterText: "{x}/{y}",
-            closeKeys: [27, 88, 67, 70],
-            prevKeys: [37, 80],
-            nextKeys: [39, 83]
-        }, //-- overrule defaults is needed
         blockUIConfig: {
             message: "<div class='lbLoading pwi_loader'>loading...</div>",
             css: "pwi_loader"
@@ -1022,6 +962,8 @@
 // This function is called by FancyBox to format the title of a picture
 function formatPhotoTitleFancyBox() {
     var $title = this.element.title;
+    this.title = $title;
+    return;
     if (this.element.parentNode.childNodes && (this.element.parentNode.childNodes.length > 1)) {
         var $caption = $(".captiontext", this.element.parentNode);
         if ($caption.length > 0) {
