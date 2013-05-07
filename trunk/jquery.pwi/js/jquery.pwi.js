@@ -4,8 +4,8 @@
  * @name jquery.pwi.js
  * @author Jeroen Diderik - http://www.jdee.nl/
  * @author Johan Borkhuis - http://www.borkhuis.com/
- * @revision 2.0.1
- * @date April 10, 2013
+ * @revision 2.0.2
+ * @date May 7, 2013
  * @copyright (c) 2010-2013 Jeroen Diderik(www.jdee.nl) and Johan Borkhuis
  * @license Creative Commons Attribution-Share Alike 3.0 Netherlands License - http://creativecommons.org/licenses/by-sa/3.0/nl/
  * @Visit http://pwi.googlecode.com/ for more informations, discussions etc about this library
@@ -528,8 +528,8 @@
                 $ad,
                 $album_date = formatDate(j.feed.gphoto$timestamp === undefined ? '' : j.feed.gphoto$timestamp.$t),
                 $item_plural = ($np == "1") ? false : true;
-            var $relUsername = settings.username.replace(/[@\.]/g, "_") + settings.selector;
-
+            var $relUsername = settings.username.replace(/[@\.]/g, "_") +
+                ((settings.ownRelTag === "") ? settings.selector : "#" + settings.ownRelTag);
             if (typeof (settings.onAlbumStart) === "function") {
                 if (settings.onAlbumStart(j.feed.entry, $scPhotos) == false) {
                     show(false, $scPhotos);
@@ -846,6 +846,7 @@
         onAlbumsEnd: "",        //-- function will be executed after albums are processed.
         onAlbumStart: "",       //-- function will be executed when album is received. Return true to continue, false to stop
         onAlbumEnd: "",         //-- function will be executed after album is received.
+        ownRelTag: "",          //-- Can be used to combine several albums by using the same rel-tag or split albums that are accidentally combined by using different rel-tags
         sortAlbums: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
         sortPhotos: "none",     // Can be none, ASC_DATE, DESC_DATE, ASC_NAME, DESC_NAME
         removeAlbums: [],       //-- Albums with this type in the gphoto$albumType will not be shown. Known types are Blogger, ScrapBook, ProfilePhotos, Buzz, CameraSync
