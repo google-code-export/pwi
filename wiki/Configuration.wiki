@@ -25,7 +25,7 @@ The following is an overview of all the options you can set.
 == Setting for Album overview ==
 
 || *Name* || *Default* || *Description* ||
-|| albums || [] ||  specify a list of album id's if mode is 'albums', leave as [] to show all albums (ex. ['album1','album2'])  ||
+|| albums || [] ||  specify a list of album names if mode is 'albums', leave as [] to show all albums (ex. ['album1','album2'])  ||
 || albumTypes || "public" ||  currently not supported: "private", "all", "visible" ||
 || albumCrop || 1 ||  crop the thumbs of the albums (1 = yes / 0 = no) ||
 || albumKeywords || "" || Filter albums based on keywords. See [Filtering Filtering albums and Photos for more information] ||
