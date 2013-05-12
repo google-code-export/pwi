@@ -9,7 +9,7 @@ The following is an overview of all the options you can set.
 || *Name* || *Default* || *Description* ||
 || username || "" || REQUIRED TO SET, NOT OPTIONAL, THE REST IS!!! ||
 || mode || 'albums' ||  can be: album, albums, latest ||
-|| album || "" ||  specify an album id if mode is 'album' ||
+|| album || "" ||  specify an album name if mode is 'album' (see name in URL of Picasa Web interface for correct album name) ||
 || authKey || "" ||  specify the authKey if you choose mode 'album' and specified an unlisted album from picasa ||
 || keyword || "" || Filter photos based on keywords. See [Filtering Filtering albums and Photos] for more information ||
 || showPager || 'bottom' || 'top', 'bottom', 'both' (for both albums and album paging) ||
