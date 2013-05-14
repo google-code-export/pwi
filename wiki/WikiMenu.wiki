@@ -13,4 +13,5 @@
     * [SlimBoxDemoLatest Demo using latest code]
     * [SlimBoxDemoCurrent Demo using release 2.0]
   * [Filtering Filtering Albums and Photos]
+  * [Using PWI on Blogger]
   * [ChangeLog PWI Change Log]
