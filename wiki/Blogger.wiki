@@ -6,7 +6,7 @@ It is possible to use PWI to display pictures on Blogger. Below is a description
 
 Thanks to Norbert Bianchin for the description.
 
-Note that this is a work in progress.
+Note that this currently is a work in progress.
 
 step #1: pwi integration (see pwi demo scripts)
 
