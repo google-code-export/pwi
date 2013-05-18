@@ -33,10 +33,6 @@
                 colorbox_config: {
                     config_photos: {
                         loop: true,
-                        width: "100%",
-                        height: "100%",
-                        innerWidth: "90%",
-                        innerHeight: "90%",
                         slideshowSpeed: 5000,
                         slideshowAuto: true
                     }
