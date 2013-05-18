@@ -1,0 +1,41 @@
+.pwi_photo {
+  float: none;
+  padding: 5px;
+  border: 1px solid #c9c9c9; 
+  border-radius: 5px;
+  width: 100%;
+  height: 100% !important;
+}
+.pwi_container {  
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pwi_pager {
+  overflow: hidden;
+  border: 1px solid #c9c9c9;
+  border-radius: 5px;
+  width: 100%;
+  padding:5px;
+  display: block;
+  margin: 5px;
+  float: left; 
+}
+.pwi_album_description { 
+  background-color: #EEEEEE;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #c9c9c9; 
+  width: 100%;
+  font-size: 8pt !important;
+  margin: 5px;
+  border-radius: 5px;
+}
+.pwi_album_description .description {display:none;}
+.pwi_pager_page, .pwi_pager_current {display:none;}
+.pwi_prevpage{float:left;width:200px;}
+.pwi_prevpage:hover{color:chocolate;}
+.pwi_nextpage{float:right;}
+.pwi_nextpage:hover{color:chocolate;}
+.pwi_pager_current{float:left;width:50px;color:blue;}
+
