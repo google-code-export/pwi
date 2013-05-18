@@ -25,6 +25,7 @@
                                                 // ever is the album are in the same slideshow
                 showAlbumdate: false,
                 showAlbumLocation: false,
+                showPageCounter: false,
                 maxResults: 1,
                 thumbSize: 520,
                 albumCrop: 0,
