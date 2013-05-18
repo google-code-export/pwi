@@ -613,18 +613,20 @@
                     });
                 }
                 $navRow.append($ppage);
-                for (var p = 1; p < $pageCount + 1; p++) {
-                    if (p == settings.page) {
-                        tmp = "<div class='pwi_pager_current'>" + p + "</div> ";
-                    } else {
-                        tmp = $("<div class='pwi_pager_page'>" + p + "</div>").bind('click.pwi', p, function (e) {
-                            e.stopPropagation();
-                            settings.page = e.data;
-                            getAlbum();
-                            return false;
-                        });
+                if (settings.showPageCounter) {
+                    for (var p = 1; p < $pageCount + 1; p++) {
+                        if (p == settings.page) {
+                            tmp = "<div class='pwi_pager_current'>" + p + "</div> ";
+                        } else {
+                            tmp = $("<div class='pwi_pager_page'>" + p + "</div>").bind('click.pwi', p, function (e) {
+                                e.stopPropagation();
+                                settings.page = e.data;
+                                getAlbum();
+                                return false;
+                            });
+                        }
+                        $navRow.append(tmp);
                     }
-                    $navRow.append(tmp);
                 }
                 if (settings.page < $pageCount) {
                     $npage.addClass('link').bind('click.pwi', function (e) {
@@ -867,6 +869,7 @@
         showPhotoFilename: false,
         showPermaLink: false,
         showPhotoLocation: false,
+        showPageCounter: true,          //-- Show the counters below the pictures when more pages are available
         mapIconLocation: "",
         mapSize: 0.75,      // 75% of the window
         useQueryParameters: true,
