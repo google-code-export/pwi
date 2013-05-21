@@ -11,7 +11,7 @@
  */
 
     $(document).ready(function () {
-        var $target = $(".mypwi_photo");    // find all pwi containers of the current page
+        var $target = $(".pwi_single_picture");    // find all pwi containers of the current page
         $target.each(function() {           // loop over each container found
             var $username = $(this).attr("username");   // extract username to access album
             var $album = $(this).attr("id");            // extract album name
