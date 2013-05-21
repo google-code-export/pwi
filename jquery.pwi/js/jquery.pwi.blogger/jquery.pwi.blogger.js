@@ -23,8 +23,7 @@
                 mode: "album",
                 ownRelTag: $(this).attr("id"),  // new in pwi 2 unless all images in the page what
                                                 // ever is the album are in the same slideshow
-                showAlbumdate: false,
-                showAlbumLocation: false,
+                showAlbumDescription: false,
                 showPageCounter: false,
                 maxResults: 1,
                 thumbSize: 520,
