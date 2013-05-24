@@ -11,6 +11,24 @@
  */
 
     $(document).ready(function () {
+
+        // This will show one picture from the provided album, with previous and
+        // next links below the picture
+        var $target = $(".pwi_default");    // find all pwi containers of the current page
+        $target.each(function() {           // loop over each container found
+            var $username = $(this).attr("username");   // extract username to access album
+            var $album = $(this).attr("id");            // extract album name
+            var $authKey = $(this).attr("authKey");     // extract authkey if needed
+            $(this).pwi({                   // apply the plugin for each album found
+                username: $username,
+                album: $album,
+                authKey: $authKey,
+                ownRelTag: $(this).attr("id")   // Needed to be able to use multiple instances on one page
+            });
+        });
+
+        // This will show one picture from the provided album, with previous and
+        // next links below the picture
         var $target = $(".pwi_single_picture");    // find all pwi containers of the current page
         $target.each(function() {           // loop over each container found
             var $username = $(this).attr("username");   // extract username to access album
@@ -21,8 +39,7 @@
                 album: $album,
                 authKey: $authKey,
                 mode: "album",
-                ownRelTag: $(this).attr("id"),  // new in pwi 2 unless all images in the page what
-                                                // ever is the album are in the same slideshow
+                ownRelTag: $(this).attr("id"),  // Needed to be able to use multiple instances on one page
                 showAlbumDescription: false,
                 showPageCounter: false,
                 showPhotoDownloadPopup: false,
